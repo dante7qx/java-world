@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE sqlMapConfig PUBLIC "-//iBATIS.com//DTD SQL Map Config 2.0//EN" 
+	"http://ibatis.apache.org/dtd/sql-map-config-2.dtd">
+<sqlMapConfig>
+	<sqlMap resource="com/epolleo/pub/att/sql/Att.xml" />
+	
+	<sqlMap resource="com/epolleo/pub/location/sql/PubLocation.xml" />
+	<sqlMap resource="com/epolleo/hr/dictmnt/sql/CodeDict.xml" />
+	
+	<sqlMap resource="com/epolleo/hr/employee/sql/Employee.xml" />
+	<sqlMap resource="com/epolleo/hr/employee/sql/EmployeeRelation.xml" />
+	<sqlMap resource="com/epolleo/hr/employee/sql/EmployeeCertificate.xml" />
+	<sqlMap resource="com/epolleo/hr/employee/sql/EmployeeWork.xml" />
+	<sqlMap resource="com/epolleo/hr/employee/sql/EmployeeBenefit.xml" />
+	<sqlMap resource="com/epolleo/hr/employee/sql/EmployeeOther.xml" />
+</sqlMapConfig>

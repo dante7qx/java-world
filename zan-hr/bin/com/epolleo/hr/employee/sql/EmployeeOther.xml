@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "sql-map-2.dtd">
+<sqlMap namespace="EmployeeOtherBean">
+    <typeAlias alias="employeeOtherBean" type="com.epolleo.hr.employee.bean.EmployeeOtherBean" />
+  
+    <!-- 分页查询 -->
+    <select id="queryEmployeeOtherPage" resultClass="employeeOtherBean"
+            parameterClass="map">
+        SELECT
+            Id,
+            EmployeeId,
+            AttLotId,
+            Remark,
+            createUser,
+            createTime,
+            updateUser,
+            updateTime
+        FROM hr_employee_other
+        <dynamic prepend=" where ">
+        </dynamic>
+        
+        <dynamic>
+			<isNotEmpty prepend=" order by " property="sort">
+				<isEqual property="sort" compareValue="id">
+					Id
+				</isEqual>
+				<isEqual property="sort" compareValue="employeeId">
+					EmployeeId
+				</isEqual>
+				<isEqual property="sort" compareValue="attLotId">
+					AttLotId
+				</isEqual>
+				<isEqual property="sort" compareValue="remark">
+					Remark
+				</isEqual>
+				<isEqual property="sort" compareValue="createUser">
+					createUser
+				</isEqual>
+				<isEqual property="sort" compareValue="createTime">
+					createTime
+				</isEqual>
+				<isEqual property="sort" compareValue="updateUser">
+					updateUser
+				</isEqual>
+				<isEqual property="sort" compareValue="updateTime">
+					updateTime
+				</isEqual>
+				<isNotEmpty prepend=" " property="order">
+					<isEqual property="order" compareValue="asc">
+						asc
+					</isEqual>
+					<isEqual property="order" compareValue="desc">
+						desc
+					</isEqual>
+				</isNotEmpty>
+			</isNotEmpty>
+		</dynamic>
+    </select>
+    <!-- 查询所有记录 -->
+    <select id="queryEmployeeOtherList" resultClass="employeeOtherBean"
+            parameterClass="map">
+        SELECT
+            Id,
+            EmployeeId,
+            AttLotId,
+            Remark,
+            createUser,
+            createTime,
+            updateUser,
+            updateTime
+        FROM
+            hr_employee_other
+    </select>
+    <select id="queryEmployeeOtherById" resultClass="employeeOtherBean"
+            parameterClass="Long">
+        SELECT
+            Id,
+            EmployeeId,
+            AttLotId,
+            Remark,
+            createUser,
+            createTime,
+            updateUser,
+            updateTime        FROM  hr_employee_other
+        WHERE
+            Id = #id#
+    </select>
+    <select id="queryEmployeeOtherByEmpId" resultClass="employeeOtherBean"
+            parameterClass="Long">
+        SELECT
+            Id,
+            EmployeeId,
+            AttLotId,
+            Remark,
+            createUser,
+            createTime,
+            updateUser,
+            updateTime        FROM  hr_employee_other
+        WHERE
+            EmployeeId = #employeeId#
+    </select>
+    <insert id="insertEmployeeOther" parameterClass="employeeOtherBean">
+        INSERT INTO hr_employee_other (
+            Id,
+            EmployeeId,
+            AttLotId,
+            Remark,
+            createUser,
+            createTime,
+            updateUser,
+            updateTime
+        ) VALUES (
+            #id# ,
+            #employeeId# ,
+            #attLotId# ,
+            #remark# ,
+            #createUser# ,
+            #createTime# ,
+            #updateUser# ,
+            #updateTime# 
+        )
+    </insert>
+    <!-- 修改员工补充信息 -->
+    <update id="updateEmployeeOther" parameterClass="employeeOtherBean">
+        UPDATE
+            hr_employee_other
+        SET
+            EmployeeId = #employeeId# ,			
+            AttLotId = #attLotId# ,			
+            Remark = #remark# ,			
+            createUser = #createUser# ,			
+            createTime = #createTime# ,			
+            updateUser = #updateUser# ,			
+            updateTime = #updateTime# 			
+        WHERE
+            Id = #id#
+    </update>
+    <!-- 删除员工补充信息 -->
+    <delete id="deleteEmployeeOther" parameterClass="Long">
+        DELETE
+        FROM
+            hr_employee_other
+        WHERE
+            Id = #id#
+    </delete>
+    
+</sqlMap>

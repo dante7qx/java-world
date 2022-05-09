@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.dante.springmvc.mybatis.dao.UserDao">
+
+	<select id="findUsers" parameterType="String" resultType="User">
+		select * from T_User
+		<where>
+			<if test="userName != null">
+				UserName like #{userName}
+			</if>
+		</where>
+		order by UserName
+	</select>
+
+	<select id="findById" parameterType="Integer" resultType="User">
+		select Id, UserName from T_User where Id = #{id}
+	</select>
+	
+	<select id="findByUserName" parameterType="String" resultType="User">
+		select * from T_User where UserName = #{userName}
+	</select>
+	
+	<select id="findUserRolesByUserId" parameterType="Integer"
+		resultType="Role">
+		select t.Id,t.Name,t.Remark from T_Role t left join
+		T_User_Role t1 on t.Id = t1.RoleId left join T_User t2 on t1.UserId =
+		t2.Id where t2.Id = #{id}
+	</select>
+
+	<select id="findUserRolesByUserName" parameterType="String"
+		resultType="Role">
+		select t.Id,t.Name,t.Remark from T_Role t left join
+		T_User_Role t1 on t.Id = t1.RoleId left join T_User t2 on t1.UserId =
+		t2.Id where t2.UserName = #{userName}
+	</select>
+
+	<select id="findUserPermissionByUserName" parameterType="String"
+		resultType="Permission">
+		select p.Id,p.Name,p.Code from T_Permission p
+		left join
+		T_Role_Permission rp on p.Id = rp.PermissionId
+		left join T_Role t on
+		rp.RoleId = t.Id
+		left join T_User_Role t1 on t.Id = t1.RoleId
+		left join
+		T_User t2 on t1.UserId = t2.Id where t2.UserName = #{userName}
+	</select>
+
+	<insert id="insertUser" parameterType="User" useGeneratedKeys="true"
+		keyProperty="id">
+		insert into T_User(UserName, Password) values
+		(#{userName},
+		#{password})
+	</insert>
+	
+	<update id="updateUser" parameterType="User">
+		update T_User set userName = #{userName}, Password = #{password} where Id = #{id}
+	</update>
+	
+	<delete id="deleteUser" parameterType="Integer">
+		delete from T_User where Id = #{id}
+	</delete>
+	
+	<delete id="deleteUserRoleByUserId" parameterType="Integer">
+		delete
+		from T_User_Role where UserId = #{userId}
+	</delete>
+</mapper>

@@ -1,2 +1,2 @@
 # java-world
-Java 日常代码随笔
+Java的日常代码

@@ -1,0 +1,20 @@
+#set($package=$!context.packageName)
+#set($pLen=$package.indexOf("."))
+#set($project=$package.substring(0, $pLen))
+package com.spirit.${context.packageName}.dao.dao;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import com.spirit.${project}.commom.dao.exception.SpiritDaoException;
+import com.spirit.${context.packageName}.dao.${context.javaBeanName}PO;
+
+/**
+ * ${table.comment} DAO
+ * 
+ * @author dante
+ * @date ${genDate}
+ *
+ */
+public interface ${context.javaBeanName}DAO extends JpaRepository<${context.javaBeanName}PO, Long>, JpaSpecificationExecutor<${context.javaBeanName}PO>{ 
+
+}

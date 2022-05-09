@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.org//DTD SQL Map 2.4//EN" "sql-map-2.4.dtd">
+<sqlMap namespace="AuditLog">
+	<typeAlias alias="AuditLog" type="com.epolleo.bp.audit.bean.AuditLog" />
+	<resultMap id="auditLogResult" class="auditLog">
+		<result property="logId" column="LOG_ID" />
+		<result property="userId" column="USER_ID" />
+		<result property="userName" column="USER_NAME" />
+		<result property="remoteAddr" column="REMOTE_ADDR" />
+		<result property="moduleName" column="MODULE_NAME" />
+		<result property="funcName" column="FUNC_NAME" />
+		<result property="funcCode" column="FUNC_CODE" />
+		<result property="operationUrl" column="OPERATION_URL" />
+		<result property="operationTime" column="OPERATION_TIME" />
+	</resultMap>
+	<select id="selectAuditLog" resultMap="auditLogResult"
+		parameterClass="map">
+		SELECT
+		    l.LOG_ID,
+		    l.USER_ID,
+		    u.USER_NAME,
+		    l.REMOTE_ADDR,
+		    l.MODULE_NAME,
+		    l.FUNC_CODE,
+		    l.OPERATION_URL,
+		    l.OPERATION_TIME,
+		    f.FUNC_NAME
+		FROM
+		    BP_AUDIT_LOG l
+		JOIN BP_FUNCTION f
+		ON
+		    f.FUNC_CODE = l.FUNC_CODE
+		JOIN BP_USER u
+		ON
+		    u.USER_ID = l.USER_ID
+		<dyn pre=" where ">
+			<pa pre=" and " rm="true" p="logId">LOG_ID like #logId#</pa>
+			<pa pre=" and " rm="true" p="userId">
+				l.USER_ID like #userId#
+			</pa>
+			<pa pre=" and " rm="true" p="userName">
+				u.USER_NAME like #userName#
+			</pa>
+			<pa pre=" and " rm="true" p="moduleName">
+				MODULE_NAME like #moduleName#
+			</pa>
+			<pa pre=" and " rm="true" p="funcName">
+				FUNC_NAME like #funcName#
+			</pa>
+			<pa pre=" and " rm="true" p="startOperationTime">
+				OPERATION_TIME &gt;= #startOperationTime# AND
+				OPERATION_TIME &lt; #endOperationTime#
+			</pa>
+		</dyn>
+		<nem pre=" order by " p="sort">
+			<eq p="sort" cv="logId">LOG_ID</eq>
+			<eq p="sort" cv="userId">USER_ID</eq>
+			<eq p="sort" cv="operationTime">OPERATION_TIME</eq>
+			<nem pre=" " p="order">
+				<eq p="order" cv="asc">asc</eq>
+				<eq p="order" cv="desc">desc</eq>
+			</nem>
+		</nem>
+	</select>
+
+	<insert id="insertAuditLog" parameterClass="AuditLog">
+		INSERT
+		INTO
+		    BP_AUDIT_LOG
+		    (
+		        LOG_ID,
+		        USER_ID,
+		        ACTION_NAME,
+		        REMOTE_ADDR,
+		        MODULE_NAME,
+		        FUNC_CODE,
+		        OPERATION_URL,
+		        OPERATION_TIME
+		    )
+		    VALUES
+		    (
+		        #logId#,
+		        #userId#,
+		        #actionName#,
+		        #remoteAddr#,
+		        #moduleName#,
+		        #funcCode#,
+		        #operationUrl#,
+		        #operationTime#
+		    )
+	</insert>
+</sqlMap>

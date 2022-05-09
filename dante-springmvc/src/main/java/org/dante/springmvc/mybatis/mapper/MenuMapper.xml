@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.dante.springmvc.mybatis.dao.MenuDao">
+
+	<select id="findMenuById" parameterType="Integer"
+		resultType="Menu">
+		select * from T_Menu where Id = #{id}
+	</select>
+
+	<select id="findMenuByPid" parameterType="Integer"
+		resultType="Menu">
+		select * from T_Menu where Pid = #{pid}
+	</select>
+
+	<insert id="insertMenu" parameterType="Menu"
+		useGeneratedKeys="true" keyProperty="id">
+		insert into T_Menu(Name, PathUrl, ShowOrder, PermissionId, Pid) values (#{name}, #{pathUrl}, #{showOrder}, #{permissionId}, #{pid})
+	</insert>
+	
+	<update id="updateMenu" parameterType="Menu">
+		update T_Menu set Name = #{name}, PathUrl = #{pathUrl}, ShowOrder = #{showOrder}, PermissionId = #{permissionId}, Pid = ${pid} where Id = #{id}
+	</update>
+</mapper>

@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "sql-map-2.dtd">
+<sqlMap namespace="EmployeeWorkBean">
+    <typeAlias alias="employeeWorkBean" type="com.epolleo.hr.employee.bean.EmployeeWorkBean" />
+  
+    <!-- 分页查询 -->
+    <select id="queryEmployeeWorkPage" resultClass="employeeWorkBean"
+            parameterClass="map">
+        SELECT
+            Id,
+            EmployeeId,
+            WorkPlaceId,
+            Company,
+            Dept,
+            Post,
+            CapacityLevel,
+            EntrantDate,
+            Type,
+            TrialPeriod,
+            ContractDeadline,
+            ContractType,
+            ContractStartDate,
+            ContractEndDate,
+            TrialDeadline,
+            PracticeStartDate,
+            PracticeEndDate,
+            ParttimeStartDate,
+            ParttimeEndDate,
+            createUser,
+            createTime,
+            updateUser,
+            updateTime
+        FROM hr_employee_work
+        <dynamic prepend=" where ">
+        </dynamic>
+        
+        <dynamic>
+			<isNotEmpty prepend=" order by " property="sort">
+				<isEqual property="sort" compareValue="id">
+					Id
+				</isEqual>
+				<isEqual property="sort" compareValue="employeeId">
+					EmployeeId
+				</isEqual>
+				<isNotEmpty prepend=" " property="order">
+					<isEqual property="order" compareValue="asc">
+						asc
+					</isEqual>
+					<isEqual property="order" compareValue="desc">
+						desc
+					</isEqual>
+				</isNotEmpty>
+			</isNotEmpty>
+		</dynamic>
+    </select>
+    <!-- 查询所有记录 -->
+    <select id="queryEmployeeWorkList" resultClass="employeeWorkBean"
+            parameterClass="map">
+        SELECT
+            Id,
+            EmployeeId,
+            WorkPlaceId,
+            Company,
+            Dept,
+            Post,
+            CapacityLevel,
+            EntrantDate,
+            Type,
+            TrialPeriod,
+            ContractDeadline,
+            ContractType,
+            ContractStartDate,
+            ContractEndDate,
+            TrialDeadline,
+            PracticeStartDate,
+            PracticeEndDate,
+            ParttimeStartDate,
+            ParttimeEndDate,
+            createUser,
+            createTime,
+            updateUser,
+            updateTime
+        FROM
+            hr_employee_work
+    </select>
+    <select id="queryEmployeeWorkById" resultClass="employeeWorkBean"
+            parameterClass="Long">
+        SELECT
+            Id,
+            EmployeeId,
+            WorkPlaceId,
+            Company,
+            Dept,
+            Post,
+            CapacityLevel,
+            EntrantDate,
+            Type,
+            TrialPeriod,
+            ContractDeadline,
+            ContractType,
+            ContractStartDate,
+            ContractEndDate,
+            TrialDeadline,
+            PracticeStartDate,
+            PracticeEndDate,
+            ParttimeStartDate,
+            ParttimeEndDate,
+            createUser,
+            createTime,
+            updateUser,
+            updateTime        FROM  hr_employee_work
+        WHERE
+            Id = #id#
+    </select>
+    <select id="queryEmployeeWorkByEmployeeId" resultClass="employeeWorkBean"
+            parameterClass="Long">
+        SELECT
+            Id,
+            EmployeeId,
+            WorkPlaceId,
+            Company,
+            Dept,
+            Post,
+            CapacityLevel,
+            EntrantDate,
+            Type,
+            TrialPeriod,
+            ContractDeadline,
+            ContractType,
+            ContractStartDate,
+            ContractEndDate,
+            TrialDeadline,
+            PracticeStartDate,
+            PracticeEndDate,
+            ParttimeStartDate,
+            ParttimeEndDate,
+            createUser,
+            createTime,
+            updateUser,
+            updateTime        FROM  hr_employee_work
+        WHERE
+            EmployeeId = #employeeId#
+    </select>
+    <insert id="insertEmployeeWork" parameterClass="employeeWorkBean">
+        INSERT INTO hr_employee_work (
+            Id,
+            EmployeeId,
+            WorkPlaceId,
+            Company,
+            Dept,
+            Post,
+            CapacityLevel,
+            EntrantDate,
+            Type,
+            TrialPeriod,
+            ContractDeadline,
+            ContractType,
+            ContractStartDate,
+            ContractEndDate,
+            TrialDeadline,
+            PracticeStartDate,
+            PracticeEndDate,
+            ParttimeStartDate,
+            ParttimeEndDate,
+            createUser,
+            createTime,
+            updateUser,
+            updateTime
+        ) VALUES (
+            #id# ,
+            #employeeId# ,
+            #workPlaceId# ,
+            #company# ,
+            #dept# ,
+            #post# ,
+            #capacityLevel# ,
+            #entrantDate# ,
+            #type# ,
+            #trialPeriod# ,
+            #contractDeadline# ,
+            #contractType# ,
+            #contractStartDate# ,
+            #contractEndDate# ,
+            #trialDeadline# ,
+            #practiceStartDate# ,
+            #practiceEndDate# ,
+            #parttimeStartDate# ,
+            #parttimeEndDate# ,
+            #createUser# ,
+            #createTime# ,
+            #updateUser# ,
+            #updateTime# 
+        )
+    </insert>
+    <!-- 修改员工工作信息 -->
+    <update id="updateEmployeeWork" parameterClass="employeeWorkBean">
+        UPDATE
+            hr_employee_work
+        SET
+            EmployeeId = #employeeId# ,
+            WorkPlaceId = #workPlaceId# ,  			
+            Company = #company# ,			
+            Dept = #dept# ,			
+            Post = #post# ,			
+            CapacityLevel = #capacityLevel# ,			
+            EntrantDate = #entrantDate# ,			
+            Type = #type# ,			
+            TrialPeriod = #trialPeriod# ,			
+            ContractDeadline = #contractDeadline# ,			
+            ContractType = #contractType# ,			
+            ContractStartDate = #contractStartDate# ,			
+            ContractEndDate = #contractEndDate# ,			
+            TrialDeadline = #trialDeadline# ,			
+            PracticeStartDate = #practiceStartDate# ,			
+            PracticeEndDate = #practiceEndDate# ,			
+            ParttimeStartDate = #parttimeStartDate# ,			
+            ParttimeEndDate = #parttimeEndDate# ,			
+            createUser = #createUser# ,			
+            createTime = #createTime# ,			
+            updateUser = #updateUser# ,			
+            updateTime = #updateTime# 			
+        WHERE
+            Id = #id#
+    </update>
+    <!-- 删除员工工作信息 -->
+    <delete id="deleteEmployeeWork" parameterClass="Long">
+        DELETE
+        FROM
+            hr_employee_work
+        WHERE
+            Id = #id#
+    </delete>
+    
+</sqlMap>

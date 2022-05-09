@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "sql-map-2.dtd">
+<sqlMap namespace="OrgTypeBean">
+	<typeAlias alias="orgTypeBean"
+		type="com.epolleo.bp.org.bean.OrgTypeBean" />
+	<resultMap id="orgTypeBeanResult" class="orgTypeBean">
+		<result property="orgTypeId" column="ORG_TYPE_ID" />
+		<result property="orgType" column="ORG_TYPE" />
+		<result property="createUser" column="CREATE_USER" />
+		<result property="createTime" column="CREATE_TIME" />
+		<result property="updateUser" column="UPDATE_USER" />
+		<result property="updateTime" column="UPDATE_TIME" />
+	</resultMap>
+	<resultMap id="orgTypeBeanResult1" class="orgTypeBean">
+		<result property="orgType" column="ORG_TYPE" />
+	</resultMap>
+	<resultMap id="orgTypeBeanResult2" class="orgTypeBean">
+		<result property="orgTypeId" column="ORG_TYPE_ID" />
+		<result property="orgType" column="ORG_TYPE" />
+	</resultMap>
+	<select id="selectOrgType" resultMap="orgTypeBeanResult"
+		parameterClass="map">
+		SELECT * FROM BP_ORGAN_TYPE
+		<dynamic prepend=" where ">
+			<isPropertyAvailable prepend=" and "
+				removeFirstPrepend="true" property="orgTypeId">
+				ORG_TYPE_ID like #orgTypeId#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend=" and "
+				removeFirstPrepend="true" property="orgType">
+				ORG_TYPE like #orgType#
+			</isPropertyAvailable>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend=" order by " property="sort">
+				<isEqual property="sort" compareValue="orgTypeId">
+					ORG_TYPE_ID
+				</isEqual>
+				<isNotEmpty prepend=" " property="order">
+					<isEqual property="order" compareValue="asc">
+						asc
+					</isEqual>
+					<isEqual property="order" compareValue="desc">
+						desc
+					</isEqual>
+				</isNotEmpty>
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	<update id="updateOrgType" parameterClass="orgTypeBean">
+		UPDATE
+		    BP_ORGAN_TYPE
+		SET
+		    ORG_TYPE    = #orgType#,
+		    UPDATE_USER = #updateUser#,
+		    UPDATE_TIME = #updateTime#
+		WHERE
+		    ORG_TYPE_ID = #orgTypeId#
+	</update>
+	<insert id="insertOrgType" parameterClass="orgTypeBean">
+		INSERT
+		INTO
+		    BP_ORGAN_TYPE
+		    (
+		        ORG_TYPE_ID,
+		        ORG_TYPE,
+		        CREATE_USER,
+		        CREATE_TIME,
+		        UPDATE_USER,
+		        UPDATE_TIME
+		    )
+		    VALUES
+		    (
+		        #orgTypeId#,
+		        #orgType#,
+		        #createUser#,
+		        #createTime#,
+		        #updateUser#,
+		        #updateTime#
+		    )
+	</insert>
+	<delete id="deleteOrgType" parameterClass="String">
+		DELETE
+		FROM
+		    BP_ORGAN_TYPE
+		WHERE
+		    ORG_TYPE_ID = #id#
+	</delete>
+	<!--query all records -->
+	<select id="queryOrgTypeList" resultMap="orgTypeBeanResult2">
+		SELECT ORG_TYPE_ID,ORG_TYPE FROM BP_ORGAN_TYPE
+	</select>
+	<select id="findTypeById" resultMap="orgTypeBeanResult1"
+		parameterClass="String">
+		SELECT ORG_TYPE FROM BP_ORGAN_TYPE WHERE ORG_TYPE_ID = #orgTypeId#
+	</select>
+</sqlMap>

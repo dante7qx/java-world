@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "sql-map-2.dtd">
+<sqlMap namespace="PubLocationBean">
+    <typeAlias alias="pubLocationBean" type="com.epolleo.pub.location.bean.PubLocationBean" />
+  
+    <!-- 查询所有记录 -->
+    <select id="queryHrLocationList" resultClass="pubLocationBean" parameterClass="map">
+        SELECT
+            LOC_ID AS id,
+            LOC_NAME AS name,
+		    LOC_CODE AS code
+        FROM BP_LOCATION 
+        <dynamic prepend=" where ">
+			<isPropertyAvailable prepend=" and "
+				removeFirstPrepend="true" property="isNew">
+				ifnull(ENABLE,0) = #isNew#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend=" and "
+				removeFirstPrepend="true" property="id">
+				(ifnull(ENABLE,0) = 1 or LOC_ID = #id#)
+			</isPropertyAvailable>
+		</dynamic>
+    </select>
+    
+    
+</sqlMap>

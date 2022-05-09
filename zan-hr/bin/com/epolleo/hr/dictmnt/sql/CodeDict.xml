@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "sql-map-2.dtd">
+<sqlMap namespace="CodeDictBean">
+    <typeAlias alias="codeDictBean" type="com.epolleo.hr.dictmnt.bean.CodeDictBean" />
+  
+    <!-- 分页查询 -->
+    <select id="queryCodeDictPage" resultClass="codeDictBean"
+            parameterClass="map">
+        SELECT
+            Id,
+            Type,
+            TypeName,
+            Code,
+            Value,
+            ShowOrder,
+            UpdateBy,
+            UpdateDate
+        FROM hr_code_dict
+        <dynamic prepend=" where ">
+        </dynamic>
+        
+        <dynamic>
+			<isNotEmpty prepend=" order by " property="sort">
+				<isEqual property="sort" compareValue="id">
+					Id
+				</isEqual>
+				<isEqual property="sort" compareValue="type">
+					Type
+				</isEqual>
+				<isEqual property="sort" compareValue="typeName">
+					TypeName
+				</isEqual>
+				<isEqual property="sort" compareValue="code">
+					Code
+				</isEqual>
+				<isEqual property="sort" compareValue="value">
+					Value
+				</isEqual>
+				<isEqual property="sort" compareValue="showOrder">
+					ShowOrder
+				</isEqual>
+				<isEqual property="sort" compareValue="updateBy">
+					UpdateBy
+				</isEqual>
+				<isEqual property="sort" compareValue="updateDate">
+					UpdateDate
+				</isEqual>
+				<isNotEmpty prepend=" " property="order">
+					<isEqual property="order" compareValue="asc">
+						asc
+					</isEqual>
+					<isEqual property="order" compareValue="desc">
+						desc
+					</isEqual>
+				</isNotEmpty>
+			</isNotEmpty>
+		</dynamic>
+    </select>
+    <!-- 查询所有记录 -->
+    <select id="queryCodeDictList" resultClass="codeDictBean"
+            parameterClass="map">
+        SELECT
+            Id,
+            Type,
+            TypeName,
+            Code,
+            Value,
+            ShowOrder,
+            UpdateBy,
+            UpdateDate
+        FROM
+            hr_code_dict
+    </select>
+    <select id="queryCodeDictById" resultClass="codeDictBean"
+            parameterClass="Long">
+        SELECT
+            Id,
+            Type,
+            TypeName,
+            Code,
+            Value,
+            ShowOrder,
+            UpdateBy,
+            UpdateDate        FROM  hr_code_dict
+        WHERE
+            Id = #id#
+    </select>
+    <select id="queryCodeDictByType" resultClass="codeDictBean"
+            parameterClass="String">
+        SELECT
+            Id,
+            Type,
+            TypeName,
+            Code,
+            Value,
+            ShowOrder,
+            UpdateBy,
+            UpdateDate        FROM  hr_code_dict
+        WHERE
+            Type = #type#
+        ORDER BY ShowOrder ASC
+    </select>
+    <insert id="insertCodeDict" parameterClass="codeDictBean">
+        INSERT INTO hr_code_dict (
+            Id,
+            Type,
+            TypeName,
+            Code,
+            Value,
+            ShowOrder,
+            UpdateBy,
+            UpdateDate
+        ) VALUES (
+            #id# ,
+            #type# ,
+            #typeName# ,
+            #code# ,
+            #value# ,
+            #showOrder# ,
+            #updateBy# ,
+            #updateDate# 
+        )
+    </insert>
+    <!-- 修改基础数据字典表 -->
+    <update id="updateCodeDict" parameterClass="codeDictBean">
+        UPDATE
+            hr_code_dict
+        SET
+            Type = #type# ,			
+            TypeName = #typeName# ,			
+            Code = #code# ,			
+            Value = #value# ,			
+            ShowOrder = #showOrder# ,			
+            UpdateBy = #updateBy# ,			
+            UpdateDate = #updateDate# 			
+        WHERE
+            Id = #id#
+    </update>
+    <!-- 删除基础数据字典表 -->
+    <delete id="deleteCodeDict" parameterClass="Long">
+        DELETE
+        FROM
+            hr_code_dict
+        WHERE
+            Id = #id#
+    </delete>
+    
+</sqlMap>

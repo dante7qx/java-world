@@ -1,0 +1,99 @@
+#set($package=$!context.packageName)
+#set($bean=${context.javaBeanName})
+#set($sbean=${context.javaBeanNameLF})
+#set($lowBean=${context.javaBeanNameLF.toLowerCase()})
+var ${bean}DetailPage = {
+		SUBMIT_FLAG: false,
+		param${bean}Id: '',
+		initPage: function(param${bean}Id) {
+			this.param${bean}Id = param${bean}Id;
+			this.loadData();
+		},
+		loadData: function() {
+			if(this.param${bean}Id) {
+				spirit.util.controlFormBtn(false, '${sbean}FormBtnContainer');
+				this.loadDataById(false);
+			} else {
+				spirit.util.controlFormBtn(true, '${sbean}FormBtnContainer');
+				$('#${sbean}DetailForm').form('clear');
+			}
+		},
+		loadDataById: function(editable) {
+			$.ajax({
+				url: ctx+'/${package}/${lowBean}/query_by_id',
+				type: 'post',
+				data: {
+					id: ${bean}DetailPage.param${bean}Id
+				},
+				success: function(result) {
+					if(result['resultCode'] != COMMON_CONFIG['SUCCESS']) {
+						$.messager.alert('错误','系统错误，请联系系统管理员', 'error');
+						return;
+					}
+					$('#${sbean}DetailForm').form('clear').form('load', result['data']);
+					${bean}DetailPage.loadUpdateInfo(result['data']);
+					spirit.util.isEditForm('${sbean}DetailForm', editable);
+				}
+			});
+		},
+		loadUpdateInfo: function(data) {
+			var updateUserName = data['updateUserName'] ? data['updateUserName'] : '';
+			var updateDate = data['updateDate'] ? data['updateDate'] : '';
+			$('#${sbean}UpdateInfo').text(updateUserName + ' ' + updateDate);
+		},
+		submit: function() {
+			if(${bean}DetailPage.SUBMIT_FLAG) {
+				return;
+			}
+			if($('#${lowBean}DetailForm').form('validate')) {
+				${bean}DetailPage.SUBMIT_FLAG = true;
+			}
+			$('#${sbean}DetailForm').form('submit', {
+				iframe: false,
+			    url: ctx+'/${package}/${lowBean}/update',
+			    success:function(result){
+					${bean}DetailPage.SUBMIT_FLAG = false;
+			    	var result = eval('(' + result + ')');
+			    	if(result['resultCode'] == COMMON_CONFIG['SUCCESS']) {
+			        	$('#${sbean}Gridlist').datagrid('reload');
+			        	$('#${sbean}Window').window('close');
+			        } else {
+			        	$.messager.alert('错误','系统错误，请联系系统管理员', 'error');
+			        }
+			    }
+			});
+		},
+		reset: function() {
+			if(this.param${bean}Id) {
+				this.loadDataById(true);
+			} else {
+				$('#${sbean}DetailForm').form('clear');
+			}
+			${bean}DetailPage.SUBMIT_FLAG = false;
+		},
+		del: function() {
+			$.messager.confirm('提示', '您确定要删除吗?', function(r){
+				if (r){
+					$.ajax({
+						url: ctx+'/${package}/${lowBean}/delete',
+						type: 'post',
+						data: {
+							id: $('#id','#${sbean}DetailForm').val()
+						},
+						success: function(result) {
+							if(result['resultCode'] != COMMON_CONFIG['SUCCESS']) {
+								$.messager.alert('错误','系统错误，请联系系统管理员', 'error');
+								return;
+							}
+							$('#${sbean}Gridlist').datagrid('reload');
+				        	$('#${sbean}Window').window('close');
+						}
+					});
+				}
+			});
+		},
+		edit: function() {
+			spirit.util.controlFormBtn(true, '${sbean}FormBtnContainer');
+			spirit.util.isEditForm('${sbean}DetailForm', true);
+		}
+};

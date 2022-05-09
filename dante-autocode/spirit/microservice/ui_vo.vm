@@ -1,0 +1,63 @@
+#set($package=$!context.packageName)
+#set($pLen=$package.indexOf("."))
+#set($project=$package.substring(0, $pLen))
+#set($bean=${context.javaBeanName})
+#set($sbean=${context.javaBeanNameLF})
+package com.spirit.${package}.ui.vo.${sbean};
+
+/**
+ * ${table.comment} VO
+ * 
+ * @author dante
+ * @date ${genDate}
+ *
+ */
+public class ${bean}VO {
+	
+#foreach($column in $columns)	
+#if(${column.javaFieldName} == "deleteFlag")
+#elseif(${column.javaFieldName} == "updateDate")
+	/**
+	 * ${column.comment}
+	 */
+	private String updateDate;
+#else
+	/**
+	 * ${column.comment}
+	 */
+	private ${column.javaTypeBox} ${column.javaFieldName};
+#end
+#end
+	/**
+	 * 更新人-姓名
+	 */
+	private String updateUserName;
+
+#foreach(${column} in ${columns}) 
+#if(${column.javaFieldName} == "deleteFlag")
+#elseif(${column.javaFieldName} == "updateDate")
+	public String getUpdateDate() {
+		return updateDate;
+	}
+
+	public void setUpdateDate(String updateDate) {
+		this.updateDate = updateDate;
+	}
+#else
+	public void set${column.javaFieldNameUF}(${column.javaTypeBox} ${column.javaFieldName}){
+		this.${column.javaFieldName} = ${column.javaFieldName};
+	}
+
+	public ${column.javaTypeBox} get${column.javaFieldNameUF}(){
+		return this.${column.javaFieldName};
+	}
+#end
+#end
+	public String getUpdateUserName() {
+		return updateUserName;
+	}
+
+	public void setUpdateUserName(String updateUserName) {
+		this.updateUserName = updateUserName;
+	}
+}

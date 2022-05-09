@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "sql-map-2.dtd">
+<sqlMap namespace="RoleFunction">
+	<typeAlias alias="roleFunction"
+		type="com.epolleo.bp.role.bean.RoleFunctionBean" />
+	<typeAlias alias="functionRole"
+		type="com.epolleo.bp.role.bean.FunctionRole" />
+	<resultMap id="roleFunctionResult" class="roleFunction">
+		<result property="funcCode" column="FUNC_CODE" />
+		<result property="roleId" column="ROLE_ID" />
+	</resultMap>
+	<resultMap id="roleFunctionBeanResult" class="functionRole">
+		<result property="funcCode" column="FUNC_CODE" />
+		<result property="funcName" column="FUNC_NAME" />
+		<result property="funcNote" column="FUNC_NOTE" />
+		<result property="roleId" column="ROLE_ID" />
+		<result property="funcOrder" column="FUNC_ORDER" />
+		<result property="parent" column="PARENT" />
+	</resultMap>
+	<delete id="deleteRoleFunctionByRoleId" parameterClass="int">
+		DELETE
+		FROM
+		    BP_ROLE_FUNC
+		WHERE
+		    ROLE_ID = #roleId#
+	</delete>
+	<insert id="insertRoleFunction">
+		INSERT
+		INTO
+		    BP_ROLE_FUNC
+		    (
+		        FUNC_CODE,
+		        ROLE_ID
+		    )
+		    VALUES
+		    (
+		        #2#,
+		        #1#
+		    )
+	</insert>
+	<select id="selectFunctionAndRole" parameterClass="int"
+		resultMap="roleFunctionBeanResult">
+		SELECT
+		    f.FUNC_CODE,
+		    f.FUNC_NAME,
+		    f.FUNC_NOTE,
+		    f.FUNC_ORDER,
+		    f.PARENT,
+		    rf.ROLE_ID AS ROLE_ID
+		FROM
+		    BP_FUNCTION f
+		LEFT JOIN BP_ROLE_FUNC rf
+		ON
+		    f.FUNC_CODE    = rf.FUNC_CODE
+		    AND rf.ROLE_ID = #roleId#
+		ORDER BY
+		    f.PARENT,
+		    f.FUNC_ORDER ASC,
+		    f.FUNC_NAME ASC
+	</select>
+</sqlMap>

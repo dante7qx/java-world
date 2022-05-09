@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:services="http://www.alibaba.com/schema/services"
+	xmlns:ml-adapters="http://www.alibaba.com/schema/services/module-loader/adapters"
+	xmlns:ml-factories="http://www.alibaba.com/schema/services/module-loader/factories"
+	xmlns:context="http://www.springframework.org/schema/context" xmlns="http://www.springframework.org/schema/beans"
+	xmlns:p="http://www.springframework.org/schema/p" xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="
+        http://www.alibaba.com/schema/services http://www.alibaba.com/schema/services.xsd
+        http://www.springframework.org/schema/context  http://www.springframework.org/schema/context/spring-context-3.0.xsd 
+        http://www.alibaba.com/schema/services/module-loader/adapters http://www.alibaba.com/schema/services-module-loader-adapters.xsd
+        http://www.alibaba.com/schema/services/module-loader/factories http://www.alibaba.com/schema/services-module-loader-factories.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+    ">
+
+    <context:component-scan base-package="com.epolleo">
+        <context:include-filter type="regex" expression=".*Dao" />
+        <context:include-filter type="regex" expression=".*DaoImpl" />
+        <context:include-filter type="regex" expression=".*Service" />
+        <context:include-filter type="regex" expression=".*ServiceImpl" />
+    </context:component-scan>
+    
+	<!-- 支持${xxx}替换。 -->
+	<services:property-placeholder>
+		<services:property key="component">app</services:property>
+	</services:property-placeholder>
+
+	<!-- 共享配置。 -->
+	<import resource="webx/webx-component-and-root.xml" />
+	<import resource="webx/webx-component.xml" />
+
+	<!-- 执行管道。 -->
+	<import resource="webx/pipeline.xml" />
+
+	<!-- 定时任务。 -->
+	<import resource="webx/task.xml" />
+	
+	<!-- 参数过滤。 -->
+	<import resource="webx/parameter-filter.xml" />
+
+	<!-- 装载模块。 -->
+	<services:module-loader>
+		<ml-factories:class-modules>
+			<ml-factories:search-classes name="$1.$2.$3"
+				classes="com.epolleo.*.*.action.*" type="action" />
+		</ml-factories:class-modules>
+	</services:module-loader>
+
+	<!-- 页面授权。 -->
+	<services:page-authorization default="allow"
+		xmlns="http://www.alibaba.com/schema/services">
+		<match target="/">
+			<grant user="*">
+				<allow>*</allow>
+			</grant>
+		</match>
+	</services:page-authorization>
+	<!-- 以下是事物控制开关，必要时自行打开并灵活配置
+    <aop:config proxy-target-class="true">
+		<aop:pointcut id="ibatisMethods" expression="execution(* com.epolleo.bp.pub.AbstractDao+.*(..))" />
+		<aop:pointcut id="hibernateMethods" expression="execution(* com.epolleo.bp.pub.HibernateDao+.*(..))" />
+		<aop:pointcut id="serviceMethods" expression="execution(public * com.epolleo..service.*Service*.*(..))" />
+		<aop:advisor advice-ref="txAdvice1" pointcut-ref="serviceMethods" order="1" />
+		<aop:advisor advice-ref="txAdvice1" pointcut-ref="ibatisMethods" order="2" />
+		<aop:advisor advice-ref="txAdvice2" pointcut-ref="hibernateMethods" order="2" />
+	</aop:config>
+	-->
+</beans>

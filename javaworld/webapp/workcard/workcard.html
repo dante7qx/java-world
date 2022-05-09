@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>工卡制作</title>
+<style type="text/css">
+table{ border-collapse:collapse; width:600px; border:1px solid black; }
+table td { border:1px solid black; padding:5px; }
+.innerTable{ border-collapse:collapse; border:1px solid black; width:600px;}
+innerTable td { border:1px solid black; padding:5px; height: 25px;}
+.wordInput {border: none; border-bottom: 1px solid #000;}
+.insp {border: none; border-left: 1px solid #000;}
+.tableInput {border: none; width: 100%;}
+.innerTableTitle {text-align: center; width: 600px;font-weight: bold;}
+</style>
+<script type="text/javascript" src="../js/jquery-1.11.2.min.js"></script>
+<script type="text/javascript" src="../public/ckeditor/ckeditor.js"></script>
+</head>
+<body>
+	<h1 align="center"><a href="javascript:;">工卡制作</a></h1>
+	<div>
+		文字 <input type="radio" name="item" value="text" />
+		输入框 <input type="checkbox" id="wordinput" name="wordinput" />
+		签名 <input type="checkbox" id="sign" name="sign" />
+		&nbsp;&nbsp;|&nbsp;&nbsp;
+		输入框 <input type="radio" name="item" value="input" />
+		&nbsp;&nbsp;|&nbsp;&nbsp;
+		表格 <input type="radio" name="item" value="table" /> 
+		行 <input type="text" id="row" name="row" maxlength="2"/> 
+		列 <input type="text" id="col" name="col" maxlength="2"/>  
+		<input type="button" value="开始制作" onclick="WW.makeTable();"/>
+		<div id="makeTableDiv" style="margin: 10px;display: none;"></div>
+		<br/><br/>
+		<div id="editor"></div>
+	</div>
+	<div style="display: none;margin-top: 55px;">
+		<table id="resultDiv">
+			<tr>
+				<td>工卡 Job card：</td>
+				<td colspan="3"><b>G55-05L005-REF-1</b></td>
+			</tr>
+			<tr>
+				<td>TITLE</td>
+				<td>Supplement inspection for G550 extended operations</td>
+				<td>Perf</td>
+				<td>Insp</td>
+			</tr>
+			<tr>
+				<td>标题</td>
+				<td>G550 延程运行飞行前补充检查单</td>
+				<td>工作者</td>
+				<td>检查者</td>
+			</tr>
+		</table>
+	</div>
+	<script type="text/javascript">
+		if ( CKEDITOR.env.ie && CKEDITOR.env.version < 9 ) {
+			CKEDITOR.tools.enableHtml5Elements( document );
+		}
+		CKEDITOR.config.height = 150;
+		CKEDITOR.config.width = 'auto';
+		$(function() {
+			WW.init();
+		});
+		
+		var WW = {
+			init: function() {
+				this.initEditor('editor');
+				this.initRadioEvt();
+				$('h1').click(function() {
+					WW.generate();
+				});
+			},
+			initEditor: function(targetId) {
+				var wysiwygareaAvailable = CKEDITOR.revision == ('%RE' + 'V%') ? true : !!CKEDITOR.plugins.get('wysiwygarea');
+				var isBBCodeBuiltIn = !!CKEDITOR.plugins.get('bbcode');
+				var editorElement = CKEDITOR.document.getById(targetId);
+				if ( wysiwygareaAvailable ) {
+					CKEDITOR.replace(targetId);
+				} else {
+					editorElement.setAttribute( 'contenteditable', 'true' );
+					CKEDITOR.inline(targetId);
+				}
+				setTimeout(function() {
+					$('#cke_editor').css('display','none');
+				}, 200);
+			},
+			initRadioEvt: function() {
+				$(':radio').click(function() {
+					var sel = $(this).val();
+					if(sel != 'text') {
+						$('#cke_editor').css('display','none');
+					} else {
+						$('#cke_editor').css('display','');
+					}
+				});
+			},
+			generate: function() {
+				var sel = $(':radio:checked').val();
+				$('#resultDiv').parent().show();
+				if(sel == 'text') {
+					$('#resultDiv').append(this.buildText());
+				} else if(sel == 'input'){
+					$('#resultDiv').append("<tr><td colspan='2'><textarea type='text' style='width:96%;height:60px;overflow:hidden;'></textarea></td><td></td><td></td></tr>");
+				} else if(sel == 'table') {
+					$('#resultDiv').append(this.buildTable());
+				}
+			},
+			buildText: function() {
+				var wordinput = $('#wordinput').prop('checked');
+				var sign = $('#sign').prop('checked');
+				var html = [];
+				html.push("<tr>");
+				html.push("<td colspan='2'>");
+				html.push(CKEDITOR.instances.editor.getData());
+				if(wordinput) {
+					html.push("<textarea type='text' style='width:96%;height:60px;overflow:hidden;'></textarea>");
+				}
+				html.push("</td>");
+				html.push("<td valign='center' style='border: none;width: 80px;'>");
+				if(sign) {
+					html.push("<input type='text' style='width:80px;' class='wordInput'/>");
+				} else {
+					html.push("&nbsp;");
+				}
+				html.push("</td>");
+				html.push("<td class='insp'");
+				html.push("</td>");
+				html.push("</tr>");
+				return html.join("");
+			},
+			buildTable: function() {
+				var html = [];
+				html.push("<tr>");
+				html.push("<td align='center' colspan='2'>");
+				html.push(this.confirmTable());
+				html.push("</td>");
+				html.push("<td valign='center' style='border: none;'>");
+				html.push("</td>");
+				html.push("<td>");
+				html.push("</td>");
+				html.push("</tr>");
+				return html.join("");
+			},
+			makeTable: function() {
+				var row = $('#row').val();
+				var col = $('#col').val();
+				var t = [];
+				t.push("标题：<input type='text' id='tableTitle' name='tableTitle' style='margin-bottom:10px; width:300px;'/>");
+				t.push("&nbsp;&nbsp;");
+				t.push("表头：<input type='checkbox' id='tableHeader' name='tableHeader'/>");
+				t.push("<table class='innerTable'>");
+				for(var i=0; i<row; i++) {
+					t.push("<tr>");
+					for(var j=0; j<col; j++) {
+						t.push("<td align='center'>");
+						t.push("<input type='text' name='cellValue'/>");
+						t.push("<input type='checkbox' name='input' onclick='WW.tableInput(this);'/>");
+						t.push("</td>");
+					}
+					t.push("</tr>");
+				}
+				t.push("</table>");
+				t.push("<input type='button' value='确定' style='width:600px;height:40px;' onclick='WW.generate();'/>");
+				$('#makeTableDiv').show().children().remove();
+				$('#makeTableDiv').append(t.join(""));
+			},
+			tableInput: function(source) {
+				var checked = $(source).prop('checked');
+				if(checked) {
+					$(source).prev().hide();
+				} else {
+					$(source).prev().show();
+				}
+			},
+			confirmTable: function() {
+				$('#makeTableDiv').hide();
+				var t = [];
+				var tt = $('#tableTitle').val();
+				var th = $('#tableHeader').prop('checked');
+				var table = $('#makeTableDiv table');
+				var trs = $('tr', table);
+				if(tt) {
+					t.push("<div class='innerTableTitle'>"+tt+"</div>");
+				}
+				t.push("<table class='innerTable'>");
+				$.each(trs, function(i, tr) {
+					t.push("<tr>");
+					var tds = $('td',tr);
+					$.each(tds, function(j, td) {
+						t.push("<td align='center' "+((i==0&&th)?'style="font-weight:bold;"':'')+">");
+						var checked = $(':checkbox',td).prop('checked');
+						var val = $(':text',td).val();
+						t.push(checked ? "<input type='text' class='tableInput'>" : (val ? val : "&nbsp;"))
+						t.push("</td>");
+					});		
+					t.push("</tr>");
+				});
+				t.push("</table>");
+				return t.join("");
+			}
+		};
+	</script>
+</body>
+</html>

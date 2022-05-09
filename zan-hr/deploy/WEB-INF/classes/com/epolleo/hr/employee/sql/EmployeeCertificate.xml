@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "sql-map-2.dtd">
+<sqlMap namespace="EmployeeCertificateBean">
+    <typeAlias alias="employeeCertificateBean" type="com.epolleo.hr.employee.bean.EmployeeCertificateBean" />
+  
+    <!-- 分页查询 -->
+    <select id="queryEmployeeCertificatePage" resultClass="employeeCertificateBean"
+            parameterClass="map">
+        SELECT
+            Id,
+            EmployeeId,
+            Name,
+            SignDate,
+            ExpDate,
+            AttLotId,
+            IsDelete,
+            createUser,
+            createTime,
+            updateUser,
+            updateTime
+        FROM hr_employee_certificate
+        <dynamic prepend=" where ">
+        </dynamic>
+        
+        <dynamic>
+			<isNotEmpty prepend=" order by " property="sort">
+				<isEqual property="sort" compareValue="id">
+					Id
+				</isEqual>
+				<isEqual property="sort" compareValue="employeeId">
+					EmployeeId
+				</isEqual>
+				<isEqual property="sort" compareValue="name">
+					Name
+				</isEqual>
+				<isEqual property="sort" compareValue="signDate">
+					SignDate
+				</isEqual>
+				<isEqual property="sort" compareValue="expDate">
+					ExpDate
+				</isEqual>
+				<isEqual property="sort" compareValue="attLotId">
+					AttLotId
+				</isEqual>
+				<isEqual property="sort" compareValue="isDelete">
+					IsDelete
+				</isEqual>
+				<isEqual property="sort" compareValue="createUser">
+					createUser
+				</isEqual>
+				<isEqual property="sort" compareValue="createTime">
+					createTime
+				</isEqual>
+				<isEqual property="sort" compareValue="updateUser">
+					updateUser
+				</isEqual>
+				<isEqual property="sort" compareValue="updateTime">
+					updateTime
+				</isEqual>
+				<isNotEmpty prepend=" " property="order">
+					<isEqual property="order" compareValue="asc">
+						asc
+					</isEqual>
+					<isEqual property="order" compareValue="desc">
+						desc
+					</isEqual>
+				</isNotEmpty>
+			</isNotEmpty>
+		</dynamic>
+    </select>
+    <!-- 查询所有记录 -->
+    <select id="queryEmployeeCertificateList" resultClass="employeeCertificateBean"
+            parameterClass="map">
+        SELECT
+            Id,
+            EmployeeId,
+            Name,
+            SignDate,
+            ExpDate,
+            AttLotId,
+            IsDelete,
+            createUser,
+            createTime,
+            updateUser,
+            updateTime
+        FROM
+            hr_employee_certificate
+    </select>
+    <select id="queryEmployeeCertificateById" resultClass="employeeCertificateBean"
+            parameterClass="Long">
+        SELECT
+            Id,
+            EmployeeId,
+            Name,
+            SignDate,
+            ExpDate,
+            AttLotId,
+            IsDelete,
+            createUser,
+            createTime,
+            updateUser,
+            updateTime        FROM  hr_employee_certificate
+        WHERE
+            Id = #id#
+    </select>
+    <select id="queryEmployeeCertificateByEmpId" resultClass="employeeCertificateBean"
+            parameterClass="Long">
+        SELECT
+            Id,
+            EmployeeId,
+            Name,
+            SignDate,
+            ExpDate,
+            AttLotId,
+            IsDelete,
+            createUser,
+            createTime,
+            updateUser,
+            updateTime        FROM  hr_employee_certificate
+        WHERE
+            EmployeeId = #employeeId#
+            and IFNULL(IsDelete, 0) = 0
+            order by SignDate asc
+    </select>
+    <insert id="insertEmployeeCertificate" parameterClass="employeeCertificateBean">
+        INSERT INTO hr_employee_certificate (
+            Id,
+            EmployeeId,
+            Name,
+            SignDate,
+            ExpDate,
+            AttLotId,
+            IsDelete,
+            createUser,
+            createTime,
+            updateUser,
+            updateTime
+        ) VALUES (
+            #id# ,
+            #employeeId# ,
+            #name# ,
+            #signDate# ,
+            #expDate# ,
+            #attLotId# ,
+            #isDelete# ,
+            #createUser# ,
+            #createTime# ,
+            #updateUser# ,
+            #updateTime# 
+        )
+    </insert>
+    <!-- 修改员工资格、职称证书 -->
+    <update id="updateEmployeeCertificate" parameterClass="employeeCertificateBean">
+        UPDATE
+            hr_employee_certificate
+        SET
+            EmployeeId = #employeeId# ,			
+            Name = #name# ,			
+            SignDate = #signDate# ,			
+            ExpDate = #expDate# ,			
+            AttLotId = #attLotId# ,			
+            IsDelete = #isDelete# ,			
+            createUser = #createUser# ,			
+            createTime = #createTime# ,			
+            updateUser = #updateUser# ,			
+            updateTime = #updateTime# 			
+        WHERE
+            Id = #id#
+    </update>
+    <!-- 删除员工资格、职称证书 -->
+    <update id="deleteEmployeeCertificate" parameterClass="employeeCertificateBean">
+        UPDATE
+            hr_employee_certificate
+        SET
+        	IsDelete =  1,
+        	updateUser = #updateUser# ,			
+            updateTime = #updateTime#
+        WHERE
+            Id = #id#
+    </update>
+    
+</sqlMap>

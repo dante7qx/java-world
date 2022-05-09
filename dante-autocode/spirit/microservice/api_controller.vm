@@ -1,0 +1,153 @@
+#set($package=$!context.packageName)
+#set($pLen=$package.indexOf("."))
+#set($project=$package.substring(0, $pLen))
+#set($bean=${context.javaBeanName})
+#set($sbean=${context.javaBeanNameLF})
+package com.spirit.${package}.api.controller;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import com.spirit.${project}.commom.dto.req.PageReq;
+import com.spirit.${project}.commom.dto.resp.BaseResp;
+import com.spirit.${project}.commom.dto.resp.PageResp;
+import com.spirit.${project}.commom.dto.resp.RespCodeEnum;
+import com.spirit.${project}.common.api.exception.SpiritAPIServiceException;
+import com.spirit.${package}.api.dto.req.${bean}ReqDTO;
+import com.spirit.${package}.api.dto.resp.${bean}RespDTO;
+import com.spirit.${package}.api.service.${bean}Service;
+
+/**
+ * ${table.comment} Restful Controller
+ * 
+ * @author dante
+ * @date ${genDate}
+ *
+ */
+@RestController
+@RequestMapping("/${sbean}")
+public class RoleController {
+	private static final Logger logger = LoggerFactory.getLogger(${bean}Controller.class);
+
+	@Autowired
+	private ${bean}Service ${sbean}Service;
+	
+	/**
+	 * 分页查询${table.comment}
+	 *
+	 * @param pageReq
+	 * @return
+	 */
+	@PostMapping(value = "/query_page")
+	public BaseResp<PageResp<${bean}RespDTO>> query${bean}Page(@RequestBody PageReq pageReq) {
+		BaseResp<PageResp<${bean}RespDTO>> result = new BaseResp<PageResp<${bean}RespDTO>>();
+		try {
+			PageResp<${bean}RespDTO> pageResp = ${sbean}Service.findPage(pageReq);
+			result.setData(pageResp);
+		} catch (SpiritAPIServiceException e) {
+			logger.error("query${bean}Page error.", e);
+			result.setResultCode(RespCodeEnum.FAILURE.code());
+		}
+		return result;
+	}
+	
+	/**
+	 * 根据id获取${table.comment}
+	 *
+	 * @param id
+	 * @return
+	 */
+	@PostMapping(value = "/query_by_id/{id}")
+	public BaseResp<${bean}RespDTO> queryBy${bean}Id(@PathVariable Long id) {
+		BaseResp<${bean}RespDTO> result = new BaseResp<${bean}RespDTO>();
+		try {
+			${bean}RespDTO ${sbean}Resp = ${sbean}Service.findById(id);
+			result.setData(${sbean}Resp);
+		} catch (SpiritAPIServiceException e) {
+			logger.error("queryBy${bean}Id ${sbean}Id: {} error.", id, e);
+			result.setResultCode(RespCodeEnum.FAILURE.code());
+		}
+		return result;
+	}
+	
+	/**
+	 * 新增${table.comment}
+	 *
+	 * @param ${sbean}ReqDto
+	 * @return
+	 */
+	@PostMapping("/add")
+	public BaseResp<${bean}RespDTO> add${bean}(@RequestBody ${bean}ReqDTO ${sbean}ReqDto) {
+		BaseResp<${bean}RespDTO> result = new BaseResp<${bean}RespDTO>();
+		if(!checkParam(${sbean}ReqDto)) {
+			result.setResultCode(RespCodeEnum.LACK_PARAM.code());
+			return result;
+		}
+		try {
+			${bean}RespDTO ${sbean}RespDto = ${sbean}Service.persist(${sbean}ReqDto);
+			result.setData(${sbean}RespDto);
+		} catch (SpiritAPIServiceException e) {
+			result.setResultCode(RespCodeEnum.FAILURE.code());
+			logger.error("add${bean} ${sbean}: {} error.", ${sbean}ReqDto, e);
+		}
+		return result;
+	}
+	
+	/**
+	 * 更新${table.comment}
+	 *
+	 * @param ${sbean}ReqDto
+	 * @return
+	 */
+	@PostMapping("/update")
+	public BaseResp<${bean}RespDTO> update${bean}(@RequestBody ${bean}ReqDTO ${sbean}ReqDto) {
+		BaseResp<${bean}RespDTO> result = new BaseResp<${bean}RespDTO>();
+		if(!checkParam(${sbean}ReqDto)) {
+			result.setResultCode(RespCodeEnum.LACK_PARAM.code());
+			return result;
+		}
+		try {
+			${bean}RespDTO ${sbean}RespDto = ${sbean}Service.persist(${sbean}ReqDto);
+			result.setData(${sbean}RespDto);
+		} catch (SpiritAPIServiceException e) {
+			result.setResultCode(RespCodeEnum.FAILURE.code());
+			logger.error("update${bean} ${sbean}: {} error.", ${sbean}ReqDto, e);
+		}
+		return result;
+	}
+	
+	/**
+	 * 删除${table.comment}（逻辑删除）
+	 *
+	 * @param ${sbean}ReqDto
+	 * @return
+	 */
+	@DeleteMapping(value = "/delete")
+	public BaseResp<?> delete${bean}(@RequestBody ${bean}ReqDTO ${sbean}ReqDto) {
+		BaseResp<?> result = new BaseResp<>();
+		try {
+			userService.delete(${sbean}ReqDto);
+		} catch (SpiritAPIServiceException e) {
+			result.setResultCode(RespCodeEnum.FAILURE.code());
+			logger.error("delete${bean} ${sbean}ReqDto: {} error.", ${sbean}ReqDto, e);
+		}
+		return result;
+	}
+	
+	/**
+	 * 参数校验
+	 * 
+	 * @param ${sbean}ReqDTO
+	 * @return
+	 */
+	private boolean checkParam(${bean}ReqDTO ${sbean}ReqDTO) {
+		return true;
+	}
+	
+}

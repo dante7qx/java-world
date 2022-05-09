@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "sql-map-2.dtd">
+<sqlMap namespace="EmployeeRelationBean">
+    <typeAlias alias="employeeRelationBean" type="com.epolleo.hr.employee.bean.EmployeeRelationBean" />
+  
+    <!-- 分页查询 -->
+    <select id="queryEmployeeRelationPage" resultClass="employeeRelationBean"
+            parameterClass="map">
+        SELECT
+            Id,
+            EmployeeId,
+            Name,
+            Relation,
+            Phone,
+            IsDelete,
+            createUser,
+            createTime,
+            updateUser,
+            updateTime
+        FROM hr_employee_relation
+        <dynamic prepend=" where ">
+        </dynamic>
+        
+        <dynamic>
+			<isNotEmpty prepend=" order by " property="sort">
+				<isEqual property="sort" compareValue="id">
+					Id
+				</isEqual>
+				<isEqual property="sort" compareValue="employeeId">
+					EmployeeId
+				</isEqual>
+				<isEqual property="sort" compareValue="name">
+					Name
+				</isEqual>
+				<isEqual property="sort" compareValue="relation">
+					Relation
+				</isEqual>
+				<isEqual property="sort" compareValue="phone">
+					Phone
+				</isEqual>
+				<isEqual property="sort" compareValue="isDelete">
+					IsDelete
+				</isEqual>
+				<isEqual property="sort" compareValue="createUser">
+					createUser
+				</isEqual>
+				<isEqual property="sort" compareValue="createTime">
+					createTime
+				</isEqual>
+				<isEqual property="sort" compareValue="updateUser">
+					updateUser
+				</isEqual>
+				<isEqual property="sort" compareValue="updateTime">
+					updateTime
+				</isEqual>
+				<isNotEmpty prepend=" " property="order">
+					<isEqual property="order" compareValue="asc">
+						asc
+					</isEqual>
+					<isEqual property="order" compareValue="desc">
+						desc
+					</isEqual>
+				</isNotEmpty>
+			</isNotEmpty>
+		</dynamic>
+    </select>
+    <!-- 查询所有记录 -->
+    <select id="queryEmployeeRelationList" resultClass="employeeRelationBean"
+            parameterClass="map">
+        SELECT
+            Id,
+            EmployeeId,
+            Name,
+            Relation,
+            Phone,
+            IsDelete,
+            createUser,
+            createTime,
+            updateUser,
+            updateTime
+        FROM
+            hr_employee_relation
+    </select>
+    <select id="queryEmployeeRelationById" resultClass="employeeRelationBean"
+            parameterClass="Long">
+        SELECT
+            Id,
+            EmployeeId,
+            Name,
+            Relation,
+            Phone,
+            IsDelete,
+            createUser,
+            createTime,
+            updateUser,
+            updateTime        FROM  hr_employee_relation
+        WHERE
+            Id = #id#
+    </select>
+    <select id="queryEmployeeRelationByEmpId" resultClass="employeeRelationBean"
+            parameterClass="Long">
+        SELECT
+            Id,
+            EmployeeId,
+            Name,
+            Relation,
+            Phone,
+            IsDelete,
+            createUser,
+            createTime,
+            updateUser,
+            updateTime        FROM  hr_employee_relation
+        WHERE
+            EmployeeId = #employeeId#
+            AND IFNULL(IsDelete, 0) = 0
+        ORDER BY Relation ASC, Name ASC
+    </select>
+    <insert id="insertEmployeeRelation" parameterClass="employeeRelationBean">
+        INSERT INTO hr_employee_relation (
+            Id,
+            EmployeeId,
+            Name,
+            Relation,
+            Phone,
+            IsDelete,
+            createUser,
+            createTime,
+            updateUser,
+            updateTime
+        ) VALUES (
+            #id# ,
+            #employeeId# ,
+            #name# ,
+            #relation# ,
+            #phone# ,
+            #isDelete# ,
+            #createUser# ,
+            #createTime# ,
+            #updateUser# ,
+            #updateTime# 
+        )
+    </insert>
+    <!-- 修改员工家属信息 -->
+    <update id="updateEmployeeRelation" parameterClass="employeeRelationBean">
+        UPDATE
+            hr_employee_relation
+        SET
+            EmployeeId = #employeeId# ,			
+            Name = #name# ,			
+            Relation = #relation# ,			
+            Phone = #phone# ,			
+            IsDelete = #isDelete# ,			
+            createUser = #createUser# ,			
+            createTime = #createTime# ,			
+            updateUser = #updateUser# ,			
+            updateTime = #updateTime# 			
+        WHERE
+            Id = #id#
+    </update>
+    <!-- 删除员工家属信息 -->
+    <update id="deleteEmployeeRelation" parameterClass="employeeRelationBean">
+        UPDATE
+            hr_employee_relation
+        SET
+        	IsDelete = 1,
+            updateUser = #updateUser# ,			
+            updateTime = #updateTime#
+        WHERE
+            Id = #id#
+    </update>
+    
+</sqlMap>

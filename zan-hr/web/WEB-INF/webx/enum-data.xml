@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<beans:beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:beans="http://www.springframework.org/schema/beans" xmlns:util="http://www.springframework.org/schema/util"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd
+    ">
+
+	<util:map id="hr_employee.Gen" map-class="java.util.LinkedHashMap">
+		<beans:entry key="1" value="男" />
+		<beans:entry key="2" value="女" />
+	</util:map>
+	<util:map id="hr_employee.Horoscope" map-class="java.util.LinkedHashMap">
+		<beans:entry key="10" value="白羊座" />
+		<beans:entry key="20" value="金牛座" />
+		<beans:entry key="30" value="双子座" />
+		<beans:entry key="40" value="巨蟹座" />
+		<beans:entry key="50" value="狮子座" />
+		<beans:entry key="60" value="处女座" />
+		<beans:entry key="70" value="天秤座" />
+		<beans:entry key="80" value="天羯座" />
+		<beans:entry key="90" value="射手座" />
+		<beans:entry key="100" value="摩羯座" />
+		<beans:entry key="110" value="水瓶座" />
+		<beans:entry key="120" value="双鱼座" />
+	</util:map>
+	<util:map id="hr_employee.Household" map-class="java.util.LinkedHashMap">
+		<beans:entry key="10" value="城镇" />
+		<beans:entry key="20" value="农村" />
+	</util:map>
+	<util:map id="hr_employee.Politics" map-class="java.util.LinkedHashMap">
+		<beans:entry key="10" value="党员" />
+		<beans:entry key="20" value="团员" />
+		<beans:entry key="30" value="群众" />
+	</util:map>
+	<util:map id="hr_employee.Marriage" map-class="java.util.LinkedHashMap">
+		<beans:entry key="10" value="未婚" />
+		<beans:entry key="20" value="已婚" />
+	</util:map>
+	<util:map id="hr_employee.Education" map-class="java.util.LinkedHashMap">
+		<beans:entry key="10" value="中专" />
+		<beans:entry key="20" value="专科" />
+		<beans:entry key="30" value="本科" />
+		<beans:entry key="40" value="硕士" />
+		<beans:entry key="50" value="博士" />
+	</util:map>
+	<util:map id="hr_employee.LanguageSkill" map-class="java.util.LinkedHashMap">
+		<beans:entry key="10" value="英语" />
+		<beans:entry key="20" value="韩语" />
+		<beans:entry key="30" value="日语" />
+		<beans:entry key="40" value="法语" />
+		<beans:entry key="50" value="西班牙语" />
+		<beans:entry key="60" value="葡萄牙语" />
+	</util:map>
+	<util:map id="hr_employee_work.CapacityLevel" map-class="java.util.LinkedHashMap">
+		<beans:entry key="10" value="初级" />
+		<beans:entry key="20" value="中级" />
+		<beans:entry key="30" value="高级" />
+		<beans:entry key="40" value="资深" />
+	</util:map>
+	<util:map id="hr_employee_work.Type" map-class="java.util.LinkedHashMap">
+		<beans:entry key="10" value="正式员工" />
+		<beans:entry key="20" value="实习员工" />
+		<beans:entry key="30" value="临时工" />
+	</util:map>
+	<util:map id="hr_employee_work.TrialPeriod" map-class="java.util.LinkedHashMap">
+		<beans:entry key="1" value="无" />
+		<beans:entry key="2" value="有" />
+	</util:map>
+	<util:map id="hr_employee_work.ContractDeadline" map-class="java.util.LinkedHashMap">
+		<beans:entry key="10" value="1" />
+		<beans:entry key="20" value="2" />
+		<beans:entry key="30" value="3" />
+	</util:map>
+	<util:map id="hr_employee_work.ContractType" map-class="java.util.LinkedHashMap">
+		<beans:entry key="10" value="固定期限" />
+		<beans:entry key="20" value="无固定期限" />
+	</util:map>
+	<util:map id="hr_employee_relation.Relation" map-class="java.util.LinkedHashMap">
+		<beans:entry key="10" value="父亲" />
+		<beans:entry key="20" value="母亲" />
+		<beans:entry key="30" value="公公" />
+		<beans:entry key="40" value="婆婆" />
+		<beans:entry key="50" value="儿子" />
+		<beans:entry key="60" value="女儿" />
+	</util:map>
+
+</beans:beans>

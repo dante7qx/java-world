@@ -1,0 +1,59 @@
+#set($package=$!context.packageName)
+#set($bean=${context.javaBeanName})
+#set($sbean=${context.javaBeanNameLF})
+#set($lowBean=${context.javaBeanNameLF.toLowerCase()})
+var ${bean}Page = {
+		load${bean}List: function() {
+			$('#${sbean}Gridlist').datagrid({
+			    url: ctx+'/${package}/${lowBean}/query_page',
+			    title: '${table.comment}列表',
+			    rownumbers: true,
+			    rownumberWidth: 20,
+			    singleSelect: true,
+			    fitColumns: true,
+			    pagination: true,
+			    pageSize: COMMON_CONFIG['PAGESIZE'],
+			    pageList: COMMON_CONFIG['PAGELIST'],
+			    toolbar: '#${sbean}GridToolbar',
+			    sortName: 'updateDate',
+			    sortOrder: 'desc',
+			    remoteSort: false,
+			    height: $(window).height() - 20,
+			    columns:[[
+#foreach($column in $columns)	
+	#if(${column.javaFieldName} == "id")
+		
+	#elseif(${column.javaFieldName} == "updateUser")
+					{field:'updateUserName',title:'更新人',width:80,halign:'center',align:'left'},
+	#elseif(${column.javaFieldName} == "updateDate")
+					{field:'updateDate',title:'更新时间',width:100,halign:'center',align:'left',sortable:true}
+	#elseif(${column.javaFieldName} == "deleteFlag")
+	#else
+					{field:'${column.javaFieldName}',title:'${column.comment}',width:100,halign:'center'#if($velocityCount == 2),formatter:function(value,row,index) {
+						return '<a class="bdhref" href="javascript:;" onclick="${bean}Page.edit${bean}('+row['id']+')">'+value+'</a>';
+					}#end},
+	#end
+#end
+			    ]]
+			});
+		},
+		search: function() {
+			$('#${sbean}Gridlist').datagrid('load', {
+				//'q[name]': $('#queryName','#${sbean}GridToolbar').val()
+			});
+		},
+		reset: function() {
+			$('#${sbean}QueryForm').form('clear');
+		},
+		edit${bean}: function(id) {
+			$('#${sbean}Window').show().window({
+				title: (id ? '编辑${table.comment}' : '新增${table.comment}'),
+				closed: false,
+				cache: false,
+				href: (id ? 'edit${lowBean}?id='+id : 'edit${lowBean}'),
+				extractor: function(data) {
+					return data;
+				}	
+			});
+		}
+};

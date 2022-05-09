@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<project name="ux" default="Build" basedir=".">
+	<target name="Build">
+		<concat destfile="easyui.css" force="true" binary="false" fixlastline="true">
+			<filelist dir=".">
+				<file name="accordion.css" />
+				<file name="calendar.css" />
+				<file name="combo.css" />
+				<file name="combobox.css" />
+				<file name="datagrid.css" />
+				<file name="datebox.css" />
+				<file name="dialog.css" />
+				<file name="layout.css" />
+				<file name="linkbutton.css" />
+				<file name="menu.css" />
+				<file name="menubutton.css" />
+				<file name="messager.css" />
+				<file name="pagination.css" />
+				<file name="panel.css" />
+				<file name="progressbar.css" />
+				<file name="propertygrid.css" />
+				<file name="searchbox.css" />
+				<file name="slider.css" />
+				<file name="spinner.css" />
+				<file name="splitbutton.css" />
+				<file name="tabs.css" />
+				<file name="tree.css" />
+				<file name="validatebox.css" />
+				<file name="window.css" />
+			</filelist>
+		</concat>
+		<echo message="Building easyui.css Okey." />
+	</target>
+	<target name="dos2unix"  description="dos2unix">
+	        <replaceregexp  match="&#13;&#10;" replace="&#10;" flags="g" byline="false">
+	            <fileset dir="*." file="*.css"></fileset>
+	        </replaceregexp>
+	</target>
+</project>

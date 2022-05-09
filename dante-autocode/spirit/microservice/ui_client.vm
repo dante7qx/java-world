@@ -1,0 +1,45 @@
+#set($package=$!context.packageName)
+#set($pLen=$package.indexOf("."))
+#set($project=$package.substring(0, $pLen))
+#set($bean=${context.javaBeanName})
+#set($sbean=${context.javaBeanNameLF})
+package com.spirit.${package}.ui.client;
+
+import org.springframework.cloud.netflix.feign.FeignClient;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+
+import com.spirit.${project}.commom.dto.req.PageReq;
+import com.spirit.${project}.commom.dto.resp.BaseResp;
+import com.spirit.${project}.commom.dto.resp.PageResp;
+import com.spirit.${package}.ui.client.fallback.${bean}FeignClientFallback;
+import com.spirit.${package}.ui.constant.SpiritServiceConsts;
+import com.spirit.${package}.ui.vo.role.${bean}VO;
+
+/**
+ * ${table.comment} Feign Client
+ * 
+ * @author dante
+ * @date ${genDate}
+ *
+ */
+@FeignClient(name = SpiritServiceConsts.[微服务名称], fallback = ${bean}FeignClientFallback.class)
+public interface ${bean}FeignClient {
+	
+	@RequestMapping(method = RequestMethod.POST, value = "/${sbean}/query_page")
+	public BaseResp<PageResp<${bean}VO>> findPage(PageReq pageReq);
+	
+	@RequestMapping(method = RequestMethod.POST, value = "/${sbean}/query_by_id/{id}")
+	public BaseResp<${bean}VO> findBy${bean}Id(@PathVariable("id") Long id);
+	
+	@RequestMapping(method = RequestMethod.POST, value = "/${sbean}/add")
+	public BaseResp<${bean}VO> add${bean}(${bean}VO ${sbean}VO);
+	
+	@RequestMapping(method = RequestMethod.POST, value = "/${sbean}/update")
+	public BaseResp<RoleVO> updateRole(${bean}VO ${sbean}VO);
+	
+	@RequestMapping(method = RequestMethod.DELETE, value = "/${sbean}/delete")
+	public BaseResp<?> delete${bean}(${bean}VO ${sbean}VO);
+	
+}

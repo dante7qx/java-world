@@ -1,0 +1,64 @@
+package com.spirit.${context.packageName}.api.dto.resp;
+
+/**
+ * ${table.comment} Resp DTO
+ * 
+ * @author dante
+ * @date ${genDate}
+ *
+ */
+public class ${context.javaBeanName}RespDTO {
+	
+#foreach($column in $columns)	
+	/**
+	 * ${column.comment}
+	 */
+#if(${column.javaFieldName} == "deleteFlag")
+	private Boolean deleteFlag;
+#elseif(${column.javaFieldName} == "updateUser")
+	private String updateUserName;
+#elseif(${column.javaFieldName} == "updateDate")
+	private String updateDate;
+#else
+	private ${column.javaTypeBox} ${column.javaFieldName};
+#end
+#end
+
+#foreach(${column} in ${columns}) 
+#if(${column.javaFieldName} == "deleteFlag")
+	public void setDeleteFlag(Boolean deleteFlag){
+		this.deleteFlag = deleteFlag;
+	}
+
+	public Boolean getDeleteFlag() {
+		return deleteFlag;
+	}
+#elseif(${column.javaFieldName} == "updateDate")
+	public void setUpdateDate(String updateDate) {
+		this.updateDate = updateDate;
+	}
+	
+	public String getUpdateDate() {
+		return this.updateDate;
+	}
+#elseif(${column.javaFieldName} == "updateUser")
+	public void setUpdateUserName(String updateUserName) {
+		this.updateUserName = updateUserName;
+	}
+	
+	public String getUpdateUserName() {
+		return this.updateUserName;
+	}
+#else
+	public void set${column.javaFieldNameUF}(${column.javaTypeBox} ${column.javaFieldName}){
+		this.${column.javaFieldName} = ${column.javaFieldName};
+	}
+
+	public ${column.javaTypeBox} get${column.javaFieldNameUF}(){
+		return this.${column.javaFieldName};
+	}
+#end
+	
+
+#end
+}

@@ -1,0 +1,27 @@
+[main]
+authc.loginUrl = /login
+logout.redirectUrl = /
+roles.unauthorizedUrl = /unauthorizedUrl.jsp
+perms.unauthorizedUrl = /unauthorizedUrl.jsp
+cacheManager = org.apache.shiro.cache.MemoryConstrainedCacheManager
+myAuthenticateRealm = org.dante.shiro.realm.MyAuthenticateRealm
+securityManager.realms = $myAuthenticateRealm
+securityManager.cacheManager = $cacheManager
+
+[users]
+dante = dante123, admin
+garsp = 123, garspAdmin
+zr.yan = 111, garspQuery
+
+[roles]
+admin = *
+garspAdmin = garsp:*
+garspQuery = garsp:query
+
+[urls]
+/index.html = anon
+/login  = anon
+/logout = logout
+/admin.jsp*/** = roles[admin]
+/garsp/info.jsp = perms["garsp:query"]
+/garsp/add.jsp = perms["garsp:add"]

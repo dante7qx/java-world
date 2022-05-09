@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<beans:beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:services="http://www.alibaba.com/schema/services"
+    xmlns:pl-conditions="http://www.alibaba.com/schema/services/pipeline/conditions"
+    xmlns:pl-valves="http://www.alibaba.com/schema/services/pipeline/valves"
+    xmlns:beans="http://www.springframework.org/schema/beans"
+    xmlns:p="http://www.springframework.org/schema/p"
+    xsi:schemaLocation="
+        http://www.alibaba.com/schema/services http://www.alibaba.com/schema/services.xsd
+        http://www.alibaba.com/schema/services/pipeline/conditions http://www.alibaba.com/schema/services-pipeline-conditions.xsd
+        http://www.alibaba.com/schema/services/pipeline/valves http://www.alibaba.com/schema/services-pipeline-valves.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+    ">
+
+    <services:pipeline xmlns="http://www.alibaba.com/schema/services/pipeline/valves">
+
+        <!-- 初始化turbine rundata，并在pipelineContext中设置可能会用到的对象(如rundata、utils)，以便valve取得。 -->
+        <prepareForTurbine />
+
+        <!-- 设置日志系统的上下文，支持把当前请求的详情打印在日志中。 -->
+        <setLoggingContext/>
+        
+        <valve class="com.epolleo.webx.valve.AuditValue">
+        	<beans:property name="moduleMap" ref="moduleMap"></beans:property>
+        </valve>
+        
+        <!-- 分析URL，取得target。 -->
+        <analyzeURL homepage="jsp/mainpage.jsp" />
+        
+        <!--
+        <valve class="com.epolleo.webx.valve.BasicAuthorizationValve"/>
+	    -->
+    	<!-- 支持匿名用户作jspx请求，以支持互连网应用，内部相应Action需要声明为public功能 -->
+		<valve class="com.epolleo.webx.valve.NtlmLoginValve">
+			<beans:property name="initParameters">
+				<beans:props>
+					<beans:prop key="ignorePath">/jspx/</beans:prop>
+					<beans:prop key="loginPage">/jsp/login.jsp</beans:prop>
+					<beans:prop key="ntlmOnlyIE">true</beans:prop>
+					<!-- 若不启动NTLM认证。则不设置下面的jcifs配置  -->
+					<beans:prop key="jcifs.smb.client.domain">hnanet</beans:prop>
+					<beans:prop key="jcifs.http.domainController">10.72.8.10</beans:prop>
+					<beans:prop key="jcifs.smb.client.username">hna_soc</beans:prop>
+					<beans:prop key="jcifs.smb.client.password">1qaz2wsx</beans:prop>
+				</beans:props>
+			</beans:property>
+			<!-- ldap认证不能和ntlm同时启用
+			<beans:property name="ldapAuthentication" ref="ldapAuthentication" /> -->
+		</valve>
+
+        <!-- 检查csrf token，防止csrf攻击和重复提交。假如request和session中的token不匹配，则出错，或显示expired页面。 -->
+        <checkCsrfToken />
+
+        <!-- 检查页面的授权，如果当前用户无权访问该页面，则跳转到Login页面 -->
+        <pageAuthorization callbackClass="com.epolleo.bp.util.LoginUserAuth" />
+
+        <loop>
+            <choose>
+                <when>
+                    <!-- 执行不带模板的screen，默认有layout。 -->
+                    <pl-conditions:path-condition name="^/rpt/.*" />
+                    <valve class="com.epolleo.webx.valve.PerformActionValve"/>
+                    <valve class="com.epolleo.webx.valve.JasperReportValve">
+                    	<beans:property name="prefix" value="rpt/"/>
+                    </valve>
+                </when>
+                <when>
+                    <!-- 执行带模板的screen，默认有layout。 -->
+                    <pl-conditions:target-extension-condition extension="null, vm, jsp" />
+                    <performAction />
+                    <performTemplateScreen />
+                    <renderTemplate />
+                </when>
+                    <!-- 执行不带模板的screen，默认无layout。
+                <when>
+                    <pl-conditions:target-extension-condition extension="do" />
+                    <performAction />
+                    <performScreen />
+                </when> -->
+                <when>
+                    <!-- 执行不带模板的screen，默认有layout。 -->
+                    <pl-conditions:target-extension-condition extension="do" />
+                    <valve class="com.epolleo.webx.valve.PerformActionValve"/>
+                    <performTemplateScreen />
+                    <renderTemplate />
+                </when>
+				<when>
+                    <pl-conditions:target-extension-condition extension="json" />
+                    <valve class="com.epolleo.webx.valve.PerformActionValve"/>
+                    <valve class="com.epolleo.webx.valve.OutputJsonValve"/>
+                </when>
+                <otherwise>
+                    <!-- 将控制交还给servlet engine。 -->
+                    <exit />
+                </otherwise>
+            </choose>
+
+            <!-- 假如rundata.setRedirectTarget()被设置，则循环，否则退出循环。 -->
+            <breakUnlessTargetRedirected />
+        </loop>
+
+    </services:pipeline>
+
+</beans:beans>

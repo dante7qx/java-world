@@ -1,0 +1,83 @@
+#set($bean=${context.javaBeanName})
+#set($sbean=${context.javaBeanNameLF})
+package com.hnair.hiapp.fss.controller.${context.packageName};
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.hnair.hiapp.fss.dto.${context.packageName}.${bean}DTO;
+import com.hnair.hiapp.fss.exception.SpiritServiceException;
+import com.hnair.hiapp.fss.pub.BaseResp;
+import com.hnair.hiapp.fss.pub.PageReq;
+import com.hnair.hiapp.fss.pub.PageResult;
+import com.hnair.hiapp.fss.pub.RespCodeEnum;
+import com.hnair.hiapp.fss.service.${context.packageName}.${bean}Service;
+import com.hnair.hiapp.fss.util.LoginUserUtils;
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+@RestController
+@RequestMapping("/${context.packageName}/${sbean}")
+public class ${bean}Controller {
+
+	@Autowired
+	private ${bean}Service ${sbean}Service;
+	
+	@PreAuthorize("hasAuthority('${context.packageName}.${sbean}.query')")
+	@PostMapping(value = "/query_page")
+	public PageResult<${bean}DTO> query${bean}Page(PageReq pageReq) {
+		PageResult<${bean}DTO> result = null;
+		try {
+			result = ${sbean}Service.findPage(pageReq);
+		} catch (SpiritServiceException e) {
+			log.error("query${bean}Page {} error.", pageReq, e);
+		}
+		return result;
+	}
+	
+	@PreAuthorize("hasAuthority('${context.packageName}.${sbean}.query')")
+	@PostMapping(value = "/query_by_id")
+	public BaseResp<${bean}DTO> queryBy${bean}Id(Long id) {
+		BaseResp<${bean}DTO> result = new BaseResp<>();
+		try {
+			${bean}DTO ${sbean}DTO = ${sbean}Service.findById(id);
+			result.setData(${sbean}DTO);
+		} catch (SpiritServiceException e) {
+			result.setResultCode(RespCodeEnum.FAILURE.code());
+			log.error("queryBy${bean}Id ${sbean}Id: {} error.", id, e);
+		}
+		return result;
+	}
+	
+	@PreAuthorize("hasAuthority('${context.packageName}.${sbean}.update')")
+	@PostMapping(value = "/update")
+	public BaseResp<${bean}DTO> update${bean}(${bean}DTO ${sbean}DTO) {
+		BaseResp<${bean}DTO> result = new BaseResp<>();
+		try {
+			${sbean}DTO.setUpdateUser(LoginUserUtils.loginUserId());
+			${bean}DTO ${sbean}Resp = ${sbean}Service.persist(${sbean}DTO);
+			result.setData(${sbean}Resp);
+		} catch (SpiritServiceException e) {
+			result.setResultCode(RespCodeEnum.FAILURE.code());
+			log.error("update${bean} ${sbean}DTO: {} error.", ${sbean}DTO, e);
+		}
+		return result;
+	}
+	
+	@PreAuthorize("hasAuthority('${context.packageName}.${sbean}.delete')")
+	@PostMapping(value = "/delete")
+	public BaseResp<?> delete${bean}(${bean}DTO ${sbean}DTO) {
+		BaseResp<?> result = new BaseResp<>();
+		try {
+			${sbean}Service.delete(${sbean}DTO);
+		} catch (SpiritServiceException e) {
+			result.setResultCode(RespCodeEnum.FAILURE.code());
+			log.error("delete${bean}: {} error.", ${sbean}DTO, e);
+		}
+		return result;
+	}
+	
+}

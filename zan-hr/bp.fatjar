@@ -1,0 +1,33 @@
+#Fatjar Configuration File
+
+fatjar.version=1.65
+fatjar.plugin.version=1.13.1215
+jarname=bp_'0.8.5'.jar
+jarname.extern=false
+manifest.file=<createnew>
+manifest.mainclass=
+manifest.classpath=
+manifest.mergeall=true
+manifest.removesigners=true
+onejar.checkbox=0
+onejar.expand=
+onejar.expand.dir=
+onejar.expand.tmp=false
+env.spec=
+brand.checkbox=true
+brand.format='0.8.5.DDD'
+jar.comment=BP '0.8.4.DDD'\r\n\
+\r\n\
+Built by Song Sun\r\n\
+\r\n\
+'yyyy-MM-dd'
+jar.descriptor=
+excludes=<po|?>~com/;\
+<po|?>~sqlmap-config-bp.xml
+includes=
+dlls=
+jars=
+filter.checked=false
+filter.entry=
+filter.pattern=
+filter.replacement=

@@ -1,0 +1,324 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "sql-map-2.dtd">
+<sqlMap namespace="EmployeeBean">
+	<typeAlias alias="employeeBean" type="com.epolleo.hr.employee.bean.EmployeeBean" />
+
+	<!-- 分页查询 -->
+	<select id="queryHrEmployeePage" resultClass="employeeBean"
+		parameterClass="map">
+		SELECT
+			t.Id,
+			t.Code,
+			t.ChnName,
+			t.EngName,
+			t.UsedName,
+			t.IdNum,
+			t.Birthday,
+			t.Gen,
+			t.Recruitment,
+			t.Horoscope,
+			t.Household,
+			t.Politics,
+			t.Marriage,
+			t.Phone,
+			t.Email,
+			t.HealthValid,
+			t.Education,
+			t.Major,
+			t.GraduateInstitution,
+			t.GraduateDate,
+			t.LanguageSkill,
+			t.UrgencyLinkman,
+			t.FileLocation,
+			t.HouseholdLocation,
+			t.Dwell,
+			t.AttLotId,
+			t.IsDelete,
+			t.createUser,
+			t.createTime,
+			t.updateUser,
+			t.updateTime,
+			t1.Company AS orgId,
+			t2.ORG_NAME AS orgName,
+			t1.Dept  AS deptId,
+			t3.ORG_NAME AS dept,
+			t4.Value AS post,
+			t1.Type  AS workType,
+			t1.EntrantDate AS entrantDate,
+			t1.WorkPlaceId As workPlaceId,
+			t5.LOC_NAME AS workPlaceName
+		FROM hr_employee t
+		left join hr_employee_work t1 on t.Id = t1.EmployeeId
+		left join BP_ORGAN t2 on t1.Company = t2.ORG_ID
+		left join BP_ORGAN t3 on t1.Dept = t3.ORG_ID
+		left join hr_code_dict t4 on t1.Post = t4.Id
+		left join BP_LOCATION t5 on t1.WorkPlaceId = t5.LOC_ID
+		where ifnull(t.IsDelete, 0) = 0
+		<dynamic>
+			<isPropertyAvailable prepend=" and "
+				removeFirstPrepend="true" property="chnName">
+				t.ChnName like #chnName#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend=" and "
+				removeFirstPrepend="true" property="gen">
+				t.Gen = #gen#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend=" and "
+				removeFirstPrepend="true" property="orgId">
+				(t1.Company = #orgId# OR t1.Dept = #orgId#)
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend=" and "
+				removeFirstPrepend="true" property="deptId">
+				t1.Dept = #deptId#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend=" and "
+				removeFirstPrepend="true" property="workPlaceId">
+				t1.WorkPlaceId = #workPlaceId#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend=" and "
+				removeFirstPrepend="true" property="gen">
+				t.Gen = #gen#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend=" and "
+				removeFirstPrepend="true" property="entrantStartDate">
+				t1.entrantDate &gt;= 
+				#entrantStartDate#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend=" and "
+				removeFirstPrepend="true" property="entrantEndDate">
+				t1.entrantDate &lt;=
+				#entrantEndDate#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend=" and "
+				removeFirstPrepend="true" property="isActive">
+				ifnull(t.IsActive,0) = #isActive#
+			</isPropertyAvailable>
+		</dynamic>
+
+		<dynamic>
+			<isNotEmpty prepend=" order by " property="sort">
+				<isEqual property="sort" compareValue="chnName">
+					t.ChnName
+				</isEqual>
+				<isNotEmpty prepend=" " property="order">
+					<isEqual property="order" compareValue="asc">
+						asc
+					</isEqual>
+					<isEqual property="order" compareValue="desc">
+						desc
+					</isEqual>
+				</isNotEmpty>
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	<!-- 查询所有记录 -->
+	<select id="queryHrEmployeeList" resultClass="employeeBean"
+		parameterClass="map">
+		SELECT
+			Id,
+			Code,
+			ChnName,
+			EngName,
+			UsedName,
+			IdNum,
+			Birthday,
+			Gen,
+			Recruitment,
+			Horoscope,
+			Household,
+			Politics,
+			Marriage,
+			Phone,
+			Email,
+			HealthValid,
+			Education,
+			Major,
+			GraduateInstitution,
+			GraduateDate,
+			LanguageSkill,
+			UrgencyLinkman,
+			FileLocation,
+			HouseholdLocation,
+			Dwell,
+			AttLotId,
+			IsActive,
+			IsDelete,
+			createUser,
+			createTime,
+			updateUser,
+			updateTime
+		FROM
+			hr_employee
+	</select>
+	<select id="queryHrEmployeeById" resultClass="employeeBean"
+		parameterClass="Long">
+		SELECT
+			Id,
+			Code,
+			ChnName,
+			EngName,
+			UsedName,
+			IdNum,
+			Birthday,
+			Gen,
+			Recruitment,
+			Horoscope,
+			Household,
+			Politics,
+			Marriage,
+			Phone,
+			Email,
+			HealthValid,
+			Education,
+			Major,
+			GraduateInstitution,
+			GraduateDate,
+			LanguageSkill,
+			UrgencyLinkman,
+			FileLocation,
+			HouseholdLocation,
+			Dwell,
+			AttLotId,
+			IsActive,
+			IsDelete,
+			createUser,
+			createTime,
+			updateUser,
+			updateTime
+		FROM
+			hr_employee
+		WHERE
+			Id = #id#
+	</select>
+	<insert id="insertHrEmployee" parameterClass="employeeBean">
+		INSERT INTO
+		hr_employee (
+			Id,
+			Code,
+			ChnName,
+			EngName,
+			UsedName,
+			IdNum,
+			Birthday,
+			Gen,
+			Recruitment,
+			Horoscope,
+			Household,
+			Politics,
+			Marriage,
+			Phone,
+			Email,
+			HealthValid,
+			Education,
+			Major,
+			GraduateInstitution,
+			GraduateDate,
+			LanguageSkill,
+			UrgencyLinkman,
+			FileLocation,
+			HouseholdLocation,
+			Dwell,
+			AttLotId,
+			IsActive,
+			IsDelete,
+			createUser,
+			createTime,
+			updateUser,
+			updateTime
+		) VALUES
+		(
+			#id# ,
+			#code# ,
+			#chnName# ,
+			#engName# ,
+			#usedName# ,
+			#idNum# ,
+			#birthday# ,
+			#gen# ,
+			#recruitment# ,
+			#horoscope# ,
+			#household# ,
+			#politics# ,
+			#marriage# ,
+			#phone# ,
+			#email# ,
+			#healthValid# ,
+			#education# ,
+			#major# ,
+			#graduateInstitution# ,
+			#graduateDate# ,
+			#languageSkill# ,
+			#urgencyLinkman# ,
+			#fileLocation# ,
+			#householdLocation# ,
+			#dwell# ,
+			#attLotId# ,
+			#isActive#,
+			#isDelete# ,
+			#createUser# ,
+			#createTime# ,
+			#updateUser# ,
+			#updateTime#
+		)
+	</insert>
+	<!-- 修改员工 -->
+	<update id="updateHrEmployee" parameterClass="employeeBean">
+		UPDATE
+			hr_employee
+		SET
+			Code = #code# ,
+			ChnName = #chnName# ,
+			EngName = #engName# ,
+			UsedName =
+			#usedName# ,
+			IdNum = #idNum# ,
+			Birthday = #birthday# ,
+			Gen = #gen# ,
+			Recruitment = #recruitment# ,
+			Horoscope = #horoscope# ,
+			Household =
+			#household# ,
+			Politics = #politics# ,
+			Marriage = #marriage# ,
+			Phone =
+			#phone# ,
+			Email = #email# ,
+			HealthValid = #healthValid# ,
+			Education =
+			#education# ,
+			Major = #major# ,
+			GraduateInstitution =
+			#graduateInstitution# ,
+			GraduateDate = #graduateDate# ,
+			LanguageSkill =
+			#languageSkill# ,
+			UrgencyLinkman = #urgencyLinkman# ,
+			FileLocation =
+			#fileLocation# ,
+			HouseholdLocation = #householdLocation# ,
+			Dwell =
+			#dwell# ,
+			AttLotId = #attLotId# ,
+			IsActive = #isActive#,
+			IsDelete = #isDelete# ,
+			createUser =
+			#createUser# ,
+			createTime = #createTime# ,
+			updateUser = #updateUser# ,
+			updateTime = #updateTime#
+		WHERE
+			Id = #id#
+	</update>
+	<!-- 删除员工 -->
+	<update id="deleteHrEmployee" parameterClass="employeeBean">
+		UPDATE
+			hr_employee
+		SET
+			IsDelete = 1,
+			updateUser = #updateUser# ,
+			updateTime = #updateTime#
+		WHERE
+			Id = #id#
+	</update>
+
+</sqlMap>

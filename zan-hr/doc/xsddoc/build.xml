@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+
+<project default="xsd-doc" name="build" basedir=".">
+	<taskdef name="xsddoc" classname="net.sf.xframe.xsddoc.Task" classpath="xsddoc.jar" />
+	<target name="xsd-doc">
+		<mkdir dir="html"/>
+		<xsddoc file="../../database/datamodel.xsd" out="html" doctitle="DataModel XSD Document"
+			verbose="true" />
+		<delete failonerror="false" file="datamodel_xsd_doc.zip" />
+		<zip destfile="datamodel_xsd_doc.zip" update="true">
+			<fileset dir="html">
+				<include name="**/*.*" />
+			</fileset>
+			<fileset dir="../database">
+				<include name="datamodel.xsd" />
+			</fileset>
+		</zip>
+		<delete dir="html">
+		</delete>
+	</target>
+</project>
+

@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "sql-map-2.dtd">
+<sqlMap namespace="Seq">
+	<resultMap id="seqBeanResult"
+		class="com.epolleo.bp.seq.bean.SeqBean">
+		<result property="seqKey" column="SEQ_KEY" />
+		<result property="name" column="NAME" />
+		<result property="value" column="VALUE" />
+		<result property="fetchSize" column="FETCH_SIZE" />
+		<result property="formatStr" column="FORMAT_STR" />
+	</resultMap>
+
+	<select id="selectSeq" resultMap="seqBeanResult"
+		parameterClass="map">
+		SELECT
+		    SEQ_KEY,
+		    NAME,
+		    VALUE,
+		    FETCH_SIZE,
+		    FORMAT_STR
+		FROM
+		    BP_SEQ
+		<dynamic prepend=" where ">
+			<isPropertyAvailable prepend=" and "
+				removeFirstPrepend="true" property="seqKey">
+				SEQ_KEY like #seqKey#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend=" and "
+				removeFirstPrepend="true" property="name">
+				NAME like #name#
+			</isPropertyAvailable>
+		</dynamic>
+		<isNotEmpty prepend=" order by " property="sort">
+			<isEqual property="sort" compareValue="seqKey">
+				SEQ_KEY
+			</isEqual>
+			<isEqual property="sort" compareValue="name">NAME</isEqual>
+			<isEqual property="sort" compareValue="value">
+				VALUE
+			</isEqual>
+			<isEqual property="sort" compareValue="fetchSize">
+				FETCH_SIZE
+			</isEqual>
+			<isEqual property="sort" compareValue="expression">
+				FORMAT_STR
+			</isEqual>
+			<isEqual property="sort" compareValue="id">ROLE_ID</isEqual>
+			<isNotEmpty prepend=" " property="order">
+				<isEqual property="order" compareValue="asc">
+					asc
+				</isEqual>
+				<isEqual property="order" compareValue="desc">
+					desc
+				</isEqual>
+			</isNotEmpty>
+		</isNotEmpty>
+	</select>
+	<update id="updateSeq"
+		parameterClass="com.epolleo.bp.seq.bean.SeqBean">
+		UPDATE
+		    BP_SEQ
+		SET
+		    NAME       = #name#,
+		    VALUE      = #value#,
+		    FETCH_SIZE = #fetchSize#,
+		    FORMAT_STR = #expression#
+		WHERE
+		    SEQ_KEY = #seqKey#
+	</update>
+	<insert id="insertSeq"
+		parameterClass="com.epolleo.bp.seq.bean.SeqBean">
+		INSERT
+		INTO
+		    BP_SEQ
+		    (
+		        SEQ_KEY,
+		        NAME,
+		        VALUE,
+		        FETCH_SIZE,
+		        FORMAT_STR
+		    )
+		    VALUES
+		    (
+		        #seqKey#,
+		        #name#,
+		        #value#,
+		        #fetchSize#,
+		        #expression#
+		    )
+	</insert>
+
+	<delete id="deleteSeq" parameterClass="String">
+		DELETE FROM BP_SEQ WHERE SEQ_KEY = #id#
+	</delete>
+
+
+	<select id="getSeqInfo"
+		resultClass="com.epolleo.bp.seq.SeqApi$SeqInfo">
+		SELECT
+		    SEQ_KEY    AS id,
+		    NAME       AS name,
+		    VALUE      AS value,
+		    FETCH_SIZE AS delta,
+		    FORMAT_STR AS expr
+		FROM
+		    BP_SEQ
+		WHERE
+		    SEQ_KEY = #1:VARCHAR#
+	</select>
+
+	<update id="tryUpdateSeqValue">
+		UPDATE
+		    BP_SEQ
+		SET
+		    VALUE = #1:DECIMAL#
+		WHERE
+		    SEQ_KEY   = #2:DECIMAL#
+		    AND VALUE = #3:DECIMAL#
+	</update>
+	<insert id="insertNewSeq">
+		INSERT
+		INTO
+		    BP_SEQ
+		    (
+		        SEQ_KEY,
+		        NAME,
+		        VALUE,
+		        FETCH_SIZE,
+		        FORMAT_STR
+		    )
+		    VALUES
+		    (
+		        #1:VARCHAR#,
+		        #2:VARCHAR#,
+		        #3:DECIMAL#,
+		        #4:DECIMAL#,
+		        #5:VARCHAR#
+		    )
+	</insert>
+</sqlMap>

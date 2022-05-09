@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<beans:beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:beans="http://www.springframework.org/schema/beans" xmlns:util="http://www.springframework.org/schema/util"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd
+    ">
+   <!-- 文件服务器路径配置  -->
+	<beans:bean id="fileIOConfig" class="com.epolleo.util.common.bean.FileIOConfig">
+		<beans:property name="fileRepoHome" value="${fileRepo.home.confidential}"></beans:property>
+		<beans:property name="fileRepoTmp" value="${fileRepo.tmp.confidential}"></beans:property>
+		<beans:property name="moduleFilePathMap" ref="moduleFilePathMap"></beans:property>
+		<beans:property name="uploadConfigMap" ref="uploadConfigMap"></beans:property>
+	</beans:bean>
+	<!-- 文件上传配置 -->
+	<util:map id="uploadConfigMap" map-class="java.util.LinkedHashMap">
+	   <beans:entry key="sizeMax" value="${upload.sizeMax}" />
+	   <beans:entry key="fileSizeMax" value="${upload.fileSizeMax}" />
+	   <beans:entry key="sizeThreshold" value="${upload.sizeThreshold}" />
+	   <beans:entry key="fileWhiteList" value="${upload.fileWhiteList}" />
+	</util:map>	
+	<util:map id="moduleFilePathMap" map-class="java.util.LinkedHashMap">
+		<beans:entry key="employee" value="employee/" />
+		<beans:entry key="employeeOther" value="employee/other/" />
+	</util:map>	
+</beans:beans>

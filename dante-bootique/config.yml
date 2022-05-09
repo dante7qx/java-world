@@ -1,0 +1,4 @@
+jetty:
+  context: /bq
+  connectors:
+    - port: 10001

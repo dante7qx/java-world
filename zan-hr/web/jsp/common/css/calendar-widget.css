@@ -1,0 +1,52 @@
+.calendar-month {
+/*	width: 1600px; 	*/
+}
+
+.calendar-month td {
+	border:1px solid #CCCCCC;
+	width: 100px; 
+	height: 50px;
+}
+
+.current-month-header {
+	color: #FFFFFF;
+	height: 20px;
+	background-color: #A1C0EA;
+}
+
+.move-month {
+	cursor:pointer;
+	position: relative; 
+	top: 3px;
+}
+
+.day {
+	font-size: 13px;
+	text-align: center;
+}
+.day_cont{
+	font-size: 11px;
+	text-align: right;
+	padding: 2px;
+}
+.day_chked{
+	background-color:#ffccff;
+}
+.day_chked_wk{
+	background-color:#ccecff;
+}
+.day_chbox{
+	font-size: 11px;
+	text-align:right;
+}
+
+.weekday {
+	width: 100px; 
+	height: 30px;
+	border:1px solid #CCCCCC;
+	background-color:#E0ECFF;
+}
+
+.other-month {
+	color: gray;
+}

@@ -1,0 +1,120 @@
+#set($package=$!context.packageName)
+#set($pLen=$package.indexOf("."))
+#set($project=$package.substring(0, $pLen))
+package com.spirit.${package}.api.service.impl;
+
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import com.spirit.${project}.commom.dao.exception.SpiritDaoException;
+import com.spirit.${project}.commom.util.DateUtils;
+import com.spirit.${project}.commom.dto.req.PageReq;
+import com.spirit.${project}.commom.dto.resp.PageResp;
+import com.spirit.${project}.common.api.exception.SpiritAPIServiceException;
+import com.spirit.${project}.common.api.template.SpiritServiceTemplate;
+import com.spirit.${package}.api.dto.req.${context.javaBeanName}ReqDTO;
+import com.spirit.${package}.api.dto.resp.${context.javaBeanName}RespDTO;
+import com.spirit.${package}.dao.dao.${context.javaBeanName}DAO;
+import com.spirit.${package}.dao.po.${context.javaBeanName}PO;
+import com.spirit.${package}.dao.po.UserPO;
+
+/**
+ * ${table.comment} Service 实现类
+ * 
+ * @author dante
+ * @date ${genDate}
+ *
+ */
+ @Service
+ @Transactional(readOnly = true)
+ public class ${context.javaBeanName}ServiceImpl extends SpiritServiceTemplate<${context.javaBeanName}ReqDTO, ${context.javaBeanName}RespDTO, ${context.javaBeanName}PO> implements ${context.javaBeanName}Service {
+ 	
+ 	@Autowired
+ 	private ${context.javaBeanName}DAO ${context.javaBeanNameLF}DAO;
+ 	
+ 	@Override
+	public PageResp<${context.javaBeanName}RespDTO> findPage(PageReq pageReq) throws SpiritAPIServiceException {
+		return super.findPage(pageReq);
+	}
+	
+	@Override
+	@Transactional
+	public ${context.javaBeanName}RespDTO persist(${context.javaBeanName}ReqDTO ${context.javaBeanNameLF}ReqDTO) throws SpiritAPIServiceException {
+		${context.javaBeanName}PO ${context.javaBeanNameLF}PO = ${context.javaBeanNameLF}DAO.save(convertReqDtoToPo(${context.javaBeanNameLF}ReqDTO));
+		return convertPoToRespDto(rolePO);
+	}
+	
+	@Override
+	@Transactional
+	public void deleteById(Long id) throws SpiritAPIServiceException {
+		${context.javaBeanNameLF}DAO.delete(id);
+	}
+	
+	@Override
+	@Transactional
+	public void delete(${context.javaBeanName}ReqDTO ${context.javaBeanNameLF}ReqDTO) throws SpiritAPIServiceException {
+		Long id = ${context.javaBeanNameLF}ReqDTO.getId();
+		${context.javaBeanName}PO ${context.javaBeanNameLF}PO = ${context.javaBeanNameLF}DAO.findOne(id));
+		${context.javaBeanNameLF}PO.setUpdateDate(DateUtils.currentDate());
+		${context.javaBeanNameLF}PO.setUpdateUser(new ${context.javaBeanName}PO(${context.javaBeanNameLF}ReqDTO.getUpdateUser()));
+		${context.javaBeanNameLF}DAO.save(${context.javaBeanNameLF}PO);
+	}
+
+	@Override
+	public ${context.javaBeanName}RespDTO findById(Long id) throws SpiritAPIServiceException {
+		return convertPoToRespDto(${context.javaBeanNameLF}DAO.findOne(id));
+	}
+	
+	/**
+	 * 将ReqDTO对象转化为数据库的实体类
+	 * 
+	 * @param reqDTO
+	 * @param po
+	 * @return
+	 */
+	protected abstract ${context.javaBeanName}PO convertReqDtoToPo(${context.javaBeanName}ReqDTO ${context.javaBeanNameLF}ReqDTO) {
+		${context.javaBeanName}PO ${context.javaBeanNameLF}PO = new ${context.javaBeanName}PO();
+		if (${context.javaBeanNameLF}ReqDTO != null) {
+			BeanUtils.copyProperties(${context.javaBeanNameLF}ReqDTO, ${context.javaBeanNameLF}PO, "updateUser");
+			${context.javaBeanNameLF}PO.setUpdateDate(DateUtils.currentDate());
+			if (${context.javaBeanNameLF}ReqDTO.getUpdateUser() != null) {
+				${context.javaBeanNameLF}PO.setUpdateUser(new UserPO(${context.javaBeanNameLF}ReqDTO.getUpdateUser()));
+			}
+		}
+		return ${context.javaBeanNameLF}PO;
+	}
+	
+	/**
+	 * 将数据库的实体类转化为RespDTO对象
+	 * 
+	 * @param domain
+	 * @return
+	 */
+	protected abstract ${context.javaBeanName}RespDTO convertPoToRespDto(${context.javaBeanName}PO ${context.javaBeanNameLF}PO) {
+		${context.javaBeanName}RespDTO ${context.javaBeanNameLF}RespDTO = new ${context.javaBeanName}RespDTO();
+		if(${context.javaBeanNameLF}PO != null) {
+			BeanUtils.copyProperties(${context.javaBeanNameLF}ReqDto, ${context.javaBeanNameLF}PO, "updateUser", "updateDate");
+			if (${context.javaBeanNameLF}PO.getUpdateUser() != null) {
+				${context.javaBeanNameLF}RespDTO.setUpdateUserName(${context.javaBeanNameLF}PO.getUpdateUser().getName());
+			}
+			if (${context.javaBeanNameLF}PO.getUpdateDate() != null) {
+				${context.javaBeanNameLF}RespDTO.setUpdateDate(DateUtils.formatDateTime(${context.javaBeanNameLF}PO.getUpdateDate()));
+			}
+		}
+		return ${context.javaBeanNameLF}RespDTO;
+	}
+	
+	/**
+	 * 构造查询条件
+	 * 
+	 * @param filter
+	 * @return
+	 */
+	protected abstract Specification<P> buildSpecification(Map<String, Object> filter) {
+		// TODO: 按业务逻辑进行实现
+		return null;
+	}
+ 	
+ }

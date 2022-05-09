@@ -1,0 +1,16 @@
+package com.hnair.hiapp.fss.dao.${context.packageName};
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import com.hnair.hiapp.fss.po.${context.packageName}.${context.javaBeanName}PO;
+
+/**
+ * ${table.comment} DAO
+ * 
+ * @author dante
+ * @date ${genDate}
+ *
+ */
+public interface ${context.javaBeanName}DAO extends JpaRepository<${context.javaBeanName}PO, Long>, JpaSpecificationExecutor<${context.javaBeanName}PO>{ 
+
+}

@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "sql-map-2.dtd">
+<sqlMap namespace="FunctionBean">
+	<typeAlias alias="functionBean"
+		type="com.epolleo.bp.function.bean.FunctionBean" />
+	<resultMap id="functionBeanResult" class="functionBean">
+		<result property="funcCode" column="FUNC_CODE" />
+		<result property="funcName" column="FUNC_NAME" />
+		<result property="state" column="STATE" />
+		<result property="funcOrder" column="FUNC_ORDER" />
+		<result property="parent" column="PARENT" />
+		<result property="funcNote" column="FUNC_NOTE" />
+		<result property="createUser" column="CREATE_USER" />
+		<result property="createTime" column="CREATE_TIME" />
+		<result property="updateUser" column="UPDATE_USER" />
+		<result property="updateTime" column="UPDATE_TIME" />
+
+	</resultMap>
+	<select id="selectFunction" resultMap="functionBeanResult"
+		parameterClass="map">
+		SELECT
+		    FUNC_CODE,
+		    FUNC_NAME,
+		    STATE,
+		    FUNC_ORDER,
+		    PARENT,
+		    FUNC_NOTE,
+		    CREATE_USER,
+		    CREATE_TIME,
+		    UPDATE_USER,
+		    UPDATE_TIME
+		FROM
+		    BP_FUNCTION
+		<dynamic prepend=" where ">
+			<isPropertyAvailable prepend=" and "
+				removeFirstPrepend="true" property="funcCode">
+				FUNC_CODE like #funcCode#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend=" and "
+				removeFirstPrepend="true" property="funcName">
+				FUNC_NAME like #funcName#
+			</isPropertyAvailable>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend=" order by " property="sort">
+				<isEqual property="sort" compareValue="func_Code">
+					FUNC_CODE
+				</isEqual>
+				<isEqual property="sort" compareValue="func_Name">
+					FUNC_NAME
+				</isEqual>
+				<isNotEmpty prepend=" " property="order">
+					<isEqual property="order" compareValue="asc">
+						asc
+					</isEqual>
+					<isEqual property="order" compareValue="desc">
+						desc
+					</isEqual>
+				</isNotEmpty>
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	<update id="updateFunction" parameterClass="functionBean">
+		UPDATE
+		    BP_FUNCTION
+		SET
+		    FUNC_NAME   = #funcName#,
+		    STATE       = #state#,
+		    FUNC_ORDER  = #funcOrder#,
+		    PARENT      = #parent#,
+		    FUNC_NOTE   = #funcNote#,
+		    UPDATE_USER = #updateUser#,
+		    UPDATE_TIME = #updateTime#
+		WHERE
+		    FUNC_CODE = #funcCode#
+	</update>
+	<update id="updateFunctionNote" parameterClass="functionBean">
+		UPDATE
+		    BP_FUNCTION
+		SET
+		    FUNC_NAME   = #funcName#,
+		    FUNC_ORDER  = #funcOrder#,
+		    FUNC_NOTE   = #funcNote#,
+		    UPDATE_USER = #updateUser#,
+		    UPDATE_TIME = #updateTime#
+		WHERE
+		    FUNC_CODE = #funcCode#
+	</update>
+	<insert id="insertFunction" parameterClass="functionBean">
+		INSERT
+		INTO
+		    BP_FUNCTION
+		    (
+		        FUNC_CODE,
+		        FUNC_NAME,
+		        STATE,
+		        FUNC_ORDER,
+		        PARENT,
+		        FUNC_NOTE,
+		        CREATE_USER,
+		        CREATE_TIME,
+		        UPDATE_USER,
+		        UPDATE_TIME
+		    )
+		    VALUES
+		    (
+		        #funcCode#,
+		        #funcName#,
+		        #state#,
+		        #funcOrder#,
+		        #parent#,
+		        #funcNote#,
+		        #createUser#,
+		        #createTime#,
+		        #updateUser#,
+		        #updateTime#
+		    )
+	</insert>
+	<delete id="deleteFunction" parameterClass="String">
+		DELETE FROM BP_FUNCTION WHERE FUNC_CODE = #id#
+	</delete>
+
+	<select id="selectFuncAll" resultMap="functionBeanResult">
+		SELECT
+		    FUNC_CODE,
+		    FUNC_NAME,
+		    STATE,
+		    FUNC_ORDER,
+		    PARENT,
+		    FUNC_NOTE,
+		    CREATE_USER,
+		    CREATE_TIME,
+		    UPDATE_USER,
+		    UPDATE_TIME
+		FROM
+		    BP_FUNCTION
+		ORDER BY
+		    FUNC_ORDER ASC,
+		    FUNC_NAME ASC
+	</select>
+
+	<select id="queryFuncMap" resultClass="hashmap">
+		SELECT
+		    FUNC_CODE AS CODE,
+		    FUNC_NAME AS NAME
+		FROM
+		    BP_FUNCTION
+	</select>
+
+	<update id="updateFuncState">
+		UPDATE
+		    BP_FUNCTION
+		SET
+		    STATE = #2#
+		WHERE
+		    FUNC_CODE = #1#
+	</update>
+
+	<select id="queryFuncByUserId"
+		resultClass="java.util.LinkedHashMap">
+		SELECT
+		    FUNC_CODE AS CODE,
+		    FUNC_NAME AS NAME
+		FROM
+		    BP_FUNCTION
+		WHERE
+		    FUNC_CODE IN
+		    (
+		        SELECT
+		            FUNC_CODE
+		        FROM
+		            BP_ROLE_FUNC
+		        WHERE
+		            ROLE_ID IN
+		            (
+		                SELECT
+		                    ROLE_ID
+		                FROM
+		                    BP_USER_ROLE
+		                WHERE
+		                    USER_ID = #userId#
+		            )
+		    )
+	</select>
+</sqlMap>

@@ -1,0 +1,53 @@
+package com.hnair.hiapp.fss.po.${context.packageName};
+
+import java.io.Serializable;
+import java.util.Date;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import lombok.Data;
+import com.hnair.hiapp.fss.po.sysmgr.UserPO;
+
+/**
+ * ${table.comment} PO
+ * 
+ * @author dante
+ * @date ${genDate}
+ *
+ */
+@Data
+@Entity
+@Table(name = "t_${table.tableName}")
+public class ${context.javaBeanName}PO implements Serializable {
+	private static final long serialVersionUID = 1L;
+	
+#foreach($column in $columns)	
+#if(${column.javaFieldName} == "id")
+	@Id
+    @GeneratedValue
+	private Long id;
+#elseif(${column.javaFieldName} == "updateUser")
+	/**
+	 * ${column.comment}
+	 */
+	@ManyToOne(cascade = { CascadeType.REFRESH }, fetch = FetchType.LAZY)
+	@JoinColumn(name = "update_user")
+	private UserPO updateUser;
+#elseif(${column.javaFieldName} == "deleteFlag")
+	/**
+	 * ${column.comment}
+	 */
+	private Boolean deleteFlag;
+#else
+	/**
+	 * ${column.comment}
+	 */
+	private ${column.javaTypeBox} ${column.javaFieldName};
+#end
+#end
+}

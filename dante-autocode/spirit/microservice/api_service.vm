@@ -1,0 +1,19 @@
+#set($package=$!context.packageName)
+#set($pLen=$package.indexOf("."))
+#set($project=$package.substring(0, $pLen))
+package com.spirit.${context.packageName}.api.service;
+
+import com.spirit.${project}.common.api.template.SpiritAbstractService;
+import com.spirit.${context.packageName}.api.dto.req.${context.javaBeanName}ReqDTO;
+import com.spirit.${context.packageName}.api.dto.resp.${context.javaBeanName}RespDTO;
+
+/**
+ * ${table.comment} Service
+ * 
+ * @author dante
+ * @date ${genDate}
+ *
+ */
+ public interface ${context.javaBeanName}Service extends SpiritAbstractService<${context.javaBeanName}ReqDTO, ${context.javaBeanName}RespDTO> {
+ 
+ }

@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<?xml-stylesheet type="text/xsl" href="datamodel.xsl"?>
+<schema name="" domain="com.epolleo" xmlns="http://www.hna.net/dmt/schema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.hna.net/dmt/schema datamodel.xsd" >
+	
+	<table name="P_Att" javaName="" title="附件表" module="pub.att" geometry="30,30,172,116" collapsed="false">
+        <column name="Id" title="编号" type="INTEGER" primaryKey="true" />
+        <column name="LotId" title="附件批号" type="VARCHAR" size="64" />
+        <column name="Type" title="类型" type="VARCHAR" size="128"/>
+        <column name="Description" title="附件描述" type="VARCHAR" size="512"/>
+        <column name="Path" title="附件路径" type="VARCHAR" size="512"/>
+        <column name="UpdateBy" title="更新人" type="VARCHAR" size="32"/>
+        <column name="UpdateDate" title="更新时间" type="TIMESTAMP"/>
+    </table>
+	
+	<table name="hr_code_dict" module="hr.dictmnt" javaName="CodeDict" title="基础数据字典表">
+		<column name="Id" title="Id" type="INTEGER" primaryKey="true" />
+		<column name="Type" title="类型" type="VARCHAR" size="16" />
+		<column name="TypeName" title="类型名称" type="VARCHAR" size="8" />
+		<column name="Code" title="编码" type="VARCHAR" size="16" />
+		<column name="Value" title="名称" type="VARCHAR" size="16" />
+		<column name="ShowOrder" title="显示顺序" type="INTEGER" />
+		<column name="UpdateBy" title="更新人" type="VARCHAR" size="32"/>
+        <column name="UpdateDate" title="更新时间" type="TIMESTAMP"/>
+	</table>
+	
+	<table name="hr_employee" title="员工" module="hr.employee" javaName="Employee" geometry="887,533,185,168" collapsed="false">
+		<column name="Id" title="员工Id" type="INTEGER" primaryKey="true" />
+		<column name="Code" title="员工编号" type="VARCHAR" size="64" />
+		<column name="ChnName" title="员工名称" type="VARCHAR" size="64" />
+		<column name="EngName" title="员工英文名称" type="VARCHAR" size="64" />
+		<column name="UsedName" title="员工曾用名" type="VARCHAR" size="64" />
+		
+		<column name="IdNum" title="身份证号" type="VARCHAR" size="18" />
+		<column name="Birthday" title="出生日期" type="DATE" />
+		<column name="Gen" title="性别" type="ENUM">
+			<state value="1">男</state>
+			<state value="2">女</state>
+		</column>
+		<column name="Recruitment" title="籍贯" type="VARCHAR" size="32" />
+		<column name="Horoscope" title="星座" type="ENUM">
+			<state value="10">白羊座</state>
+			<state value="20">金牛座</state>
+			<state value="30">双子座</state>
+			<state value="40">巨蟹座</state>
+			<state value="50">狮子座</state>
+			<state value="60">处女座</state>
+			<state value="70">天秤座</state>
+			<state value="80">天羯座</state>
+			<state value="90">射手座</state>
+			<state value="100">摩羯座</state>
+			<state value="110">水瓶座</state>
+			<state value="120">双鱼座</state>
+		</column>
+		<column name="Household" title="户口性质" type="ENUM">
+			<state value="10">城镇</state>
+			<state value="20">农村</state>
+		</column>
+		<column name="Politics" title="政治面貌" type="ENUM">
+			<state value="10">党员</state>
+			<state value="20">团员</state>
+			<state value="30">群众</state>
+		</column>
+		<column name="Marriage" title="婚姻状况" type="ENUM">
+			<state value="10">未婚</state>
+			<state value="20">已婚</state>
+		</column>
+		<column name="Phone" title="联系电话" type="VARCHAR" size="32" />
+		<column name="Email" title="电子邮箱" type="VARCHAR" size="64" />
+		<column name="HealthValid" title="健康证明有效期" type="DATE" />
+		<column name="Education" title="学历" type="ENUM">
+			<state value="10">中专</state>
+			<state value="20">专科</state>
+			<state value="30">本科</state>
+			<state value="40">硕士</state>
+			<state value="50">博士</state>
+		</column>
+		<column name="Major" title="专业" type="VARCHAR" size="64" />
+		<column name="GraduateInstitution" title="毕业院校" type="VARCHAR" size="128" />
+		<column name="GraduateDate" title="毕业时间" type="DATE" />
+		<column name="LanguageSkill" title="语种" type="ENUM">
+			<state value="10">英语</state>
+			<state value="20">韩语</state>
+			<state value="30">日语</state>
+			<state value="40">法语</state>
+			<state value="50">西班牙语</state>
+			<state value="60">葡萄牙语</state>
+		</column>
+		<column name="UrgencyLinkman" title="紧急联系人/电话" type="VARCHAR" size="512" />
+		<column name="FileLocation" title="档案存放地" type="VARCHAR" size="1024" />
+		<column name="HouseholdLocation" title="户口所在地" type="VARCHAR" size="1024" />
+		<column name="Dwell" title="居住地址" type="VARCHAR" size="1024" />
+		<column name="AttLotId" title="附件号" type="VARCHAR" size="64" />
+		<column name="IsActive" title="是否生效" type="BOOLEAN" />
+		<column name="IsDelete" title="是否删除" type="BOOLEAN" />
+		<column name="createUser" title="创建人" type="VARCHAR" size="32" />
+		<column name="createTime" title="创建时间" type="TIMESTAMP" />
+		<column name="updateUser" title="更新人" type="VARCHAR" size="32" />
+		<column name="updateTime" title="更新时间" type="TIMESTAMP" />
+	</table>
+	
+	<table name="hr_employee_certificate" title="员工资格、职称证书" module="hr.employee" javaName="EmployeeCertificate" geometry="887,533,185,168" collapsed="false">
+		<column name="Id" title="编号" type="INTEGER" primaryKey="true" />
+		<column name="EmployeeId" title="员工Id" type="INTEGER" />
+		<column name="Name" title="证书名称" type="VARCHAR" size="128" />
+		<column name="SignDate" title="签发日期" type="DATE" />
+		<column name="ExpDate" title="失效日期" type="DATE" />
+		<column name="AttLotId" title="附件号" type="VARCHAR" size="64" />
+		<column name="IsDelete" title="是否删除" type="BOOLEAN" />
+		<column name="createUser" title="创建人" type="VARCHAR" size="32" />
+		<column name="createTime" title="创建时间" type="TIMESTAMP" />
+		<column name="updateUser" title="更新人" type="VARCHAR" size="32" />
+		<column name="updateTime" title="更新时间" type="TIMESTAMP" />
+	</table>
+	
+	<table name="hr_employee_work" title="员工工作信息" module="hr.employee" javaName="EmployeeWork" geometry="887,533,185,168" collapsed="false">
+		<column name="Id" title="编号" type="INTEGER" primaryKey="true" />
+		<column name="EmployeeId" title="员工Id" type="INTEGER" />
+		<column name="WorkPlaceId" title="工作地点" type="INTEGER" />
+		<column name="Company" title="入职公司" type="INTEGER" />
+		<column name="Dept" title="入职部门" type="INTEGER" />
+		<column name="Post" title="入职岗位" type="INTEGER" />
+		<column name="CapacityLevel" title="能力级别" type="ENUM">
+			<state value="10">初级</state>
+			<state value="20">中级</state>
+			<state value="30">高级</state>
+			<state value="40">资深</state>
+		</column>
+		<column name="EntrantDate" title="入职日期" type="DATE" />
+		<column name="Type" title="员工类型" type="ENUM">
+			<state value="10">正式员工</state>
+			<state value="20">实习员工</state>
+			<state value="30">临时工</state>
+		</column>
+		<column name="TrialPeriod" title="试用期" type="ENUM">
+			<state value="1">无</state>
+			<state value="2">有</state>
+		</column>
+		<column name="ContractDeadline" title="合同期限" type="ENUM">
+			<state value="10">1</state>
+			<state value="20">2</state>
+			<state value="30">3</state>
+		</column>
+		<column name="ContractType" title="合同类型" type="ENUM">
+			<state value="10">固定期限</state>
+			<state value="20">无固定期限</state>
+		</column>
+		<column name="ContractStartDate" title="合同期限开始时间" type="DATE" />
+		<column name="ContractEndDate" title="合同期限结束时间" type="DATE" />
+		<column name="TrialDeadline" title="试用期结束日期" type="DATE" />
+		<column name="PracticeStartDate" title="实习期限开始时间" type="DATE" />
+		<column name="PracticeEndDate" title="实习期限结束时间" type="DATE" />
+		<column name="ParttimeStartDate" title="实习期限开始时间" type="DATE" />
+		<column name="ParttimeEndDate" title="实习期限结束时间" type="DATE" />
+		<column name="createUser" title="创建人" type="VARCHAR" size="32" />
+		<column name="createTime" title="创建时间" type="TIMESTAMP" />
+		<column name="updateUser" title="更新人" type="VARCHAR" size="32" />
+		<column name="updateTime" title="更新时间" type="TIMESTAMP" />
+	</table>
+	
+	<table name="hr_employee_relation" title="员工家属信息" module="hr.employee" javaName="EmployeeRelation" geometry="887,533,185,168" collapsed="false">
+		<column name="Id" title="编号" type="INTEGER" primaryKey="true" />
+		<column name="EmployeeId" title="员工Id" type="INTEGER" />
+		<column name="Name" title="名称" type="VARCHAR" size="64" />
+		<column name="Relation" title="与本人关系" type="ENUM">
+			<state value="10">父亲</state>
+			<state value="20">母亲</state>
+			<state value="30">公公</state>
+			<state value="40">婆婆</state>
+			<state value="50">儿子</state>
+			<state value="60">女儿</state>
+		</column>
+		<column name="Phone" title="联系电话" type="VARCHAR" size="32" />
+		<column name="IsDelete" title="是否删除" type="BOOLEAN" />
+		<column name="createUser" title="创建人" type="VARCHAR" size="32" />
+		<column name="createTime" title="创建时间" type="TIMESTAMP" />
+		<column name="updateUser" title="更新人" type="VARCHAR" size="32" />
+		<column name="updateTime" title="更新时间" type="TIMESTAMP" />
+	</table>
+	
+	<table name="hr_employee_benefit" title="员工薪资福利" module="hr.employee" javaName="EmployeeBenefit" geometry="887,533,185,168" collapsed="false">
+		<column name="Id" title="编号" type="INTEGER" primaryKey="true" />
+		<column name="EmployeeId" title="员工Id" type="INTEGER" />
+		<column name="PreTaxSalary" type="NUMBER" title="税前工资" size="20" scale="2"/>
+		<column name="TrialPeriodSalary" type="NUMBER" title="试用期工资" size="20" scale="2"/>
+		<column name="BankAccount" title="工资卡开户行" type="VARCHAR" size="64" />
+		<column name="SalaryCardNo" title="工资卡号" type="VARCHAR" size="64" />
+		<column name="ProvidentFundDepositBase" type="NUMBER" title="住房公积金缴存基数" size="20" scale="2"/>
+		<column name="InsureDepositBase" type="NUMBER" title="保险缴存基数" size="20" scale="2"/>
+		<column name="PayDate" title="起缴日期" type="DATE" />
+		<column name="createUser" title="创建人" type="VARCHAR" size="32" />
+		<column name="createTime" title="创建时间" type="TIMESTAMP" />
+		<column name="updateUser" title="更新人" type="VARCHAR" size="32" />
+		<column name="updateTime" title="更新时间" type="TIMESTAMP" />
+	</table>
+	
+	<table name="hr_employee_other" title="员工补充信息" module="hr.employee" javaName="EmployeeOther" geometry="887,533,185,168" collapsed="false">
+		<column name="Id" title="编号" type="INTEGER" primaryKey="true" />
+		<column name="EmployeeId" title="员工Id" type="INTEGER" />
+		<column name="AttLotId" title="附件号" type="VARCHAR" size="64" />
+		<column name="Remark" title="备注" type="VARCHAR" size="1024" />
+		<column name="createUser" title="创建人" type="VARCHAR" size="32" />
+		<column name="createTime" title="创建时间" type="TIMESTAMP" />
+		<column name="updateUser" title="更新人" type="VARCHAR" size="32" />
+		<column name="updateTime" title="更新时间" type="TIMESTAMP" />
+	</table>
+</schema>

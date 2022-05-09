@@ -1,0 +1,70 @@
+#set($package=$!context.packageName)
+#set($pLen=$package.indexOf("."))
+#set($project=$package.substring(0, $pLen))
+#set($bean=${context.javaBeanName})
+#set($sbean=${context.javaBeanNameLF})
+package com.spirit.${package}.ui.client;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
+import com.spirit.${project}.commom.dto.req.PageReq;
+import com.spirit.${project}.commom.dto.resp.BaseResp;
+import com.spirit.${project}.commom.dto.resp.PageResp;
+import com.spirit.${project}.commom.dto.resp.RespCodeEnum;
+import com.spirit.${package}.ui.client.${bean}FeignClient;
+import com.spirit.${package}.ui.constant.SpiritServiceConsts;
+import com.spirit.${package}.ui.vo.${sbean}.${bean}VO;
+
+/**
+ * ${table.comment} 熔断回调处理类
+ * 
+ * @author dante
+ * @date ${genDate}
+ *
+ */
+@Component
+public class ${bean}FeignClientFallback implements ${bean}FeignClient {
+	private final static Logger logger = LoggerFactory.getLogger(${bean}FeignClientFallback.class);
+	
+	@Override
+	public BaseResp<PageResp<${bean}VO>> findPage(PageReq pageReq) {
+		logger.error("findByPage pageReq {} fallback.", pageReq);
+		BaseResp<PageResp<${bean}VO>> resp = new BaseResp<PageResp<${bean}VO>>();
+		resp.setResultCode(RespCodeEnum.REMOTE_FAILURE.code());
+		return resp;
+	}
+	
+	@Override
+	public BaseResp<${bean}VO> findBy${bean}Id(@PathVariable("id") Long id) {
+		logger.error("findBy${bean}Id id {} fallback.", id);
+		BaseResp<${bean}VO> resp = new BaseResp<${bean}VO>();
+		resp.setResultCode(RespCodeEnum.REMOTE_FAILURE.code());
+		return resp;
+	}
+	
+	@Override
+	public BaseResp<${bean}VO> add${bean}(${bean}VO ${sbean}VO) {
+		logger.error("add${bean} ${sbean}VO {} fallback.", ${sbean}VO);
+		BaseResp<${bean}VO> resp = new BaseResp<${bean}VO>();
+		resp.setResultCode(RespCodeEnum.REMOTE_FAILURE.code());
+		return resp;
+	}
+	
+	@Override
+	public BaseResp<${bean}VO> update${bean}(${bean}VO ${sbean}VO) {
+		logger.error("update${bean} ${sbean}VO {} fallback.", ${sbean}VO);
+		BaseResp<${bean}VO> resp = new BaseResp<${bean}VO>();
+		resp.setResultCode(RespCodeEnum.REMOTE_FAILURE.code());
+		return resp;
+	}
+	
+	@Override
+	public BaseResp<?> delete${bean}(${bean}VO ${sbean}VO) {
+		logger.error("delete${bean} {} fallback.", ${sbean}VO);
+		BaseResp<?> resp = new BaseResp<>();
+		resp.setResultCode(RespCodeEnum.REMOTE_FAILURE.code());
+		return resp;
+	}
+	
+}

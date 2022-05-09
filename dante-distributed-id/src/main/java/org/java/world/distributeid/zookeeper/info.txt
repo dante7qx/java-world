@@ -1,0 +1,7 @@
+参考：
+
+Zookeeper 分布式ID
+https://cloud.tencent.com/developer/article/1162224
+
+commons.pool2池对象工具
+https://blog.csdn.net/u012661248/article/details/80491806

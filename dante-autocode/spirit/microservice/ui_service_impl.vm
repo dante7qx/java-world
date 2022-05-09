@@ -1,0 +1,78 @@
+#set($package=$!context.packageName)
+#set($pLen=$package.indexOf("."))
+#set($project=$package.substring(0, $pLen))
+#set($bean=${context.javaBeanName})
+#set($sbean=${context.javaBeanNameLF})
+package com.spirit.${package}.ui.service.impl;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
+import com.spirit.${project}.commom.dto.req.PageReq;
+import com.spirit.${project}.common.ui.dto.resp.PageResult;
+import com.spirit.${project}.common.ui.exception.SpiritUIServiceException;
+import com.spirit.${package}.ui.vo.role.${bean}VO;
+
+/**
+ * ${table.comment} UI Service 实现类
+ * 
+ * @author dante
+ * @date ${genDate}
+ *
+ */
+@Service
+public class ${bean}Service implements ${bean}Service {
+	
+	@Autowired
+	private ${bean}FeignClient ${sbean}FeignClient;
+	
+	@Override
+	@HystrixCommand
+	public PageResult<${bean}VO> findPage(PageReq pageReq) throws SpiritUIServiceException {
+		PageResult<${bean}VO> pageResult = new PageResult<${bean}VO>();
+		BaseResp<PageResp<${bean}VO>> resp = ${sbean}FeignClient.findPage(pageReq);
+		if (resp.getResultCode() != RespCodeEnum.SUCCESS.code()) {
+			throw new SpiritUIServiceException(resp.getResultCode() + "");
+		}
+		PageResp<${bean}VO> pageResp = resp.getData();
+		pageResult.setRows(pageResp.getResult());
+		pageResult.setTotal(pageResp.getTotalCount());
+		return pageResult;
+	}
+
+	@Override
+	@HystrixCommand
+	public RoleVO findBy${bean}Id(Long id) throws SpiritUIServiceException {
+		BaseResp<${bean}VO> resp = ${sbean}FeignClient.findBy${bean}Id(id);
+		if (resp.getResultCode() != RespCodeEnum.SUCCESS.code()) {
+			throw new SpiritUIServiceException(resp.getResultCode() + "");
+		}
+		return resp.getData();
+	}
+
+	@Override
+	@HystrixCommand
+	public void delete${bean}(${bean}VO ${sbean}VO) throws SpiritUIServiceException {
+		BaseResp<?> resp = ${sbean}FeignClient.delete${bean}(${sbean}VO);
+		if (resp.getResultCode() != RespCodeEnum.SUCCESS.code()) {
+			throw new SpiritUIServiceException(resp.getResultCode() + "");
+		}
+	}
+
+	@Override
+	@HystrixCommand
+	public RoleVO update${bean}(${bean}VO ${sbean}VO) throws SpiritUIServiceException {
+		Long id = ${sbean}VO.getId();
+		BaseResp<${bean}VO> resp = null;
+		if (id == null) {
+			resp = ${sbean}FeignClient.add${bean}(${sbean}VO);
+		} else {
+			resp = ${sbean}FeignClient.update${bean}(${sbean}VO);
+		}
+		if (resp.getResultCode() != RespCodeEnum.SUCCESS.code()) {
+			throw new SpiritUIServiceException(resp.getResultCode() + "");
+		}
+		return resp.getData();
+	}
+	
+}

@@ -1,0 +1,124 @@
+#set($package=$!context.packageName)
+#set($pLen=$package.indexOf("."))
+#set($paLen=$pLen + 1)
+#set($project=$package.substring(0, $pLen))
+#set($moudle=$package.substring($paLen, $package.length()))
+#set($bean=${context.javaBeanName})
+#set($sbean=${context.javaBeanNameLF})
+#set($lowBean=${context.javaBeanNameLF.toLowerCase()})
+package com.spirit.${package}.ui.controller;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import com.spirit.${project}.commom.dto.req.PageReq;
+import com.spirit.${project}.commom.dto.resp.BaseResp;
+import com.spirit.${project}.commom.dto.resp.RespCodeEnum;
+import com.spirit.${project}.common.ui.dto.resp.PageResult;
+import com.spirit.${project}.common.ui.exception.SpiritUIServiceException;
+import com.spirit.${project}.common.ui.util.LoginUserUtils;
+import com.spirit.${package}.ui.service.${bean}Service;
+import com.spirit.${package}.ui.vo.${sbean}.${bean}VO;
+
+/**
+ * ${table.comment} UI Controller
+ * 
+ * @author dante
+ * @date ${genDate}
+ *
+ */
+@RestController
+@RequestMapping("/${sbean}")
+public class ${bean}Controller {
+	
+	private static final Logger logger = LoggerFactory.getLogger(${bean}Controller.class);
+	
+	@Autowired
+	private ${bean}Service ${sbean}Service;
+	
+	/**
+	 * 分页查询${table.comment}
+	 * 
+	 * @param pageReq
+	 * @return
+	 */
+	@PreAuthorize("hasAuthority('${moudle}.${lowBean}.query')")
+	@PostMapping(value = "/query_page")
+	public PageResult<${bean}VO> query${bean}Page(PageReq pageReq) {
+		PageResult<${bean}VO> result = null;
+		try {
+			result = ${sbean}Service.findPage(pageReq);
+		} catch (SpiritUIServiceException e) {
+			logger.error("query${bean}Page {} error.", pageReq, e);
+		}
+		return result;
+	}
+	
+	/**
+	 * 根据id获取${table.comment}
+	 * 
+	 * @param id
+	 * @return
+	 */
+	@PreAuthorize("hasAuthority('${moudle}.${lowBean}.query')")
+	@PostMapping(value = "/query_by_id")
+	public BaseResp<${bean}VO> queryBy${bean}Id(Long id) {
+		BaseResp<${bean}VO> result = new BaseResp<${bean}VO>();
+		try {
+			${bean}VO ${sbean}VO = ${sbean}Service.findBy${bean}Id(id);
+			result.setData(${sbean}VO);
+		} catch (SpiritUIServiceException e) {
+			result.setResultCode(RespCodeEnum.FAILURE.code());
+			logger.error("queryBy${bean}Id ${sbean}Id: {} error.", id, e);
+		}
+		return result;
+	}
+	
+	/**
+	 * 更新${table.comment}
+	 * 
+	 * @param ${sbean}VO
+	 * @return
+	 */
+	@PreAuthorize("hasAuthority('${moudle}.${lowBean}.update')")
+	@PostMapping(value = "/update_${sbean}")
+	public BaseResp<${bean}VO> update${bean}(${bean}VO ${sbean}VO) {
+		BaseResp<${bean}VO> result = new BaseResp<${bean}VO>();
+		try {
+			${sbean}VO.setUpdateUser(LoginUserUtils.loginUserId());
+			${bean}VO ${sbean}VOResp = ${sbean}Service.update${bean}(${sbean}VO);
+			result.setData(${sbean}VOResp);
+		} catch (SpiritUIServiceException e) {
+			result.setResultCode(RespCodeEnum.FAILURE.code());
+			logger.error("update${bean} ${sbean}VO: {} error.", ${sbean}VO, e);
+		}
+		return result;
+	}
+	
+	/**
+	 * 删除${table.comment}
+	 * 
+	 * @param ${sbean}VO
+	 * @return
+	 */
+	@PreAuthorize("hasAuthority('${moudle}.${sbean}.delete')")
+	@PostMapping(value = "/delete_${sbean}")
+	public BaseResp<?> delete${bean}(${bean}VO ${sbean}VO) {
+		BaseResp<?> result = new BaseResp<>();
+		try {
+			${sbean}VO.setUpdateUser(LoginUserUtils.loginUserId());
+			${sbean}Service.delete${bean}(${sbean}VO);
+		} catch (SpiritUIServiceException e) {
+			result.setResultCode(RespCodeEnum.FAILURE.code());
+			logger.error("delete${bean} ${sbean}VO: {} error.", ${sbean}VO, e);
+		}
+		return result;
+	}
+	
+}
+	
+	

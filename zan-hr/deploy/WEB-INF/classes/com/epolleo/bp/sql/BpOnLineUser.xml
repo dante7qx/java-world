@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.org//DTD SQL Map 2.4//EN" "sql-map-2.4.dtd">
+<sqlMap namespace="OnLineUserBean">
+	<cacheModel id="onlineUserId" type="OSCACHE">
+		<flushInterval minutes="30" />
+		<flushOnExecute statement="deleteOnLineUser" />
+		<flushOnExecute statement="deleteOnLineUserId" />
+	</cacheModel>
+
+	<typeAlias alias="onLineUserBean"
+		type="com.epolleo.bp.user.bean.OnLineUserBean" />
+
+	<resultMap id="onLineUserResult" class="OnLineUserBean">
+		<result property="sessionId" column="SESSIONID" />
+		<result property="loginState" column="LOGIN_STATE" />
+		<result property="userId" column="USER_ID" />
+		<result property="remoteAddr" column="REMOTE_ADDR" />
+		<result property="birthTime" column="BIRTH_TIME" />
+		<result property="userAgent" column="USER_AGENT" />
+		<result property="userName" column="USER_NAME" />
+		<result property="organizationName" column="ORG_NAME" />
+	</resultMap>
+
+	<select id="selectOnLineUser" resultMap="onLineUserResult"
+		parameterClass="map">
+		SELECT
+		    onuser.SESSIONID,
+		    onuser.USER_ID,
+		    onuser.REMOTE_ADDR,
+		    onuser.BIRTH_TIME,
+		    onuser.USER_AGENT,
+		    onuser.LOGIN_STATE,
+		    u.USER_NAME,
+		    org.ORG_NAME
+		FROM
+		    BP_ONLINE_USER onuser
+		LEFT JOIN BP_USER u
+		ON
+		    onuser.USER_ID=u.USER_ID
+		LEFT JOIN BP_EMPLOYEE e
+		ON
+		    u.EMP_ID = e.EMP_ID
+		LEFT JOIN BP_ORGAN org
+		ON
+		    org.ORG_ID = e.DEFAULT_ORG_ID
+		<dyn pre=" where ">
+			<pa pre=" and " rm="true" p="userId">
+				onuser.USER_ID like #userId#
+			</pa>
+			<pa pre=" and " rm="true" p="userName">
+				u.USER_NAME like #userName#
+			</pa>
+		</dyn>
+		<nem pre=" order by " p="sort">
+			<eq p="sort" cv="userId">onuser.USER_ID</eq>
+			<eq p="sort" cv="birthTime">onuser.BIRTH_TIME</eq>
+			<nem pre=" " p="order">
+				<eq p="order" cv="asc">asc</eq>
+				<eq p="order" cv="desc">desc</eq>
+			</nem>
+		</nem>
+	</select>
+
+	<insert id="insertOnLineUser" parameterClass="OnLineUserBean">
+		INSERT
+		INTO
+		    BP_ONLINE_USER
+		    (
+		        SESSIONID,
+		        USER_ID,
+		        REMOTE_ADDR,
+		        BIRTH_TIME,
+		        USER_AGENT,
+		        LOGIN_STATE
+		    )
+		    VALUES
+		    (
+		        #sessionId#,
+		        #userId#,
+		        #remoteAddr#,
+		        #birthTime#,
+		        #userAgent#,
+		        #loginState#
+		    )
+	</insert>
+
+	<delete id="deleteOnLineUserId" parameterClass="String">
+		UPDATE
+		    BP_ONLINE_USER
+		SET
+		    LOGIN_STATE = 0
+		WHERE
+		    USER_ID = #uid#
+	</delete>
+
+	<delete id="deleteOnLineUser" parameterClass="String">
+		DELETE
+		FROM
+		    BP_ONLINE_USER
+		WHERE
+		    SESSIONID = #sid#
+	</delete>
+
+	<select id="getOnlineUserId" resultClass="String"
+		cacheModel="onlineUserId">
+		SELECT
+		    USER_ID
+		FROM
+		    BP_ONLINE_USER
+		WHERE
+		    SESSIONID       = #sid#
+		    AND LOGIN_STATE = 1
+	</select>
+
+	<select id="getOnLineUserAddr" resultClass="string">
+		SELECT DISTINCT
+		    REMOTE_ADDR
+		FROM
+		    BP_ONLINE_USER
+		WHERE
+		    LOGIN_STATE      = 1
+		    AND USER_ID      = #1#
+		    AND REMOTE_ADDR &lt;&gt; #2#
+		    AND BIRTH_TIME   &gt; #3#
+	</select>
+</sqlMap>

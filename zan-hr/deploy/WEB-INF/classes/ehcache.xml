@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ehcache xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="ehcache.xsd">
+	<diskStore path="java.io.tmpdir" />
+
+	<cacheManagerPeerProviderFactory
+		class="net.sf.ehcache.distribution.jgroups.JGroupsCacheManagerPeerProviderFactory"
+		properties="UDP(mcast_addr=231.22.22.132;mcast_port=45566;ip_ttl=32;
+			mcast_send_buf_size=150000;mcast_recv_buf_size=80000):
+			PING(timeout=2000;num_initial_members=3):
+			MERGE2(min_interval=5000;max_interval=10000):
+			FD_SOCK:VERIFY_SUSPECT(timeout=1500):
+			pbcast.NAKACK(gc_lag=50;retransmit_timeout=300,600,1200,2400,4800):
+			UNICAST(timeout=300,600,1200,2400):
+			pbcast.STABLE(desired_avg_gossip=20000):
+			FRAG(frag_size=8096):
+			pbcast.GMS(join_timeout=5000;print_local_addr=true)"
+		propertySeparator="::" />
+
+	<defaultCache maxElementsInMemory="5000" eternal="false"
+		overflowToDisk="false" timeToIdleSeconds="3600" timeToLiveSeconds="600">
+		<cacheEventListenerFactory
+			class="net.sf.ehcache.distribution.jgroups.JGroupsCacheReplicatorFactory"
+			properties="replicateAsynchronously=true, replicatePuts=false,  
+                replicateUpdates=false, replicateUpdatesViaCopy=false, replicateRemovals=true" />
+	</defaultCache>
+
+</ehcache>  

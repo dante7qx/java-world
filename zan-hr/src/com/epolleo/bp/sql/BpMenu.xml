@@ -1,0 +1,323 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+<sqlMap namespace="Menu">
+	<resultMap id="MenuResult" class="com.epolleo.bp.menu.bean.Menu">
+		<result property="menuId" column="MENU_ID" />
+		<result property="name" column="TITLE" />
+		<result property="url" column="PATH" />
+		<result property="funcCode" column="FUNC_CODE" />
+		<result property="menuOrder" column="MENU_ORDER" />
+		<result property="parentId" column="PARENT_ID" />
+		<result property="menuKind" column="MENU_KIND" />
+		<result property="menuInfo" column="MENU_INFO" />
+		<result property="width" column="WIDTH" />
+		<result property="height" column="HEIGHT" />
+		<result property="backColor" column="BACK_COLOR" />
+		<result property="showIn" column="SHOW_IN" />
+		<result property="target" column="TARGET" />
+	</resultMap>
+	<resultMap id="Result" class="com.epolleo.bp.menu.bean.Menu">
+		<result property="menuId" column="MENU_ID" />
+		<result property="name" column="TITLE" />
+		<result property="url" column="PATH" />
+		<result property="funcCode" column="FUNC_CODE" />
+		<result property="menuOrder" column="MENU_ORDER" />
+		<result property="parentId" column="PARENT_ID" />
+		<result property="funcName" column="FUNC_NAME" />
+		<result property="menuInfo" column="MENU_INFO" />
+	</resultMap>
+	<resultMap id="Win8Result" class="com.epolleo.bp.menu.bean.Win8Menu">
+		<result property="title" column="TITLE" />
+		<result property="url" column="PATH" />
+		<result property="funcCode" column="FUNC_CODE" />
+		<result property="menuKind" column="MENU_KIND" />
+		<result property="menuInfo" column="MENU_INFO" />
+		<result property="width" column="WIDTH" />
+		<result property="height" column="HEIGHT" />
+		<result property="backColor" column="BACK_COLOR" />
+		<result property="showIn" column="SHOW_IN" />
+		<result property="target" column="TARGET" />
+	</resultMap>
+	
+	<cacheModel type="OSCACHE" id="menuPathTitleMap">
+		<flushOnExecute statement="insertMenu"/>
+		<flushOnExecute statement="deleteMenu"/>
+		<flushOnExecute statement="updateMenu"/>
+		<flushInterval hours="8"/>
+	</cacheModel>
+	
+	<select id="selectMenu" resultMap="MenuResult"
+		parameterClass="map">
+		SELECT
+		    MENU_ID,
+		    TITLE,
+		    PATH,
+		    FUNC_CODE,
+		    MENU_ORDER,
+		    PARENT_ID,
+		    MENU_KIND,
+		    MENU_INFO,
+		    WIDTH,
+		    HEIGHT,
+		    BACK_COLOR,
+		    SHOW_IN,
+		    TARGET
+		FROM
+		    BP_MENU
+		<dynamic prepend=" where ">
+			<isPropertyAvailable prepend=" and "
+				removeFirstPrepend="true" property="showIn">
+					SHOW_IN LIKE CONCAT('%', #showIn#, '%')
+			</isPropertyAvailable>
+		</dynamic>
+		ORDER BY
+		    parent_id,
+		    menu_order
+	</select>
+	<select id="selectWin8MenuByUserId" resultMap="Win8Result"
+		parameterClass="string">
+		SELECT
+		    TITLE,
+		    PATH,
+		    FUNC_CODE,
+		    MENU_KIND,
+		    MENU_INFO,
+		    WIDTH,
+		    HEIGHT,
+		    BACK_COLOR,
+		    SHOW_IN,
+		    TARGET
+		FROM
+		    BP_MENU
+		WHERE
+		    SHOW_IN LIKE '%win8%'
+		    and
+		    (
+			    FUNC_CODE    IS NULL
+			    OR FUNC_CODE  = ''
+			    OR FUNC_CODE  = 'public'
+			    OR FUNC_CODE IN
+			    (
+			        SELECT
+			            FUNC_CODE
+			        FROM
+			            BP_ROLE_FUNC
+			        WHERE
+			            ROLE_ID IN
+			            (
+			                SELECT
+			                    ROLE_ID
+			                FROM
+			                    BP_USER_ROLE
+			                WHERE
+			                    USER_ID = #userId#
+			            )
+			    )
+		    )
+	</select>
+	<select id="selectWin8Menu" resultMap="Win8Result"
+		parameterClass="map">
+		SELECT
+		    TITLE,
+		    PATH,
+		    FUNC_CODE,
+		    MENU_KIND,
+		    MENU_INFO,
+		    WIDTH,
+		    HEIGHT,
+		    BACK_COLOR,
+		    SHOW_IN,
+		    TARGET
+		FROM
+		    BP_MENU
+		WHERE
+		    SHOW_IN LIKE '%win8%'
+	</select>
+	<select id="selectMenuNotId" resultMap="MenuResult">
+		SELECT
+		    MENU_ID,
+		    TITLE,
+		    PATH,
+		    FUNC_CODE,
+		    MENU_ORDER,
+		    PARENT_ID,
+		    MENU_KIND,
+		    MENU_INFO,
+		    WIDTH,
+		    HEIGHT,
+		    BACK_COLOR,
+		    SHOW_IN,
+		    TARGET
+		FROM
+		    BP_MENU
+		WHERE
+		    MENU_ID       &lt;&gt; #menuId#
+		    AND PARENT_ID &lt;&gt; #menuId#
+		ORDER BY
+		    parent_id,
+		    menu_order
+	</select>
+	<select id="selectChild" resultMap="Result">
+		SELECT
+		    m.MENU_ID,
+		    m.TITLE,
+		    m.PATH,
+		    m.MENU_ORDER,
+		    m.PARENT_ID,
+		    f.FUNC_CODE,
+		    f.FUNC_NAME,
+		    m.MENU_INFO
+		FROM
+		    BP_MENU m
+		LEFT JOIN BP_FUNCTION f
+		ON
+		    m.FUNC_CODE = f.FUNC_CODE
+		WHERE
+		    m.PARENT_ID =#parentId#
+		ORDER BY
+		    m.MENU_ORDER
+	</select>
+	<insert id="insertMenu"
+		parameterClass="com.epolleo.bp.menu.bean.Menu">
+		INSERT
+		INTO
+		    BP_MENU
+		    (
+		        MENU_ID,
+		        TITLE,
+		        PATH,
+		        FUNC_CODE,
+		        MENU_ORDER,
+		        PARENT_ID,
+		        CREATE_USER,
+		        CREATE_TIME,
+		        UPDATE_USER,
+		        UPDATE_TIME,
+		        MENU_KIND,
+		        MENU_INFO,
+		        WIDTH,
+		        HEIGHT,
+		        BACK_COLOR,
+		        SHOW_IN,
+		   		TARGET
+		    )
+		    VALUES
+		    (
+		        #menuId#,
+		        #name#,
+		        #url#,
+		        #funcCode#,
+		        #menuOrder#,
+		        #parentId#,
+		        #createUser#,
+		        #createTime#,
+		        #updateUser#,
+		        #updateTime#,
+		        #menuKind#,
+		        #menuInfo#,
+		        #width#,
+		        #height#,
+		        #backColor#,
+		        #showIn#,
+		        #target#
+		    )
+	</insert>
+	<delete id="deleteMenu">
+		DELETE
+		FROM
+		    BP_MENU
+		WHERE
+		    (
+		        MENU_ID      = #id#
+		        OR PARENT_ID = #id#
+		    )
+	</delete>
+	<update id="updateMenu" parameterClass="com.epolleo.bp.menu.bean.Menu">
+		UPDATE
+		    BP_MENU
+		SET
+		    TITLE       = #name#,
+		    PATH        = #url#,
+		    FUNC_CODE   = #funcCode#,
+		    MENU_ORDER  = #menuOrder#,
+		    UPDATE_USER = #updateUser#,
+		    UPDATE_TIME = #updateTime#,
+		    MENU_KIND = #menuKind#,
+		    MENU_INFO = #menuInfo#,
+		    WIDTH = #width#,
+		    HEIGHT = #height#,
+		    BACK_COLOR = #backColor#,
+		    SHOW_IN = #showIn#,
+		    TARGET = #target#
+		WHERE
+		    MENU_ID = #menuId#
+	</update>
+	<update id="updateParentId">
+		UPDATE
+		    BP_MENU
+		SET
+		    PARENT_ID = #parentId#
+		WHERE
+		    MENU_ID = #menuId#
+	</update>
+	<select id="queryMenuByUserId" resultMap="MenuResult"
+		parameterClass="map">
+		SELECT
+		    MENU_ID,
+		    TITLE,
+		    PATH,
+		    FUNC_CODE,
+		    MENU_ORDER,
+		    PARENT_ID,
+		    MENU_KIND,
+		    MENU_INFO,
+		    WIDTH,
+		    HEIGHT,
+		    BACK_COLOR,
+		    SHOW_IN,
+		    TARGET
+		FROM
+		    BP_MENU
+		WHERE
+		    (
+			    FUNC_CODE    IS NULL
+			    OR FUNC_CODE  = ''
+			    OR FUNC_CODE  = 'public'
+			    OR FUNC_CODE IN
+			    (
+			        SELECT
+			            FUNC_CODE
+			        FROM
+			            BP_ROLE_FUNC
+			        WHERE
+			            ROLE_ID IN
+			            (
+			                SELECT
+			                    ROLE_ID
+			                FROM
+			                    BP_USER_ROLE
+			                WHERE
+			                    USER_ID = #userId#
+			            )
+			    )
+		    )
+		    <isPropertyAvailable prepend=" and "
+				removeFirstPrepend="true" property="showIn">
+					SHOW_IN LIKE CONCAT('%', #showIn#, '%')
+			</isPropertyAvailable>
+		ORDER BY
+		    PARENT_ID,
+		    MENU_ORDER
+	</select>
+	<select id="getMenuDir" resultClass="integer">
+		SELECT DISTINCT PARENT_ID FROM BP_MENU
+	</select>
+	
+	<select id="getMenuPathTitleMap" cacheModel="menuPathTitleMap" resultClass="hashmap">
+		SELECT
+		    TITLE as TITLE,
+		    PATH as PATH
+		FROM
+		    BP_MENU
+	</select>  
+</sqlMap>

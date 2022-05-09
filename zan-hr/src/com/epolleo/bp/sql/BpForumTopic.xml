@@ -1,0 +1,334 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "sql-map-2.dtd">
+<sqlMap namespace="ForumTopicBean">
+	<typeAlias alias="ForumTopicBean"
+		type="com.epolleo.bp.forum.bean.ForumTopicBean" />
+	<resultMap id="ForumTopicResult" class="ForumTopicBean">
+		<result property="groupId" column="GROUP_ID" />
+		<result property="topicId" column="TOPIC_ID" />
+		<result property="parentId" column="PARENT_ID" />
+		<result property="rootId" column="ROOT_ID" />
+		<result property="topicName" column="TOPIC_NAME" />
+		<result property="topicContext" column="TOPIC_CONTEXT" />
+		<result property="createrId" column="CREATER_ID" />
+		<result property="createrName" column="CREATER_NAME" />
+		<result property="createTime" column="CREATE_TIME" />
+		<result property="isleaf" column="ISLEAF" />
+		<result property="replycount" column="REPLYCOUNT" />
+	</resultMap>
+	<!-- 分页查询 -->
+	<select id="queryForumTopicPage" resultMap="ForumTopicResult"
+		parameterClass="map">
+		SELECT
+		    GROUP_ID,
+		    TOPIC_ID,
+		    PARENT_ID,
+		    ROOT_ID,
+		    TOPIC_NAME,
+		    TOPIC_CONTEXT,
+		    CREATER_ID,
+		    CREATER_NAME,
+		    CREATE_TIME,
+		    ISLEAF,
+		    IFNULL(REPLYCOUNT,0) AS REPLYCOUNT
+		FROM
+		    BP_FORUM_TOPIC
+		<dynamic prepend=" where ">
+			<isPropertyAvailable prepend=" and "
+				removeFirstPrepend="true" property="groupId">
+				GROUP_ID = #groupId#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend=" and "
+				removeFirstPrepend="true" property="parentId">
+				PARENT_ID = #parentId#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend=" and "
+				removeFirstPrepend="true" property="rootId">
+				ROOT_ID = #rootId#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend=" and "
+				removeFirstPrepend="true" property="topicId">
+				TOPIC_ID = #topicId#
+			</isPropertyAvailable>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend=" order by " property="sort">
+				<isEqual property="sort" compareValue="groupId">
+					GROUP_ID
+				</isEqual>
+				<isEqual property="sort" compareValue="topicId">
+					TOPIC_ID
+				</isEqual>
+				<isEqual property="sort" compareValue="parentId">
+					PARENT_ID
+				</isEqual>
+				<isEqual property="sort" compareValue="rootId">
+					ROOT_ID
+				</isEqual>
+				<isEqual property="sort" compareValue="topicName">
+					TOPIC_NAME
+				</isEqual>
+				<isEqual property="sort" compareValue="topicContext">
+					TOPIC_CONTEXT
+				</isEqual>
+				<isEqual property="sort" compareValue="createrId">
+					CREATER_ID
+				</isEqual>
+				<isEqual property="sort" compareValue="createrName">
+					CREATER_NAME
+				</isEqual>
+				<isEqual property="sort" compareValue="createTime">
+					CREATE_TIME
+				</isEqual>
+				<isEqual property="sort" compareValue="isleaf">
+					ISLEAF
+				</isEqual>
+				<isNotEmpty prepend=" " property="order">
+					<isEqual property="order" compareValue="asc">
+						asc
+					</isEqual>
+					<isEqual property="order" compareValue="desc">
+						desc
+					</isEqual>
+				</isNotEmpty>
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<!-- 分页 -->
+			<isNotEmpty prepend=" limit " property="isleaf">
+			#isleaf#,20
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	<!-- 搜索 -->
+	<select id="searchForumTopicPage" resultMap="ForumTopicResult"
+		parameterClass="map">
+		SELECT
+		    GROUP_ID,
+		    TOPIC_ID,
+		    PARENT_ID,
+		    ROOT_ID,
+		    TOPIC_NAME,
+		    TOPIC_CONTEXT,
+		    CREATER_ID,
+		    CREATER_NAME,
+		    CREATE_TIME,
+		    ISLEAF,
+		    IFNULL(REPLYCOUNT,0) AS REPLYCOUNT
+		FROM
+		    BP_FORUM_TOPIC
+		WHERE GROUP_ID = #groupId# 
+			and   PARENT_ID = #parentId#
+			and   TOPIC_ID in (select distinct(ROOT_ID) from BP_FORUM_TOPIC where (TOPIC_NAME like #topicContext# or TOPIC_CONTEXT like #topicContext#))
+		<dynamic>
+			<isNotEmpty prepend=" order by " property="sort">
+				<isEqual property="sort" compareValue="groupId">
+					GROUP_ID
+				</isEqual>
+				<isEqual property="sort" compareValue="topicId">
+					TOPIC_ID
+				</isEqual>
+				<isEqual property="sort" compareValue="parentId">
+					PARENT_ID
+				</isEqual>
+				<isEqual property="sort" compareValue="rootId">
+					ROOT_ID
+				</isEqual>
+				<isEqual property="sort" compareValue="topicName">
+					TOPIC_NAME
+				</isEqual>
+				<isEqual property="sort" compareValue="topicContext">
+					TOPIC_CONTEXT
+				</isEqual>
+				<isEqual property="sort" compareValue="createrId">
+					CREATER_ID
+				</isEqual>
+				<isEqual property="sort" compareValue="createrName">
+					CREATER_NAME
+				</isEqual>
+				<isEqual property="sort" compareValue="createTime">
+					CREATE_TIME
+				</isEqual>
+				<isEqual property="sort" compareValue="isleaf">
+					ISLEAF
+				</isEqual>
+				<isNotEmpty prepend=" " property="order">
+					<isEqual property="order" compareValue="asc">
+						asc
+					</isEqual>
+					<isEqual property="order" compareValue="desc">
+						desc
+					</isEqual>
+				</isNotEmpty>
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<!-- 分页 -->
+			<isNotEmpty prepend=" limit " property="isleaf">
+			#isleaf#,20
+			</isNotEmpty>
+		</dynamic>
+	</select>	
+	<!-- 查询所有记录 -->
+	<select id="queryForumTopicList" resultMap="ForumTopicResult"
+		parameterClass="map">
+		SELECT
+		    GROUP_ID,
+		    TOPIC_ID,
+		    PARENT_ID,
+		    ROOT_ID,
+		    TOPIC_NAME,
+		    TOPIC_CONTEXT,
+		    CREATER_ID,
+		    CREATER_NAME,
+		    CREATE_TIME,
+		    ISLEAF,
+		    IFNULL(REPLYCOUNT,0) AS REPLYCOUNT
+		FROM
+		    BP_FORUM_TOPIC
+	</select>
+	<select id="queryForumTopicById" resultMap="ForumTopicResult"
+		parameterClass="Long">
+		SELECT
+		    GROUP_ID,
+		    TOPIC_ID,
+		    PARENT_ID,
+		    ROOT_ID,
+		    TOPIC_NAME,
+		    TOPIC_CONTEXT,
+		    CREATER_ID,
+		    CREATER_NAME,
+		    CREATE_TIME,
+		    ISLEAF,
+		    IFNULL(REPLYCOUNT,0) AS REPLYCOUNT
+		FROM
+		    BP_FORUM_TOPIC
+		WHERE
+		    TOPIC_ID = #id#
+	</select>
+	<insert id="insertForumTopic" parameterClass="ForumTopicBean">
+		INSERT
+		INTO
+		    BP_FORUM_TOPIC
+		    (
+		        GROUP_ID,
+		        TOPIC_ID,
+		        PARENT_ID,
+		        ROOT_ID,
+		        TOPIC_NAME,
+		        TOPIC_CONTEXT,
+		        CREATER_ID,
+		        CREATER_NAME,
+		        CREATE_TIME,
+		        ISLEAF,
+		        REPLYCOUNT
+		    )
+		    VALUES
+		    (
+		        #groupId#,
+		        #topicId#,
+		        #parentId#,
+		        #rootId#,
+		        #topicName#,
+		        #topicContext#,
+		        #createrId#,
+		        #createrName#,
+		        #createTime#,
+		        #isleaf#,
+		        #replycount#
+		    )
+	</insert>
+	<!-- 修改论坛主题 -->
+	<update id="updateForumTopic" parameterClass="ForumTopicBean">
+		UPDATE
+		    BP_FORUM_TOPIC
+		SET
+		    TOPIC_NAME    = #topicName#,
+		    TOPIC_CONTEXT = #topicContext#
+		WHERE
+		    TOPIC_ID = #topicId#
+	</update>
+	<!-- 回复修改父主题非叶节点 -->
+	<update id="updateRootReplyCount" parameterClass="ForumTopicBean">
+		UPDATE
+		    BP_FORUM_TOPIC
+		SET
+		    REPLYCOUNT    = IFNULL(REPLYCOUNT,0) + 1
+		WHERE
+		    TOPIC_ID = #rootId#
+	</update>	
+	<update id="updateRootReplyCountReal" parameterClass="ForumTopicBean">
+		UPDATE
+		    BP_FORUM_TOPIC
+		SET
+		    REPLYCOUNT    = #replycount#
+		WHERE
+		    TOPIC_ID = #rootId# 
+		    and GROUP_ID = #groupId#
+	</update>		
+	<!-- 回复修改父主题非叶节点 -->
+	<update id="updateFatherNotleaf" parameterClass="ForumTopicBean">
+		UPDATE
+		    BP_FORUM_TOPIC
+		SET
+		    ISLEAF    = 0
+		WHERE
+		    TOPIC_ID = #parentId#
+	</update>	
+	<!-- 删除修改父主题叶节点 -->
+	<update id="updateFatherleaf" parameterClass="ForumTopicBean">
+		UPDATE
+		    BP_FORUM_TOPIC
+		SET
+		    ISLEAF    = 1
+		WHERE
+		    TOPIC_ID = #parentId#
+	</update>	
+	<!-- 删除论坛主题 -->
+	<delete id="deleteForumTopic" parameterClass="String">
+		DELETE
+		FROM
+		    BP_FORUM_TOPIC
+		WHERE
+		    TOPIC_ID = #id#
+	</delete>
+	<select id="queryChildbyId" resultMap="ForumTopicResult"
+		parameterClass="Long">
+		SELECT
+		    GROUP_ID,
+		    TOPIC_ID,
+		    PARENT_ID,
+		    ROOT_ID,
+		    TOPIC_NAME,
+		    TOPIC_CONTEXT,
+		    CREATER_ID,
+		    CREATER_NAME,
+		    CREATE_TIME,
+		    ISLEAF,
+		    REPLYCOUNT
+		FROM
+		    BP_FORUM_TOPIC
+		WHERE
+		    PARENT_ID = #topicId#
+	</select>
+	
+	<select id="queryTotalCount" resultClass="java.lang.Integer" parameterClass="ForumTopicBean">
+    	SELECT
+    	   count(1)
+    	FROM
+    	    BP_FORUM_TOPIC
+    	WHERE
+    	    GROUP_ID = #groupId#
+    	    AND PARENT_ID = #parentId#
+    </select>	
+    <select id="queryTotalReply" resultClass="java.lang.Integer" parameterClass="ForumTopicBean">
+    	SELECT
+    	   count(1) - 1 
+    	FROM 
+    	    BP_FORUM_TOPIC
+    	WHERE 
+    	    GROUP_ID = #groupId#
+    	    AND ROOT_ID = #rootId#
+    </select>
+</sqlMap>

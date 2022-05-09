@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "sql-map-2.dtd">
+<sqlMap namespace="EmployeeBenefitBean">
+    <typeAlias alias="employeeBenefitBean" type="com.epolleo.hr.employee.bean.EmployeeBenefitBean" />
+  
+    <!-- 分页查询 -->
+    <select id="queryEmployeeBenefitPage" resultClass="employeeBenefitBean"
+            parameterClass="map">
+        SELECT
+            Id,
+            EmployeeId,
+            PreTaxSalary,
+            TrialPeriodSalary,
+            BankAccount,
+            SalaryCardNo,
+            ProvidentFundDepositBase,
+            InsureDepositBase,
+            PayDate,
+            createUser,
+            createTime,
+            updateUser,
+            updateTime
+        FROM hr_employee_benefit
+        <dynamic prepend=" where ">
+        </dynamic>
+        
+        <dynamic>
+			<isNotEmpty prepend=" order by " property="sort">
+				<isEqual property="sort" compareValue="id">
+					Id
+				</isEqual>
+				<isEqual property="sort" compareValue="employeeId">
+					EmployeeId
+				</isEqual>
+				<isEqual property="sort" compareValue="preTaxSalary">
+					PreTaxSalary
+				</isEqual>
+				<isEqual property="sort" compareValue="trialPeriodSalary">
+					TrialPeriodSalary
+				</isEqual>
+				<isEqual property="sort" compareValue="bankAccount">
+					BankAccount
+				</isEqual>
+				<isEqual property="sort" compareValue="salaryCardNo">
+					SalaryCardNo
+				</isEqual>
+				<isEqual property="sort" compareValue="providentFundDepositBase">
+					ProvidentFundDepositBase
+				</isEqual>
+				<isEqual property="sort" compareValue="insureDepositBase">
+					InsureDepositBase
+				</isEqual>
+				<isEqual property="sort" compareValue="payDate">
+					PayDate
+				</isEqual>
+				<isEqual property="sort" compareValue="createUser">
+					createUser
+				</isEqual>
+				<isEqual property="sort" compareValue="createTime">
+					createTime
+				</isEqual>
+				<isEqual property="sort" compareValue="updateUser">
+					updateUser
+				</isEqual>
+				<isEqual property="sort" compareValue="updateTime">
+					updateTime
+				</isEqual>
+				<isNotEmpty prepend=" " property="order">
+					<isEqual property="order" compareValue="asc">
+						asc
+					</isEqual>
+					<isEqual property="order" compareValue="desc">
+						desc
+					</isEqual>
+				</isNotEmpty>
+			</isNotEmpty>
+		</dynamic>
+    </select>
+    <!-- 查询所有记录 -->
+    <select id="queryEmployeeBenefitList" resultClass="employeeBenefitBean"
+            parameterClass="map">
+        SELECT
+            Id,
+            EmployeeId,
+            PreTaxSalary,
+            TrialPeriodSalary,
+            BankAccount,
+            SalaryCardNo,
+            ProvidentFundDepositBase,
+            InsureDepositBase,
+            PayDate,
+            createUser,
+            createTime,
+            updateUser,
+            updateTime
+        FROM
+            hr_employee_benefit
+    </select>
+    <select id="queryEmployeeBenefitById" resultClass="employeeBenefitBean"
+            parameterClass="Long">
+        SELECT
+            Id,
+            EmployeeId,
+            PreTaxSalary,
+            TrialPeriodSalary,
+            BankAccount,
+            SalaryCardNo,
+            ProvidentFundDepositBase,
+            InsureDepositBase,
+            PayDate,
+            createUser,
+            createTime,
+            updateUser,
+            updateTime        FROM  hr_employee_benefit
+        WHERE
+            Id = #id#
+    </select>
+    <select id="queryEmployeeBenefitByEmpId" resultClass="employeeBenefitBean"
+            parameterClass="Long">
+        SELECT
+            Id,
+            EmployeeId,
+            PreTaxSalary,
+            TrialPeriodSalary,
+            BankAccount,
+            SalaryCardNo,
+            ProvidentFundDepositBase,
+            InsureDepositBase,
+            PayDate,
+            createUser,
+            createTime,
+            updateUser,
+            updateTime        FROM  hr_employee_benefit
+        WHERE
+            EmployeeId = #employeeId#
+    </select>
+    <insert id="insertEmployeeBenefit" parameterClass="employeeBenefitBean">
+        INSERT INTO hr_employee_benefit (
+            Id,
+            EmployeeId,
+            PreTaxSalary,
+            TrialPeriodSalary,
+            BankAccount,
+            SalaryCardNo,
+            ProvidentFundDepositBase,
+            InsureDepositBase,
+            PayDate,
+            createUser,
+            createTime,
+            updateUser,
+            updateTime
+        ) VALUES (
+            #id# ,
+            #employeeId# ,
+            #preTaxSalary# ,
+            #trialPeriodSalary# ,
+            #bankAccount# ,
+            #salaryCardNo# ,
+            #providentFundDepositBase# ,
+            #insureDepositBase# ,
+            #payDate# ,
+            #createUser# ,
+            #createTime# ,
+            #updateUser# ,
+            #updateTime# 
+        )
+    </insert>
+    <!-- 修改员工薪资福利 -->
+    <update id="updateEmployeeBenefit" parameterClass="employeeBenefitBean">
+        UPDATE
+            hr_employee_benefit
+        SET
+            EmployeeId = #employeeId# ,			
+            PreTaxSalary = #preTaxSalary# ,			
+            TrialPeriodSalary = #trialPeriodSalary# ,			
+            BankAccount = #bankAccount# ,			
+            SalaryCardNo = #salaryCardNo# ,			
+            ProvidentFundDepositBase = #providentFundDepositBase# ,			
+            InsureDepositBase = #insureDepositBase# ,			
+            PayDate = #payDate# ,			
+            createUser = #createUser# ,			
+            createTime = #createTime# ,			
+            updateUser = #updateUser# ,			
+            updateTime = #updateTime# 			
+        WHERE
+            Id = #id#
+    </update>
+    <!-- 删除员工薪资福利 -->
+    <delete id="deleteEmployeeBenefit" parameterClass="Long">
+        DELETE
+        FROM
+            hr_employee_benefit
+        WHERE
+            Id = #id#
+    </delete>
+    
+</sqlMap>

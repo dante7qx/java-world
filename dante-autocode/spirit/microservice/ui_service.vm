@@ -1,0 +1,42 @@
+#set($package=$!context.packageName)
+#set($pLen=$package.indexOf("."))
+#set($project=$package.substring(0, $pLen))
+#set($bean=${context.javaBeanName})
+#set($sbean=${context.javaBeanNameLF})
+package com.spirit.${package}.ui.service;
+
+import com.spirit.${project}.commom.dto.req.PageReq;
+import com.spirit.${project}.common.ui.dto.resp.PageResult;
+import com.spirit.${project}.common.ui.exception.SpiritUIServiceException;
+import com.spirit.${package}.ui.vo.role.${bean}VO;
+
+/**
+ * ${table.comment} UI Service
+ * 
+ * @author dante
+ * @date ${genDate}
+ *
+ */
+public interface ${bean}Service {
+	
+	/**
+	 * 分页查询${table.comment}
+	 */
+	public PageResult<${bean}VO> findPage(PageReq pageReq) throws SpiritUIServiceException;
+
+	/**
+	 * 根据id获取${table.comment}
+	 */
+	public RoleVO findBy${bean}Id(Long id) throws SpiritUIServiceException;
+
+	/**
+	 * 删除${table.comment}（逻辑删除）
+	 */
+	public void delete${bean}(${bean}VO ${sbean}VO) throws SpiritUIServiceException;
+
+	/**
+	 * 更新${table.comment}
+	 */
+	public RoleVO update${bean}(${bean}VO ${sbean}VO) throws SpiritUIServiceException;
+	
+}

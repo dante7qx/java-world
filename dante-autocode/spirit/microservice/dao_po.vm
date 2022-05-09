@@ -1,0 +1,69 @@
+package com.spirit.${context.packageName}.dao.po;
+
+import java.io.Serializable;
+import java.util.Date;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+/**
+ * ${table.comment} PO
+ * 
+ * @author dante
+ * @date ${genDate}
+ *
+ */
+@Entity
+@Table(name = "t_${table.tableName}")
+public class ${context.javaBeanName}PO implements Serializable {
+	private static final long serialVersionUID = 1L;
+	
+#foreach($column in $columns)	
+#if(${column.javaFieldName} == "updateUser")
+	@ManyToOne(cascade = { CascadeType.REFRESH }, fetch = FetchType.LAZY)
+	@JoinColumn(name = "update_user")
+	private UserPO updateUser;
+#elseif(${column.javaFieldName} == "deleteFlag")
+	/**
+	 * ${column.comment}
+	 */
+	private Boolean deleteFlag;
+#else
+	/**
+	 * ${column.comment}
+	 */
+	private ${column.javaTypeBox} ${column.javaFieldName};
+#end
+#end
+
+#foreach(${column} in ${columns}) 
+#if(${column.javaFieldName} == "updateUser")
+	public void setUpdateUser(UserPO updateUser){
+		this.updateUser = updateUser;
+	}
+
+	public UserPO getUpdateUser() {
+		return updateUser;
+	}
+#elseif(${column.javaFieldName} == "deleteFlag")
+	public void set${column.javaFieldNameUF}(Boolean ${column.javaFieldName}){
+		this.${column.javaFieldName} = ${column.javaFieldName};
+	}
+
+	public Boolean get${column.javaFieldNameUF}(){
+		return this.${column.javaFieldName};
+	}
+#else
+	public void set${column.javaFieldNameUF}(${column.javaTypeBox} ${column.javaFieldName}){
+		this.${column.javaFieldName} = ${column.javaFieldName};
+	}
+
+	public ${column.javaTypeBox} get${column.javaFieldNameUF}(){
+		return this.${column.javaFieldName};
+	}
+#end
+	
+
+#end
+}

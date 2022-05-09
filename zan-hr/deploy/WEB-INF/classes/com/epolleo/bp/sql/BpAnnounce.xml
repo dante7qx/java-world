@@ -1,0 +1,336 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "sql-map-2.dtd">
+<sqlMap namespace="AnnounceInfoBean">
+	<typeAlias alias="announceInfoBean"
+		type="com.epolleo.bp.announce.bean.AnnounceInfoBean" />
+	<typeAlias alias="menuBean" type="com.epolleo.bp.menu.bean.Menu" />
+	<resultMap id="announceInfoResult" class="announceInfoBean">
+		<result property="id" column="Id" />
+		<result property="content" column="Content" />
+		<result property="effDate" column="EffDate" />
+		<result property="expDate" column="ExpDate" />
+		<result property="updateBy" column="UpdateBy" />
+		<result property="updateDate" column="UpdateDate" />
+	</resultMap>
+	<!-- 分页查询 -->
+	<select id="queryAnnounceInfoPage" resultClass="announceInfoBean"
+		parameterClass="map">
+		SELECT
+		    A.Id      AS ID,
+		    A.Content AS CONTENT,
+		    A.EffDate AS EFFDATE,
+		    A.ExpDate AS EXPDATE,
+		    A.URL     AS URL,
+		    (
+		        SELECT
+		            USER_NAME
+		        FROM
+		            BP_USER
+		        WHERE
+		            USER_ID = A.UpdateBy
+		    )            AS UPDATEBY,
+		    A.UpdateDate AS UPDATEDATE
+		FROM
+		    BP_AnnounceInfo AS A
+		<dynamic prepend=" where ">
+			<isPropertyAvailable prepend=" and "
+				removeFirstPrepend="true" property="funcIdRange">
+				A.FuncIds in $funcIdRange$
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend=" and "
+				removeFirstPrepend="true" property="content">
+				A.Content like #content#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend=" and "
+				removeFirstPrepend="true" property="announceDate">
+				A.EffDate &gt;= #announceDate#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend=" and "
+				removeFirstPrepend="true" property="announceDateEndQuery">
+				A.EffDate &lt;= #announceDateEndQuery#
+			</isPropertyAvailable>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend=" order by " property="sort">
+				<isEqual property="sort" compareValue="effDate">
+					A.EffDate
+				</isEqual>
+				<isEqual property="sort" compareValue="expDate">
+					A.ExpDate
+				</isEqual>
+				<isEqual property="sort" compareValue="updateDate">
+					A.UpdateDate
+				</isEqual>
+				<isNotEmpty prepend=" " property="order">
+					<isEqual property="order" compareValue="asc">
+						asc
+					</isEqual>
+					<isEqual property="order" compareValue="desc">
+						desc
+					</isEqual>
+				</isNotEmpty>
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	<!-- 分页查询前100条  -->
+	<select id="queryAnnounceInfoTop100Page"
+		resultClass="announceInfoBean" parameterClass="map">
+		SELECT
+		    A.Id      AS ID,
+		    A.Content AS CONTENT,
+		    A.EffDate AS EFFDATE,
+		    A.ExpDate AS EXPDATE
+		    (
+		        SELECT
+		            USER_NAME
+		        FROM
+		            BP_USER
+		        WHERE
+		            USER_ID = A.UpdateBy
+		    )            AS UPDATEBY,
+		    A.UpdateDate AS UPDATEDATE
+		FROM
+		    BP_AnnounceInfo AS A
+		<dynamic>
+			<isNotEmpty prepend=" order by " property="sort">
+				<isEqual property="sort" compareValue="effDate">
+					EffDate
+				</isEqual>
+				<isEqual property="sort" compareValue="expDate">
+					ExpDate
+				</isEqual>
+				<isEqual property="sort" compareValue="updateDate">
+					UpdateDate
+				</isEqual>
+				<isNotEmpty prepend=" " property="order">
+					<isEqual property="order" compareValue="asc">
+						asc
+					</isEqual>
+					<isEqual property="order" compareValue="desc">
+						desc
+					</isEqual>
+				</isNotEmpty>
+			</isNotEmpty>
+		</dynamic>
+	</select>
+
+	<select id="queryAnnounceInfoById" resultClass="announceInfoBean"
+		parameterClass="Long">
+		SELECT
+		    A.Id      AS ID,
+		    A.Content AS CONTENT,
+		    A.EffDate AS EFFDATE,
+		    A.ExpDate AS EXPDATE,
+		    (
+		        SELECT
+		            USER_NAME
+		        FROM
+		            BP_USER
+		        WHERE
+		            USER_ID = A.UpdateBy
+		    )            AS UPDATEBY,
+		    A.UpdateDate AS UPDATEDATE
+		FROM
+		    BP_AnnounceInfo AS A
+		WHERE
+		    A.Id = #id#
+	</select>
+	<insert id="insertAnnounceInfo" parameterClass="announceInfoBean">
+		INSERT
+		INTO
+		    BP_AnnounceInfo
+		    (
+		        Id,
+		        Content,
+		        EffDate,
+		        ExpDate,
+		        UpdateBy,
+		        UpdateDate
+		    )
+		    VALUES
+		    (
+		        #id#,
+		        #content#,
+		        #effDate#,
+		        #expDate#,
+		        #updateBy#,
+		        #updateDate#
+		    )
+	</insert>
+	<update id="updateAnnounceInfo" parameterClass="announceInfoBean">
+		UPDATE
+		    BP_AnnounceInfo
+		SET
+		    Content    = #content#,
+		    EffDate    = #effDate#,
+		    ExpDate    = #expDate#,
+		    UpdateBy   = #updateBy#,
+		    UpdateDate = #updateDate#
+		WHERE
+		    Id = #id#
+	</update>
+	<delete id="deleteAnnounceInfo" parameterClass="Long">
+		DELETE FROM BP_AnnounceInfo WHERE Id = #id#
+	</delete>
+	<select id="getAllNotifyByTime" resultClass="AnnounceInfoBean">
+		SELECT
+		    A.Id         AS ID,
+		    A.Content    AS CONTENT,
+		    A.EffDate    AS EFFDATE,
+		    A.ExpDate    AS EXPDATE,
+		    A.UpdateDate AS UPDATEDATE,
+		    A.STATE      AS STATE,
+		    A.FUNCIDS    AS FUNCIDS,
+		    A.URL        AS URL,
+		    A.ORGCODES   AS ORGCODES
+		FROM
+		    BP_AnnounceInfo AS A
+		WHERE
+		    A.EffDate &lt;= #time#
+		    AND
+		    (
+		        a.ExpDate     &gt; #time#
+		        OR a.ExpDate IS NULL
+		    )
+		    AND A.STATE = 0
+		ORDER BY
+		    A.EffDate ASC,
+		    A.UpdateDate ASC
+	</select>
+
+	<select id="queryNotifyById" resultClass="AnnounceInfoBean"
+		parameterClass="Long">
+		SELECT
+		    A.Id      AS ID,
+		    A.Content AS CONTENT,
+		    A.EffDate AS EFFDATE,
+		    A.ExpDate AS EXPDATE,
+		    (
+		        SELECT
+		            USER_NAME
+		        FROM
+		            BP_USER
+		        WHERE
+		            USER_ID = A.UpdateBy
+		    )            AS UPDATEBY,
+		    A.UpdateDate AS UPDATEDATE,
+		    A.STATE      AS STATE,
+		    A.FUNCIDS    AS FUNCIDS,
+		    A.URL        AS URL,
+		    A.ORGCODES   AS ORGCODES
+		FROM
+		    BP_AnnounceInfo AS A
+		WHERE
+		    A.Id = #id#
+	</select>
+	<insert id="insertNotify" parameterClass="AnnounceInfoBean">
+		INSERT
+		INTO
+		    BP_AnnounceInfo
+		    (
+		        Id,
+		        Content,
+		        EffDate,
+		        ExpDate,
+		        UpdateBy,
+		        UpdateDate,
+		        State,
+		        FuncIds,
+		        Url,
+		        OrgCodes
+		    )
+		    VALUES
+		    (
+		        #id#,
+		        #content#,
+		        #effDate#,
+		        #expDate#,
+		        #updateBy#,
+		        #updateDate#,
+		        #state#,
+		        #funcIds#,
+		        #url#,
+		        #orgCodes#
+		    )
+	</insert>
+	<!-- 修改车辆评估 -->
+	<update id="updateNotify" parameterClass="AnnounceInfoBean">
+		UPDATE
+		    BP_AnnounceInfo
+		SET
+		    State      = #state#,
+		    UpdateBy   = #updateBy#,
+		    UpdateDate = #updateDate#
+		WHERE
+		    Id = #id#
+	</update>
+	<!-- 删除车辆评估 -->
+	<delete id="deleteNotify" parameterClass="String">
+		DELETE FROM BP_AnnounceInfo WHERE Id = #id#
+	</delete>
+	<select id="queryAnnounceInfoByUserRole"
+		resultClass="announceInfoBean" parameterClass="map">
+		SELECT
+		    A.Id      AS ID,
+		    A.Content AS CONTENT,
+		    A.EffDate AS EFFDATE,
+		    A.ExpDate AS EXPDATE,
+		    A.URL     AS URL,
+		    (
+		        SELECT
+		            USER_NAME
+		        FROM
+		            BP_USER
+		        WHERE
+		            USER_ID = A.UpdateBy
+		    )            AS UPDATEBY,
+		    A.UpdateDate AS UPDATEDATE,
+		    B.title      AS urlName
+		FROM
+		    BP_AnnounceInfo AS A
+		LEFT JOIN bp_menu B
+		ON
+		    A.url = B.path
+		WHERE
+		    A.State = 0
+		<dynamic>
+			<isPropertyAvailable prepend=" and "
+				property="funcIdRange">
+				A.FuncIds in $funcIdRange$
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend=" and " property="content">
+				A.Content like #content#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend=" and "
+				property="announceDate">
+				A.EffDate &gt;= #announceDate#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend=" and "
+				property="announceDateEndQuery">
+				A.EffDate &lt;= #announceDateEndQuery#
+			</isPropertyAvailable>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend=" order by " property="sort">
+				<isEqual property="sort" compareValue="effDate">
+					A.EffDate
+				</isEqual>
+				<isEqual property="sort" compareValue="expDate">
+					A.ExpDate
+				</isEqual>
+				<isEqual property="sort" compareValue="updateDate">
+					A.UpdateDate
+				</isEqual>
+				<isNotEmpty prepend=" " property="order">
+					<isEqual property="order" compareValue="asc">
+						asc
+					</isEqual>
+					<isEqual property="order" compareValue="desc">
+						desc
+					</isEqual>
+				</isNotEmpty>
+			</isNotEmpty>
+		</dynamic>
+	</select>
+</sqlMap>

@@ -1,0 +1,413 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.org//DTD SQL Map 2.4//EN" "sql-map-2.4.dtd">
+<sqlMap namespace="Employee">
+	<typeAlias alias="Employee"
+		type="com.epolleo.bp.employee.bean.Employee" />
+	<resultMap id="EmployeeResult" class="Employee">
+		<result property="employeeId" column="EMP_ID" />
+		<result property="employeeName" column="EMP_NAME" />
+		<result property="pyCode" column="EMP_PINYIN" />
+		<result property="aliasName" column="ALIAS_NAME" />
+		<result property="nickName" column="NICK_NAME" />
+		<result property="phone" column="PHONE" />
+		<result property="mobileNumber" column="MOBILE" />
+		<result property="address" column="ADDRESS" />
+		<result property="email" column="EMAIL" />
+		<result property="defaultOrgId" column="DEFAULT_ORG_ID" />
+		<result property="state" column="STATE" />
+		<result property="createUser" column="CREATE_USER" />
+		<result property="createTime" column="CREATE_TIME" />
+		<result property="updateUser" column="UPDATE_USER" />
+		<result property="updateTime" column="UPDATE_TIME" />
+	</resultMap>
+	<resultMap id="OrgEmployeeResult" class="Employee">
+		<result property="employeeId" column="EMP_ID" />
+		<result property="employeeName" column="EMP_NAME" />
+		<result property="pyCode" column="EMP_PINYIN" />
+		<result property="aliasName" column="ALIAS_NAME" />
+		<result property="nickName" column="NICK_NAME" />
+		<result property="phone" column="PHONE" />
+		<result property="mobileNumber" column="MOBILE" />
+		<result property="address" column="ADDRESS" />
+		<result property="email" column="EMAIL" />
+		<result property="defaultOrgId" column="DEFAULT_ORG_ID" />
+		<result property="state" column="STATE" />
+		<result property="createUser" column="CREATE_USER" />
+		<result property="createTime" column="CREATE_TIME" />
+		<result property="updateUser" column="UPDATE_USER" />
+		<result property="updateTime" column="UPDATE_TIME" />
+	</resultMap>
+	<select id="selectEmployee" resultMap="EmployeeResult"
+		parameterClass="map">
+		SELECT
+		    t.EMP_ID,
+		    EMP_NAME,
+		    EMP_PINYIN,
+		    ALIAS_NAME,
+		    NICK_NAME,
+		    PHONE,
+		    MOBILE,
+		    ADDRESS,
+		    EMAIL,
+		    STATE,
+		    DEFAULT_ORG_ID,
+		    t.CREATE_USER,
+		    t.CREATE_TIME,
+		    t.UPDATE_USER,
+		    t.UPDATE_TIME
+		FROM
+		    BP_EMPLOYEE t
+		<dyn pre=" where ">
+			<nul pre=" and " rm="true" p="state">STATE &lt;&gt; 3</nul>
+			<pa pre=" and " rm="true" p="employeeName">
+				(EMP_NAME like #employeeName# OR EMP_PINYIN like
+				#employeeName# OR EMAIL like #employeeName#)
+			</pa>
+			<pa pre=" and " rm="true" p="employeeId">
+				EMP_ID = #employeeId#
+			</pa>
+			<pa pre=" and " rm="true" p="email">EMAIL like #email#</pa>
+		</dyn>
+		<dyn>
+			<nem pre=" order by " p="sort">
+				<eq p="sort" cv="employeeId">EMP_ID</eq>
+				<eq p="sort" cv="employeeName">EMP_NAME</eq>
+				<eq p="sort" cv="updateTime">UPDATE_TIME</eq>
+				<nem pre=" " p="order">
+					<eq p="order" cv="asc">ASC</eq>
+					<eq p="order" cv="desc">DESC</eq>
+				</nem>
+			</nem>
+		</dyn>
+	</select>
+	<update id="updateEmployee" parameterClass="Employee">
+		UPDATE
+		    BP_EMPLOYEE
+		SET
+		    EMP_NAME       = #employeeName#,
+		    DEFAULT_ORG_ID = #defaultOrgId#,
+		    EMP_PINYIN     = #pyCode#,
+		    ALIAS_NAME     = #aliasName#,
+		    NICK_NAME      = #nickName#,
+		    PHONE          = #phone#,
+		    MOBILE         = #mobileNumber#,
+		    ADDRESS        = #address#,
+		    EMAIL          = #email#,
+		    STATE          = #state#,
+		    UPDATE_USER    = #updateUser#,
+		    UPDATE_TIME    = #updateTime#
+		WHERE
+		    EMP_ID = #employeeId#
+	</update>
+	<insert id="insertEmployee" parameterClass="Employee">
+		INSERT
+		INTO
+		    BP_EMPLOYEE
+		    (
+		        EMP_ID,
+		        EMP_NAME,
+		        DEFAULT_ORG_ID,
+		        EMP_PINYIN,
+		        ALIAS_NAME,
+		        NICK_NAME,
+		        PHONE,
+		        MOBILE,
+		        ADDRESS,
+		        EMAIL,
+		        STATE,
+		        CREATE_USER,
+		        CREATE_TIME,
+		        UPDATE_USER,
+		        UPDATE_TIME
+		    )
+		    VALUES
+		    (
+		        #employeeId#,
+		        #employeeName#,
+		        #defaultOrgId#,
+		        #pyCode#,
+		        #aliasName#,
+		        #nickName#,
+		        #phone#,
+		        #mobileNumber#,
+		        #address#,
+		        #email#,
+		        #state#,
+		        #createUser#,
+		        #createTime#,
+		        #updateUser#,
+		        #updateTime#
+		    )
+	</insert>
+	<delete id="deleteEmployee" parameterClass="Integer">
+		UPDATE
+		    BP_EMPLOYEE
+		SET
+		    STATE = 3
+		WHERE
+		    EMP_ID = #id#
+	</delete>
+	<select id="getEmployee" resultMap="EmployeeResult"
+		parameterClass="Integer">
+		SELECT
+		    EMP_ID,
+		    EMP_NAME,
+		    EMP_PINYIN,
+		    ALIAS_NAME,
+		    NICK_NAME,
+		    PHONE,
+		    MOBILE,
+		    ADDRESS,
+		    EMAIL,
+		    STATE,
+		    DEFAULT_ORG_ID,
+		    CREATE_USER,
+		    CREATE_TIME,
+		    UPDATE_USER,
+		    UPDATE_TIME
+		FROM
+		    BP_EMPLOYEE
+		WHERE
+		    EMP_ID = #employeeId#
+	</select>
+
+	<select id="getEmployeeByEmail" resultMap="EmployeeResult"
+		parameterClass="string">
+		SELECT
+		    EMP_ID,
+		    EMP_NAME,
+		    EMP_PINYIN,
+		    ALIAS_NAME,
+		    NICK_NAME,
+		    PHONE,
+		    MOBILE,
+		    ADDRESS,
+		    EMAIL,
+		    STATE,
+		    DEFAULT_ORG_ID,
+		    CREATE_USER,
+		    CREATE_TIME,
+		    UPDATE_USER,
+		    UPDATE_TIME
+		FROM
+		    BP_EMPLOYEE
+		WHERE
+		    EMAIL = #email#
+	</select>
+	<select id="getOrgEmployees" resultMap="OrgEmployeeResult"
+		parameterClass="map">
+		SELECT
+		    t.EMP_ID,
+		    EMP_NAME,
+		    EMP_PINYIN,
+		    ALIAS_NAME,
+		    NICK_NAME,
+		    PHONE,
+		    MOBILE,
+		    ADDRESS,
+		    EMAIL,
+		    STATE,
+		    DEFAULT_ORG_ID,
+		    t.CREATE_USER,
+		    t.CREATE_TIME,
+		    t.UPDATE_USER,
+		    t.UPDATE_TIME
+		FROM
+		    BP_EMPLOYEE t
+		<dyn pre=" where ">
+			<nul pre=" and " rm="true" p="state">
+				t.STATE &lt;&gt; 3
+			</nul>
+			<nem pre=" and " rm="true" p="orgId">
+				t.EMP_ID IN ( SELECT EMP_ID FROM BP_EMPLOYEE_ORGAN WHERE
+				ORG_ID in (select ORG_ID from bp_organ where FULL_ID
+				like #orgId# )) or t.DEFAULT_ORG_ID IN ( select ORG_ID
+				from bp_organ where FULL_ID like #orgId# )
+			</nem>
+			<pa pre=" and " rm="true" p="employeeName">
+				(t.EMP_NAME like #employeeName# OR t.EMP_PINYIN like
+				#employeeName#)
+			</pa>
+		</dyn>
+		<dyn>
+			<nem pre=" order by " p="sort">
+				<eq p="sort" cv="employeeId">t.EMP_ID</eq>
+				<eq p="sort" cv="employeeName">t.EMP_NAME</eq>
+				<eq p="sort" cv="updateTime">t.UPDATE_TIME</eq>
+				<nem pre=" " p="order">
+					<eq p="order" cv="asc">ASC</eq>
+					<eq p="order" cv="desc">DESC</eq>
+				</nem>
+			</nem>
+			<em pre=" order by " p="sort">t.EMP_ID ASC</em>
+		</dyn>
+	</select>
+
+	<select id="getOrgNameListByEmp" resultClass="string">
+		SELECT
+		    ORG_NAME
+		FROM
+		    BP_ORGAN
+		WHERE
+		    ORG_ID IN
+		    (
+		        SELECT
+		            ORG_ID
+		        FROM
+		            BP_EMPLOYEE_ORGAN
+		        WHERE
+		            EMP_ID = #empId#
+		    )
+	</select>
+
+	<select id="getOrgCodesByEmployeeId" resultClass="string" parameterClass="integer">
+		SELECT DISTINCT
+		    ORG_CODE
+		FROM
+		    BP_ORGAN
+		WHERE
+		    ORG_CODE is not NULL
+		    AND
+		    (
+		        ORG_ID IN
+		        (
+		            SELECT
+		                DEFAULT_ORG_ID
+		            FROM
+		                BP_EMPLOYEE
+		            WHERE
+		                EMP_ID = #id#
+		        )
+		        OR ORG_ID IN
+		        (
+		            SELECT
+		                ORG_ID
+		            FROM
+		                BP_EMPLOYEE_ORGAN
+		            WHERE
+		                EMP_ID = #id#
+		        )
+		    )
+	</select>
+
+	<update id="updateEmployeeDefaultOrg" parameterClass="Employee">
+		UPDATE
+		    BP_EMPLOYEE
+		SET
+		    DEFAULT_ORG_ID = #defaultOrgId#
+		WHERE
+		    EMP_ID = #employeeId#
+	</update>
+
+	<select id="selectNoAccountEmployee" resultMap="EmployeeResult"
+		parameterClass="map">
+		SELECT
+		    t.EMP_ID,
+		    EMP_NAME,
+		    EMP_PINYIN,
+		    ALIAS_NAME,
+		    NICK_NAME,
+		    PHONE,
+		    MOBILE,
+		    ADDRESS,
+		    EMAIL,
+		    STATE,
+		    DEFAULT_ORG_ID,
+		    t.CREATE_USER,
+		    t.CREATE_TIME,
+		    t.UPDATE_USER,
+		    t.UPDATE_TIME
+		FROM
+		    BP_EMPLOYEE t
+		WHERE
+		    t.EMP_ID NOT IN
+		    (
+		        SELECT
+		            t1.EMP_ID
+		        FROM
+		            BP_USER t1
+		        WHERE
+		            t1.EMP_ID IS NOT NULL AND t1.STATE &lt;&gt; '3'
+		    )
+		    AND t.STATE &lt;&gt; '3'
+		<pa pre=" and " rm="true" p="employeeName">
+			(t.EMP_NAME like #employeeName# OR EMP_PINYIN like
+			#employeeName# OR EMAIL like #employeeName#)
+		</pa>
+	</select>
+	<select id="getEmployeeByOrgs" parameterClass="Map"
+		resultClass="com.epolleo.bp.employee.bean.Employee">
+		SELECT
+		    EMP_ID   AS employeeId,
+		    EMP_NAME AS employeeName,
+		    EMAIL    AS email
+		FROM
+		    BP_EMPLOYEE
+		<dynamic prepend=" where ">
+			<isNotEmpty prepend=" and " property="fullIdList">
+				DEFAULT_ORG_ID in (select org_id from bp_organ where
+				<iterate property="fullIdList" conjunction=" or "
+					close=")" open="(">
+					full_id like #fullIdList[]#
+				</iterate>
+				)
+			</isNotEmpty>
+			<isPropertyAvailable prepend=" and "
+				removeFirstPrepend="true" property="name">
+				(EMP_NAME like #name# OR EMP_PINYIN like #name# OR EMAIL
+				like #name#)
+			</isPropertyAvailable>
+			and state = 1
+		</dynamic>
+	</select>
+	<select id="getEmployeesByFuncCode" resultMap="EmployeeResult"
+		parameterClass="String">
+		SELECT
+		    EMP_ID,
+		    EMP_NAME,
+		    EMP_PINYIN,
+		    ALIAS_NAME,
+		    NICK_NAME,
+		    PHONE,
+		    MOBILE,
+		    ADDRESS,
+		    EMAIL,
+		    STATE,
+		    DEFAULT_ORG_ID,
+		    CREATE_USER,
+		    CREATE_TIME,
+		    UPDATE_USER,
+		    UPDATE_TIME
+		FROM
+		    bp_employee
+		WHERE
+		    STATE       = 1
+		    AND emp_id IN
+		    (
+		        SELECT DISTINCT
+		            emp_id
+		        FROM
+		            bp_user
+		        WHERE
+		            STATE        = 1
+		            AND user_id IN
+		            (
+		                SELECT
+		                    user_id
+		                FROM
+		                    bp_user_role
+		                WHERE
+		                    role_id IN
+		                    (
+		                        SELECT
+		                            role_id
+		                        FROM
+		                            bp_role_func
+		                        WHERE
+		                            func_code=#funcCode#
+		                    )
+		            )
+		    )
+	</select>
+
+</sqlMap>

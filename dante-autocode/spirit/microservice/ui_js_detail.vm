@@ -1,0 +1,90 @@
+#set($bean=${context.javaBeanName})
+#set($sbean=${context.javaBeanNameLF})
+#set($lowBean=${context.javaBeanNameLF.toLowerCase()})
+var ${bean}DetailPage = {
+		SUBMIT_FLAG: false,
+		param${bean}Id: '',
+		initPage: function(param${bean}Id) {
+			this.param${bean}Id = param${bean}Id;
+			this.loadData();
+		},
+		loadData: function() {
+			if(this.param${bean}Id) {
+				hnasys.util.controlFormBtn(false, '${sbean}FormBtnContainer');
+				this.loadDataById(false);
+			} else {
+				hnasys.util.controlFormBtn(true, '${sbean}FormBtnContainer');
+				$('#${sbean}DetailForm').form('clear');
+			}
+		},
+		loadDataById: function(editable) {
+			$.ajax({
+				url: '${lowBean}/query_by_id',
+				type: 'post',
+				data: {
+					id: ${bean}DetailPage.param${bean}Id
+				},
+				success: function(result) {
+					if(result['resultCode'] != COMMON_CONFIG['SUCCESS']) {
+						$.messager.alert('错误','系统错误，请联系系统管理员', 'error');
+						return;
+					}
+					$('#${sbean}DetailForm').form('clear').form('load', result['data']);
+					${bean}DetailPage.loadUpdateInfo(result['data']);
+					hnasys.util.isEditForm('${sbean}DetailForm', editable);
+				}
+			});
+		},
+		loadUpdateInfo: function(data) {
+			var updateUserName = data['updateUserName'] ? data['updateUserName'] : '';
+			var updateDate = data['updateDate'] ? data['updateDate'] : '';
+			$('#${sbean}UpdateInfo').text(updateUserName + ' ' + updateDate);
+		},
+		submit: function() {
+			$('#${sbean}DetailForm').form('submit', {
+				iframe: false,
+			    url: '${lowBean}/update_${lowBean}',
+			    success:function(result){
+			    	var result = eval('(' + result + ')');
+			    	if(result['resultCode'] == COMMON_CONFIG['SUCCESS']) {
+			        	$('#${sbean}Gridlist').datagrid('reload');
+			        	$('#${sbean}Window').window('close');
+			        } else {
+			        	$.messager.alert('错误','系统错误，请联系系统管理员', 'error');
+			        }
+			    }
+			});
+		},
+		reset: function() {
+			if(this.param${bean}Id) {
+				this.loadDataById(true);
+			} else {
+				$('#${sbean}DetailForm').form('clear');
+			}
+		},
+		del: function() {
+			$.messager.confirm('提示', '您确定要删除吗?', function(r){
+				if (r){
+					$.ajax({
+						url: '${lowBean}/delete_${lowBean}',
+						type: 'post',
+						data: {
+							id: $('#id','#${sbean}DetailForm').val()
+						},
+						success: function(result) {
+							if(result['resultCode'] != COMMON_CONFIG['SUCCESS']) {
+								$.messager.alert('错误','系统错误，请联系系统管理员', 'error');
+								return;
+							}
+							$('#${sbean}Gridlist').datagrid('reload');
+				        	$('#${sbean}Window').window('close');
+						}
+					});
+				}
+			});
+		},
+		edit: function() {
+			hnasys.util.controlFormBtn(true, '${sbean}FormBtnContainer');
+			hnasys.util.isEditForm('${sbean}DetailForm', true);
+		}
+};

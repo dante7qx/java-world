@@ -1,0 +1,40 @@
+package com.hnair.hiapp.fss.dto.${context.packageName};
+
+import lombok.Data;
+
+/**
+ * ${table.comment} DTO
+ * 
+ * @author dante
+ * @date ${genDate}
+ *
+ */
+@Data
+public class ${context.javaBeanName}DTO {
+
+	#foreach($column in $columns)	
+#if(${column.javaFieldName} == "updateUser")
+	/**
+	 * 更新人Id
+	 */
+	private Long updateUser;
+    
+    /**
+	 * 更新人Name
+	 */
+	private String updateUserName;
+#elseif(${column.javaFieldName} == "deleteFlag")
+	
+#elseif(${column.javaFieldName} == "updateDate")
+	/**
+	 * 更新日期
+	 */
+	private String updateDate;
+#else
+	/**
+	 * ${column.comment}
+	 */
+	private ${column.javaTypeBox} ${column.javaFieldName};
+#end
+#end
+}

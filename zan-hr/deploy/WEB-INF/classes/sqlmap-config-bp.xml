@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE sqlMapConfig PUBLIC "-//iBATIS.com//DTD SQL Map Config 2.0//EN" 
+	"http://ibatis.apache.org/dtd/sql-map-config-2.dtd">
+<sqlMapConfig>
+	<sqlMap resource="com/epolleo/bp/sql/BpSeq.xml" />
+	<sqlMap resource="com/epolleo/bp/sql/BpOrgType.xml" />
+	<sqlMap resource="com/epolleo/bp/sql/BpOrg.xml" />
+	<sqlMap resource="com/epolleo/bp/sql/BpRole.xml" />
+	<sqlMap resource="com/epolleo/bp/sql/BpFunction.xml" />
+	<sqlMap resource="com/epolleo/bp/sql/BpAuditLog.xml" />
+	<sqlMap resource="com/epolleo/bp/sql/BpRoleFunction.xml" />
+	<sqlMap resource="com/epolleo/bp/sql/BpUser.xml" />
+	<sqlMap resource="com/epolleo/bp/sql/BpMenu.xml" />
+	<sqlMap resource="com/epolleo/bp/sql/BpUserRole.xml" />
+	<sqlMap resource="com/epolleo/bp/sql/BpSysParam.xml" />
+	<sqlMap resource="com/epolleo/bp/sql/BpOnLineUser.xml" />
+	<sqlMap resource="com/epolleo/bp/sql/BpEmployee.xml" />
+	<sqlMap resource="com/epolleo/bp/sql/BpEmployeeOrgan.xml" />
+	<sqlMap resource="com/epolleo/bp/sql/BpForumGroup.xml" />
+	<sqlMap resource="com/epolleo/bp/sql/BpForumTopic.xml" />
+	<sqlMap resource="com/epolleo/bp/sql/BpTaskDef.xml" />
+	<sqlMap resource="com/epolleo/bp/sql/BpAnnounce.xml" />
+	<sqlMap resource="com/epolleo/bp/sql/BpLoc.xml" />
+	<sqlMap resource="com/epolleo/bp/sql/BpHoliday.xml" />
+</sqlMapConfig>

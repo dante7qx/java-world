@@ -1,0 +1,306 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "sql-map-2.dtd">
+<sqlMap namespace="LoginUser">
+	<typeAlias alias="LoginUser"
+		type="com.epolleo.bp.user.bean.LoginUser" />
+	<resultMap id="LoginUserResult" class="LoginUser">
+		<result property="userId" column="USER_ID" />
+		<result property="userName" column="USER_NAME" />
+		<result property="passWord" column="PASSWD" />
+		<result property="passwordTime" column="PASSWD_TIME" />
+		<result property="employeeId" column="EMP_ID" />
+		<result property="employeeName" column="EMP_NAME" />
+		<result property="state" column="STATE" />
+		<result property="sysUser" column="IS_SYS" />
+		<result property="createUser" column="CREATE_USER" />
+		<result property="createTime" column="CREATE_TIME" />
+		<result property="updateUser" column="UPDATE_USER" />
+		<result property="updateTime" column="UPDATE_TIME" />
+	</resultMap>
+
+	<select id="selectUser" resultMap="LoginUserResult"
+		parameterClass="map">
+		SELECT
+		    t.USER_ID,
+		    t.USER_NAME,
+		    t.STATE,
+		    t.EMP_ID,
+		    t1.EMP_NAME,
+		    t.IS_SYS,
+		    t.PASSWD,
+		    t.PASSWD_TIME,
+		    t.CREATE_USER,
+		    t.CREATE_TIME,
+		    t.UPDATE_USER,
+		    t.UPDATE_TIME
+		FROM
+		    BP_USER t
+		LEFT JOIN BP_EMPLOYEE t1
+		ON
+		    t.EMP_ID = t1.EMP_ID
+		<dynamic prepend=" where ">
+			<isNull prepend=" and " removeFirstPrepend="true"
+				property="state">
+				t.STATE IN (1,2)
+			</isNull>
+			<isPropertyAvailable prepend=" and "
+				removeFirstPrepend="true" property="userName">
+				t.USER_NAME like #userName#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend=" and "
+				removeFirstPrepend="true" property="userId">
+				t.USER_ID like #userId#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend=" and "
+				removeFirstPrepend="true" property="employeeId">
+				t.EMP_ID = #employeeId#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend=" and "
+				removeFirstPrepend="true" property="orgId">
+				t1.EMP_ID in (select EMP_ID from BP_EMPLOYEE_ORGAN where
+				ORG_ID = #orgId#)
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend=" and "
+				removeFirstPrepend="true" property="userId">
+				t.USER_ID like #userId#
+			</isPropertyAvailable>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty prepend=" order by " property="sort">
+				<isEqual property="sort" compareValue="userId">
+					t.USER_ID
+				</isEqual>
+				<isEqual property="sort" compareValue="userName">
+					t.USER_NAME
+				</isEqual>
+				<isEqual property="sort" compareValue="updateTime">
+					t.UPDATE_TIME
+				</isEqual>
+				<isNotEmpty prepend=" " property="order">
+					<isEqual property="order" compareValue="asc">
+						asc
+					</isEqual>
+					<isEqual property="order" compareValue="desc">
+						desc
+					</isEqual>
+				</isNotEmpty>
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	<update id="updateUser" parameterClass="LoginUser">
+		UPDATE
+		    BP_USER
+		SET
+		    USER_NAME   = #userName#,
+		    PASSWD      = #passWord#,
+		    PASSWD_TIME = #passwordTime#,
+		    EMP_ID      = #employeeId#,
+		    STATE       = #state#,
+		    IS_SYS      = #sysUser#,
+		    UPDATE_USER = #updateUser#,
+		    UPDATE_TIME = #updateTime#
+		WHERE
+		    USER_ID = #userId#
+	</update>
+	<update id="updateUserUpdateInfo" parameterClass="LoginUser">
+		UPDATE
+		    BP_USER
+		SET
+		    UPDATE_USER = #updateUser#,
+		    UPDATE_TIME = #updateTime#
+		WHERE
+		    USER_ID = #userId#
+	</update>
+	<insert id="insertUser" parameterClass="LoginUser">
+		INSERT
+		INTO
+		    BP_USER
+		    (
+		        USER_ID,
+		        USER_NAME,
+		        PASSWD,
+		        PASSWD_TIME,
+		        EMP_ID,
+		        STATE,
+		        IS_SYS,
+		        CREATE_USER,
+		        CREATE_TIME,
+		        UPDATE_USER,
+		        UPDATE_TIME
+		    )
+		    VALUES
+		    (
+		        #userId#,
+		        #userName#,
+		        #passWord#,
+		        #passwordTime#,
+		        #employeeId#,
+		        #state#,
+		        #sysUser#,
+		        #createUser#,
+		        #createTime#,
+		        #updateUser#,
+		        #updateTime#
+		    )
+	</insert>
+	<delete id="deleteUser" parameterClass="String">
+		UPDATE
+		    BP_USER
+		SET
+		    STATE = 3
+		WHERE
+		    USER_ID = #id#
+	</delete>
+	<delete id="deleteUserByEmployeeId" parameterClass="Integer">
+		UPDATE
+		    BP_USER
+		SET
+		    STATE = 3
+		WHERE
+		    EMP_ID = #id#
+	</delete>
+	<select id="getUser" resultMap="LoginUserResult"
+		parameterClass="String">
+		SELECT
+		    t.USER_ID,
+		    t.USER_NAME,
+		    t.PASSWD,
+		    t.PASSWD_TIME,
+		    t.STATE,
+		    t.EMP_ID,
+		    t1.EMP_NAME,
+		    t.IS_SYS,
+		    t.CREATE_USER,
+		    t.CREATE_TIME,
+		    t.UPDATE_USER,
+		    t.UPDATE_TIME
+		FROM
+		    BP_USER t
+		LEFT JOIN BP_EMPLOYEE t1
+		ON
+		    t.EMP_ID = t1.EMP_ID
+		WHERE
+		    t.USER_ID = #userId#
+	</select>
+
+	<select id="getUserByEmployeeId" resultMap="LoginUserResult"
+		parameterClass="Integer">
+		SELECT
+		    t.USER_ID,
+		    t.USER_NAME,
+		    t.PASSWD,
+		    t.PASSWD_TIME,
+		    t.STATE,
+		    t.EMP_ID,
+		    t1.EMP_NAME,
+		    t.IS_SYS,
+		    t.CREATE_USER,
+		    t.CREATE_TIME,
+		    t.UPDATE_USER,
+		    t.UPDATE_TIME
+		FROM
+		    BP_USER t
+		LEFT JOIN BP_EMPLOYEE t1
+		ON
+		    t.EMP_ID = t1.EMP_ID
+		WHERE
+		    t.EMP_ID     = #employeeId#
+		    AND t.STATE &lt;&gt; 3
+	</select>
+	<select id="queryUserByRoleId" resultClass="LoginUser">
+		SELECT
+		    u.USER_ID   AS userId,
+		    u.USER_NAME AS userName
+		FROM
+		    BP_USER            AS u
+		LEFT JOIN BP_USER_ROLE AS ur
+		ON
+		    u.user_id = ur.user_id
+		LEFT JOIN BP_ROLE AS r
+		ON
+		    r.role_id = ur.role_id
+		WHERE
+		    r.role_id = #1#
+	</select>
+	<select id="queryMobileById" resultClass="java.lang.String">
+		SELECT
+		    emp.MOBILE
+		FROM
+		    BP_USER           AS u
+		LEFT JOIN BP_EMPLOYEE AS emp
+		ON
+		    u.emp_id = emp.emp_id
+		WHERE
+		    u.user_id = #1#
+	</select>
+	<select id="isResByFunId" resultClass="java.lang.Integer">
+		SELECT
+		    COUNT(1)
+		FROM
+		    BP_USER       AS u
+		JOIN BP_USER_ROLE AS ur
+		ON
+		    ur.USER_ID = u.USER_ID
+		JOIN BP_ROLE AS role
+		ON
+		    role.ROLE_ID = ur.ROLE_ID
+		JOIN BP_ROLE_FUNC AS rf
+		ON
+		    rf.ROLE_ID = role.ROLE_ID
+		JOIN BP_FUNCTION AS func
+		ON
+		    func.FUNC_CODE = rf.FUNC_CODE
+		WHERE
+		    u.USER_ID          = #1#
+		    AND func.FUNC_CODE = #2#
+	</select>
+
+	<select id="selectRoleUser" resultMap="LoginUserResult"
+		parameterClass="map">
+		SELECT
+		    t.USER_ID,
+		    t.USER_NAME,
+		    t.STATE,
+		    t.EMP_ID,
+		    t2.EMP_NAME,
+		    t.IS_SYS,
+		    t.PASSWD,
+		    t.PASSWD_TIME,
+		    t.CREATE_USER,
+		    t.CREATE_TIME,
+		    t.UPDATE_USER,
+		    t.UPDATE_TIME
+		FROM
+		    BP_USER t
+		LEFT JOIN BP_USER_ROLE t1
+		ON
+		    t.USER_ID = t1.USER_ID
+		LEFT JOIN BP_EMPLOYEE t2
+		ON
+		    t.EMP_ID = t2.EMP_ID
+		WHERE
+		    t.STATE       IN(1, 2)
+		    AND t1.ROLE_ID = #roleId#
+		<dynamic>
+			<isNotEmpty prepend=" order by " property="sort">
+				<isEqual property="sort" compareValue="userId">
+					t.USER_ID
+				</isEqual>
+				<isEqual property="sort" compareValue="userName">
+					t.USER_NAME
+				</isEqual>
+				<isEqual property="sort" compareValue="updateTime">
+					t.UPDATE_TIME
+				</isEqual>
+				<isNotEmpty prepend=" " property="order">
+					<isEqual property="order" compareValue="asc">
+						asc
+					</isEqual>
+					<isEqual property="order" compareValue="desc">
+						desc
+					</isEqual>
+				</isNotEmpty>
+			</isNotEmpty>
+		</dynamic>
+	</select>
+</sqlMap>

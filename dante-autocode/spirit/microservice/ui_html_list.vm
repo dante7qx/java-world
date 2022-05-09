@@ -1,0 +1,57 @@
+#set($package=$!context.packageName)
+#set($pLen=$package.indexOf("."))
+#set($paLen=$pLen + 1)
+#set($project=$package.substring(0, $pLen))
+#set($moudle=$package.substring($paLen, $package.length()))
+#set($bean=${context.javaBeanName})
+#set($sbean=${context.javaBeanNameLF})
+#set($lowBean=${context.javaBeanNameLF.toLowerCase()})
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" 
+xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head>
+<head th:replace="common/common"/>
+<title th:fragment="title">${table.comment}</title>
+</head>
+<body>
+	<div class="bdcontent">
+		<table id="${sbean}Gridlist"></table>
+	</div>
+	<div id="${sbean}GridToolbar" class="bdgridtoolbar">
+		<form id="${sbean}QueryForm">
+			<table>
+				<tr>
+					<td>
+						<table>
+							<tr>
+								<td class="searchtitle">名称</td>
+								<td><input id="queryName" name="name" type="text"/></td>
+								<td class="searchtitle">
+									<a href="javascript:;" class="easyui-linkbutton" iconCls="icon-search" plain="true" onclick="${bean}Page.search();">查询</a>
+								</td>
+								<td>
+									<a href="javascript:;" class="easyui-linkbutton" iconCls="icon-undo" plain="true" onclick="${bean}Page.reset();">重置</a>
+								</td>
+							</tr>
+						</table>
+					</td>
+					<td align="right">
+						<a sec:authorize="hasAuthority('${moudle}.${lowBean}.update')" href="javascript:;" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="${bean}Page.edit${bean}('');">新增</a>
+					</td>
+				</tr>
+			</table>
+		</form>
+	</div>
+	<div id="${sbean}Window" class="easyui-window" modal="true" collapsible="false"
+		minimizable="true" maximizable="false" resizable="false" closed="true"
+		style="height:300px; width: 600px; display: none;"></div>
+		
+	<script th:src="@{ux/util/hnasys-util.js}" type="text/javascript"></script>
+	<script th:src="@{module/${lowBean}/${lowBean}list.js}" type="text/javascript"></script>
+	<script th:line="javascript">
+		$(function() {
+			${bean}Page.load${bean}List();
+		});
+	</script>
+</body>
+</html>

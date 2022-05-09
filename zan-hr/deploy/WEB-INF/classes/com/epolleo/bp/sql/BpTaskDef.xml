@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "sql-map-2.dtd">
+<sqlMap namespace="TaskDefBean">
+	<typeAlias alias="taskDefBean"
+		type="com.epolleo.bp.task.bean.TaskDefBean" />
+	<resultMap id="taskDefResult" class="taskDefBean">
+		<result property="taskId" column="TASK_ID" />
+		<result property="beanId" column="TASK_REF_ID" />
+		<result property="enable" column="TASK_ENABLE" />
+		<result property="taskName" column="TASK_NAME" />
+		<result property="startTime" column="START_TIME" />
+		<result property="endTime" column="END_TIME" />
+		<result property="shedType" column="SHED_TYPE" />
+		<result property="shedExpr" column="SHED_EXPR" />
+		<result property="execId" column="EXEC_ID" />
+		<result property="bpId" column="bpId" />
+		<result property="lastTime" column="LAST_TIME" />
+		<result property="lastInfo" column="LAST_INFO" />
+		<result property="nextTime" column="NEXT_TIME" />
+		<result property="updateUser" column="UPDATE_USER" />
+		<result property="updateTime" column="UPDATE_TIME" />
+	</resultMap>
+	<!-- 分页查询 -->
+	<select id="queryTaskDefPage" resultMap="taskDefResult"
+		parameterClass="map">
+		SELECT
+		    a.TASK_ID,
+		    a.TASK_REF_ID,
+		    a.TASK_ENABLE,
+		    a.TASK_NAME,
+		    a.START_TIME,
+		    a.END_TIME,
+		    a.SHED_TYPE,
+		    a.SHED_EXPR,
+		    a.EXEC_ID,
+		    b.EXEC_ID AS bpId,
+		    b.LAST_TIME,
+		    b.LAST_INFO,
+		    b.NEXT_TIME,
+		    a.UPDATE_USER,
+		    a.UPDATE_TIME
+		FROM
+		    BP_TASK_DEF a
+		LEFT JOIN BP_TASK_RUN b
+		ON
+		    a.TASK_ID = b.TASK_ID
+		    AND
+		    (
+		        b.EXEC_ID     = #bpId#
+		        OR b.EXEC_ID IS NULL
+		    )
+		<dynamic prepend=" where ">
+			<isPropertyAvailable prepend=" and "
+				removeFirstPrepend="false" property="beanId">
+				TASK_REF_ID like #beanId#
+			</isPropertyAvailable>
+		</dynamic>
+		order by a.TASK_ID ASC
+	</select>
+
+	<select id="findAllTask" resultMap="taskDefResult">
+		SELECT
+		    a.TASK_ID,
+		    a.TASK_REF_ID,
+		    a.TASK_ENABLE,
+		    a.TASK_NAME,
+		    a.START_TIME,
+		    a.END_TIME,
+		    a.SHED_TYPE,
+		    a.SHED_EXPR,
+		    a.EXEC_ID,
+		    b.EXEC_ID AS bpId,
+		    b.LAST_TIME,
+		    b.LAST_INFO,
+		    b.NEXT_TIME,
+		    a.UPDATE_USER,
+		    a.UPDATE_TIME
+		FROM
+		    BP_TASK_DEF a
+		LEFT JOIN BP_TASK_RUN b
+		ON
+		    a.TASK_ID = b.TASK_ID
+		WHERE
+		    a.EXEC_ID LIKE #3#
+		    AND
+		    (
+		        b.EXEC_ID     = #2#
+		        OR b.EXEC_ID IS NULL
+		    )
+		    AND a.TASK_ENABLE = 1
+		    AND
+		    (
+		        a.START_TIME    IS NULL
+		        || a.START_TIME &lt;= #1#
+		    )
+		    AND
+		    (
+		        a.END_TIME    IS NULL
+		        || a.END_TIME &gt;= #1#
+		    )
+		ORDER BY
+		    a.TASK_ID ASC
+	</select>
+	<insert id="insertTaskDef" parameterClass="taskDefBean">
+		INSERT
+		INTO
+		    BP_TASK_DEF
+		    (
+		        TASK_ID,
+		        TASK_REF_ID,
+		        TASK_ENABLE,
+		        TASK_NAME,
+		        START_TIME,
+		        END_TIME,
+		        SHED_TYPE,
+		        SHED_EXPR,
+		        EXEC_ID,
+		        UPDATE_USER,
+		        UPDATE_TIME
+		    )
+		    VALUES
+		    (
+		        #taskId#,
+		        #beanId#,
+		        #enable#,
+		        #taskName#,
+		        #startTime#,
+		        #endTime#,
+		        #shedType#,
+		        #shedExpr#,
+		        #execId#,
+		        #updateUser#,
+		        #updateTime#
+		    )
+	</insert>
+
+	<insert id="insertTaskRun" parameterClass="taskDefBean">
+		INSERT
+		INTO
+		    BP_TASK_RUN
+		    (
+		        TASK_ID,
+		        EXEC_ID,
+		        LAST_TIME,
+		        LAST_INFO,
+		        UPDATE_USER,
+		        UPDATE_TIME
+		    )
+		    VALUES
+		    (
+		        #taskId#,
+		        #bpId#,
+		        #lastTime#,
+		        #lastInfo#,
+		        #updateUser#,
+		        #updateTime#
+		    )
+	</insert>
+	<!-- 修改定时任务 -->
+	<update id="updateTaskDef" parameterClass="taskDefBean">
+		UPDATE
+		    BP_TASK_DEF
+		SET
+		    TASK_REF_ID = #beanId#,
+		    TASK_ENABLE = #enable#,
+		    TASK_NAME   = #taskName#,
+		    START_TIME  = #startTime#,
+		    END_TIME    = #endTime#,
+		    SHED_TYPE   = #shedType#,
+		    SHED_EXPR   = #shedExpr#,
+		    EXEC_ID     = #execId#,
+		    UPDATE_USER = #updateUser#,
+		    UPDATE_TIME = #updateTime#
+		WHERE
+		    TASK_ID = #taskId#
+	</update>
+	<!-- 删除定时任务 -->
+	<delete id="deleteTaskDef" parameterClass="String">
+		DELETE FROM BP_TASK_DEF WHERE TASK_ID = #id#
+	</delete>
+	<delete id="deleteTaskRun">
+		DELETE
+		FROM
+		    BP_TASK_RUN
+		WHERE
+		    TASK_ID     = #1#
+		    AND EXEC_ID = #2#
+	</delete>
+
+	<insert id="updateTaskRunLastInfo" parameterClass="taskDefBean">
+		UPDATE
+		    BP_TASK_RUN
+		SET
+		    LAST_INFO = #lastInfo#
+		WHERE
+		    TASK_ID     = #taskId#
+		    AND EXEC_ID = #bpId#
+	</insert>
+
+	<insert id="compareAndSetLastTime" parameterClass="map">
+		UPDATE
+		    BP_TASK_RUN
+		SET
+		    LAST_TIME = #4#
+		WHERE
+		    TASK_ID     = #1#
+		    AND EXEC_ID = #2#
+		    AND
+		<isNotNull property="3">LAST_TIME = #3#</isNotNull>
+		<isNull property="3">LAST_TIME IS NULL</isNull>
+	</insert>
+</sqlMap>

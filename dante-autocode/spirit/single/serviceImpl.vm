@@ -1,0 +1,104 @@
+#set($bean=${context.javaBeanName})
+#set($sbean=${context.javaBeanNameLF})
+package com.hnair.hiapp.fss.service.${context.packageName}.impl;
+
+import java.util.Map;
+
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.hnair.hiapp.fss.dao.${context.packageName}.${bean}DAO;
+import com.hnair.hiapp.fss.dto.${context.packageName}.${bean}DTO;
+import com.hnair.hiapp.fss.exception.SpiritServiceException;
+import com.hnair.hiapp.fss.po.${context.packageName}.${bean}PO;
+import com.hnair.hiapp.fss.po.sysmgr.UserPO;
+import com.hnair.hiapp.fss.pub.PageReq;
+import com.hnair.hiapp.fss.pub.PageResult;
+import com.hnair.hiapp.fss.service.${context.packageName}.${bean}Service;
+import com.hnair.hiapp.fss.specification.${context.packageName}.${bean}Specification;
+import com.hnair.hiapp.fss.template.SpiritServiceTemplate;
+import com.hnair.hiapp.fss.util.DateUtils;
+
+/**
+ * 角色服务实现类
+ * 
+ * @author dante
+ *
+ */
+@Service
+@Transactional(readOnly = true)
+public class ${bean}ServiceImpl extends SpiritServiceTemplate<${bean}DTO, ${bean}DTO, ${bean}PO> implements ${bean}Service {
+
+	@Autowired
+	private ${bean}DAO ${sbean}DAO;
+
+	@Override
+	public PageResult<${bean}DTO> findPage(PageReq pageReq) throws SpiritServiceException {
+		return super.findEasyUIPage(pageReq);
+	}
+
+	@Override
+	@Transactional
+	public ${bean}DTO persist(${bean}DTO ${sbean}DTO) throws SpiritServiceException {
+		${bean}PO ${sbean}PO = ${sbean}DAO.save(convertReqDtoToPo(${sbean}DTO));
+		return convertPoToRespDto(${sbean}PO);
+	}
+
+	@Override
+	@Transactional
+	public void deleteById(Long id) throws SpiritServiceException {
+	//  物理删除
+	//	${sbean}DAO.delete(id);
+	}
+
+	@Override
+	public ${bean}DTO findById(Long id) throws SpiritServiceException {
+		return convertPoToRespDto(${sbean}DAO.findOne(id));
+	}
+
+	@Override
+	protected ${bean}PO convertReqDtoToPo(${bean}DTO ${sbean}DTO) {
+		${bean}PO ${sbean}PO = new ${bean}PO();
+		if (${sbean}DTO != null) {
+			BeanUtils.copyProperties(${sbean}DTO, ${sbean}PO, "updateUser");
+			${sbean}PO.setUpdateDate(DateUtils.currentDate());
+			${sbean}PO.setDeleteFlag(false);
+			if (${sbean}DTO.getUpdateUser() != null) {
+				${sbean}PO.setUpdateUser(new UserPO(${sbean}DTO.getUpdateUser()));
+			}
+		}
+		return ${sbean}PO;
+	}
+
+	@Override
+	protected ${bean}DTO convertPoToRespDto(${bean}PO ${sbean}PO) {
+		${bean}DTO ${sbean}DTO = new ${bean}DTO();
+		if (${sbean}PO != null) {
+			BeanUtils.copyProperties(${sbean}PO, ${sbean}DTO, "updateUser", "updateDate");
+			if (${sbean}PO.getUpdateUser() != null) {
+				${sbean}DTO.setUpdateUserName(${sbean}PO.getUpdateUser().getName());
+			}
+			if (${sbean}PO.getUpdateDate() != null) {
+				${sbean}DTO.setUpdateDate(DateUtils.formatDateTime(${sbean}PO.getUpdateDate()));
+			}
+		}
+		return ${sbean}DTO;
+	}
+
+	@Override
+	protected Specification<${bean}PO> buildSpecification(Map<String, Object> filter) {
+		return ${bean}Specification.querySpecification(filter);
+	}
+
+	@Override
+	public void delete(${bean}DTO reqDTO) throws SpiritServiceException {
+		${bean}PO ${sbean}PO = ${sbean}DAO.findOne(reqDTO.getId());
+		${sbean}PO.setUpdateDate(DateUtils.currentDate());
+		${sbean}PO.setUpdateUser(new UserPO(reqDTO.getUpdateUser()));
+		${sbean}DAO.save(${sbean}PO);
+	}
+
+}

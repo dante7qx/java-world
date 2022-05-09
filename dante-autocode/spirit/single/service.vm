@@ -1,0 +1,17 @@
+#set($bean=${context.javaBeanName})
+#set($sbean=${context.javaBeanNameLF})
+package com.hnair.hiapp.fss.service.${context.packageName};
+
+import com.hnair.hiapp.fss.dto.${context.packageName}.${bean}DTO;
+import com.hnair.hiapp.fss.template.SpiritAbstractService;
+
+/**
+ * ${table.comment} Service
+ * 
+ * @author dante
+ * @date ${genDate}
+ *
+ */
+public interface ${bean}Service extends SpiritAbstractService<${bean}DTO, ${bean}DTO>{
+	
+}

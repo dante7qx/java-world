@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.dante.springmvc.mybatis.dao.RoleDao">
+
+	<select id="findRoles" resultType="Role" parameterType="java.util.Map">
+		select * from T_Role
+		<where>
+			<if test="name != null">
+				Name like #{name}
+			</if>
+		</where>
+		order by id
+	</select>
+
+	<select id="findRoleById" parameterType="Integer" resultType="Role">
+		select * from T_Role where Id = #{id}
+	</select>
+
+	<insert id="insertRole" parameterType="Role" useGeneratedKeys="true"
+		keyProperty="id">
+		insert into T_Role(Name, Remark) values (#{name},
+		#{remark})
+	</insert>
+
+	<update id="updateRole" parameterType="Role">
+		update T_Role set Name =
+		#{name}, Remark = #{remark} where Id = #{id}
+	</update>
+
+	<delete id="deleteRoleById" parameterType="Integer">
+		delete from T_Role
+		where Id = #{id}
+	</delete>
+
+	<select id="selectRolePermissionByRoleId" parameterType="Integer" resultType="RolePermission">
+		select
+		RoleId, PermissionId from T_Role_Permission where RoleId = #{roleId}
+	</select>
+
+	<insert id="insertRolePermission" parameterType="RolePermission">
+		insert into
+		T_Role_Permission(RoleId, PermissionId) values (#{roleId},
+		#{permissionId})
+	</insert>
+
+	<delete id="deleteRolePermissionByRoleId" parameterType="Integer">
+		delete
+		from T_Role_Permission where RoleId = #{roleId}
+	</delete>
+	
+	<insert id="insertUserRole" parameterType="UserRole">
+		insert into
+		T_User_Role(UserId, RoleId) values (#{userId},
+		#{roleId})
+	</insert>
+	
+	<delete id="deleteUserRoleByRoleId" parameterType="Integer">
+		delete
+		from T_User_Role where RoleId = #{roleId}
+	</delete>
+
+</mapper>

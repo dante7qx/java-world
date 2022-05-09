@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "sql-map-2.dtd">
+<sqlMap namespace="UserRole">
+	<typeAlias alias="UserRole" type="com.epolleo.bp.user.bean.UserRole" />
+	<select id="selectUserRole" resultClass="UserRole">
+		SELECT
+		    ur.USER_ID  AS userId,
+		    r.ROLE_ID   AS id,
+		    r.ROLE_NAME AS name,
+		    r.ROLE_DESC AS descr
+		FROM
+		    BP_ROLE r
+		LEFT JOIN BP_USER_ROLE ur
+		ON
+		    r.ROLE_ID      = ur.ROLE_ID
+		    AND ur.USER_ID = #userId#
+	</select>
+	<delete id="deleteUserRole" parameterClass="UserRole">
+		DELETE
+		FROM
+		    BP_USER_ROLE
+		WHERE
+		    USER_ID     = #userId#
+		    AND ROLE_ID = #id#
+	</delete>
+	<delete id="deleteUserRoles" parameterClass="string">
+		DELETE
+		FROM
+		    BP_USER_ROLE
+		WHERE
+		    USER_ID = #userId#
+	</delete>
+	<insert id="insertUserRole" parameterClass="UserRole">
+		INSERT
+		INTO
+		    BP_USER_ROLE
+		    (
+		        USER_ID,
+		        ROLE_ID
+		    )
+		    VALUES
+		    (
+		        #userId#,
+		        #id#
+		    )
+	</insert>
+	<select id="isExistUserRole" resultClass="Integer">
+		SELECT
+		    COUNT(USER_ID)
+		FROM
+		    BP_USER_ROLE
+		WHERE
+		    ROLE_ID = #roleId#
+	</select>
+	<select id="getUserRoleIdList" resultClass="integer">
+		SELECT
+		    ROLE_ID
+		FROM
+		    BP_USER_ROLE
+		WHERE
+		    USER_ID = #userId#
+	</select>
+</sqlMap>

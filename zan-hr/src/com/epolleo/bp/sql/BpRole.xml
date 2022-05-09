@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "sql-map-2.dtd">
+<sqlMap namespace="BpRole">
+	<typeAlias alias="bpRole" type="com.epolleo.bp.role.bean.RoleBean" />
+	<resultMap id="bpRoleResult" class="bpRole">
+		<result property="id" column="ROLE_ID" />
+		<result property="name" column="ROLE_NAME" />
+		<result property="describe" column="ROLE_DESC" />
+		<result property="createUser" column="CREATE_USER" />
+		<result property="createTime" column="CREATE_TIME" />
+		<result property="updateUser" column="UPDATE_USER" />
+		<result property="updateTime" column="UPDATE_TIME" />
+	</resultMap>
+	<select id="selectOnlyRole" parameterClass="int"
+		resultMap="bpRoleResult">
+		SELECT
+		    ROLE_ID,
+		    ROLE_NAME,
+		    ROLE_DESC,
+		    CREATE_USER,
+		    CREATE_TIME,
+		    UPDATE_USER,
+		    UPDATE_TIME
+		FROM
+		    BP_ROLE
+		<dynamic prepend=" where ">ROLE_ID = #id#</dynamic>
+	</select>
+	<select id="selectPageRole" parameterClass="map"
+		resultMap="bpRoleResult">
+		SELECT
+		    ROLE_ID,
+		    ROLE_NAME,
+		    ROLE_DESC,
+		    CREATE_USER,
+		    CREATE_TIME,
+		    UPDATE_USER,
+		    UPDATE_TIME
+		FROM
+		    BP_ROLE
+		<isNotEmpty prepend=" order by " property="sort">
+			<isEqual property="sort" compareValue="name">
+				ROLE_NAME
+			</isEqual>
+			<isEqual property="sort" compareValue="describe">
+				ROLE_DESC
+			</isEqual>
+			<isEqual property="sort" compareValue="id">ROLE_ID</isEqual>
+			<isNotEmpty prepend=" " property="order">
+				<isEqual property="order" compareValue="asc">
+					asc
+				</isEqual>
+				<isEqual property="order" compareValue="desc">
+					desc
+				</isEqual>
+			</isNotEmpty>
+		</isNotEmpty>
+	</select>
+	<update id="updateRole" parameterClass="bpRole">
+		UPDATE
+		    BP_ROLE
+		SET
+		    ROLE_NAME   = #name#,
+		    ROLE_DESC   = #describe#,
+		    UPDATE_USER = #updateUser#,
+		    UPDATE_TIME = #updateTime#
+		WHERE
+		    ROLE_ID = #id#
+	</update>
+	<insert id="insertRole" parameterClass="bpRole">
+		INSERT
+		INTO
+		    BP_ROLE VALUES
+		    (
+		        #id#,
+		        #name#,
+		        #describe#,
+		        #createUser#,
+		        #createTime#,
+		        #updateUser#,
+		        #updateTime#
+		    )
+	</insert>
+	<delete id="deleteRole" parameterClass="int">
+		DELETE FROM BP_ROLE WHERE ROLE_ID=#id#
+	</delete>
+	
+	<select id="getAllRole"
+		resultClass="com.epolleo.bp.role.bean.RoleNodeBean">
+		SELECT
+		    ROLE_ID   AS id,
+		    ROLE_NAME AS text
+		FROM
+		    BP_ROLE
+		ORDER BY
+		    ROLE_ID ASC
+	</select>
+</sqlMap>

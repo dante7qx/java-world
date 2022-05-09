@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "sql-map-2.dtd">
+<sqlMap namespace="HolidayBean">
+    <typeAlias alias="holidayBean" type="com.epolleo.bp.holiday.bean.HolidayBean" />
+    <resultMap id="holidayResult" class="holidayBean">
+        <result property="hId" column="H_ID" />
+        <result property="hDate" column="H_DATE" />
+        <result property="hContent" column="H_CONTENT" />
+        <result property="dateType" column="DATE_TYPE" />
+        <result property="createUser" column="CREATE_USER" />
+        <result property="createTime" column="CREATE_TIME" />
+        <result property="updateUser" column="UPDATE_USER" />
+        <result property="updateTime" column="UPDATE_TIME" />
+    </resultMap>
+    <!-- 分页查询 -->
+    <select id="queryHolidayPage" resultMap="holidayResult"
+            parameterClass="map">
+        SELECT
+            H_ID,
+            H_DATE,
+            H_CONTENT,
+            DATE_TYPE,
+            CREATE_USER,
+            CREATE_TIME,
+            UPDATE_USER,
+            UPDATE_TIME
+        FROM BP_HOLIDAY
+        <dynamic prepend=" where ">
+        </dynamic>
+        <dynamic>
+			<isNotEmpty prepend=" order by " property="sort">
+				<isEqual property="sort" compareValue="hId">
+					H_ID
+				</isEqual>
+				<isEqual property="sort" compareValue="hDate">
+					H_DATE
+				</isEqual>
+				<isEqual property="sort" compareValue="hContent">
+					H_CONTENT
+				</isEqual>
+				<isEqual property="sort" compareValue="createUser">
+					CREATE_USER
+				</isEqual>
+				<isEqual property="sort" compareValue="createTime">
+					CREATE_TIME
+				</isEqual>
+				<isEqual property="sort" compareValue="updateUser">
+					UPDATE_USER
+				</isEqual>
+				<isEqual property="sort" compareValue="updateTime">
+					UPDATE_TIME
+				</isEqual>
+				<isNotEmpty prepend=" " property="order">
+					<isEqual property="order" compareValue="asc">
+						asc
+					</isEqual>
+					<isEqual property="order" compareValue="desc">
+						desc
+					</isEqual>
+				</isNotEmpty>
+			</isNotEmpty>
+		</dynamic>
+    </select>
+    <!-- 查询所有记录 -->
+    <select id="queryHolidayList" resultMap="holidayResult"
+            parameterClass="map">
+        SELECT
+            H_ID,
+            H_DATE,
+            H_CONTENT,
+            DATE_TYPE,
+            CREATE_USER,
+            CREATE_TIME,
+            UPDATE_USER,
+            UPDATE_TIME
+        FROM
+            BP_HOLIDAY
+    </select>
+    <select id="queryHolidayById" resultMap="holidayResult"
+            parameterClass="Long">
+        SELECT
+            H_ID,
+            H_DATE,
+            H_CONTENT,
+            DATE_TYPE,
+            CREATE_USER,
+            CREATE_TIME,
+            UPDATE_USER,
+            UPDATE_TIME        FROM  BP_HOLIDAY
+        WHERE
+            H_ID = #id#
+    </select>
+    <select id="queryHolidayListByDate" resultMap="holidayResult"
+            parameterClass="map">
+        SELECT
+            H_ID,
+            H_DATE,
+            H_CONTENT,
+            DATE_TYPE,
+            CREATE_USER,
+            CREATE_TIME,
+            UPDATE_USER,
+            UPDATE_TIME
+        FROM
+            BP_HOLIDAY
+        <dynamic prepend=" where ">
+			<isPropertyAvailable prepend=" and "
+				removeFirstPrepend="true" property="startDay">
+				H_DATE &gt;= #startDay#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend=" and "
+				removeFirstPrepend="true" property="endDay">
+				H_DATE &lt;= #endDay#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend=" and "
+				removeFirstPrepend="true" property="dateType">
+				DATE_TYPE = #dateType#
+			</isPropertyAvailable>
+		</dynamic>
+    </select>
+    <insert id="insertHoliday" parameterClass="holidayBean">
+        INSERT INTO BP_HOLIDAY (
+            H_ID,
+            H_DATE,
+            H_CONTENT,
+            DATE_TYPE,
+            CREATE_USER,
+            CREATE_TIME,
+            UPDATE_USER,
+            UPDATE_TIME
+        ) VALUES (
+            #hId# ,
+            #hDate# ,
+            #hContent# ,
+            #dateType#,
+            #createUser# ,
+            #createTime# ,
+            #updateUser# ,
+            #updateTime# 
+        )
+    </insert>
+    <!-- 修改节假日管理 -->
+    <update id="updateHoliday" parameterClass="holidayBean">
+        UPDATE
+            BP_HOLIDAY
+        SET
+            H_DATE = #hDate# ,			
+            H_CONTENT = #hContent# ,	
+            DATE_TYPE = #dateType#,		
+            CREATE_USER = #createUser# ,			
+            CREATE_TIME = #createTime# ,			
+            UPDATE_USER = #updateUser# ,			
+            UPDATE_TIME = #updateTime# 			
+        WHERE
+            H_ID = #hId#
+    </update>
+    <!-- 删除节假日管理 -->
+    <delete id="deleteHoliday" parameterClass="String">
+        DELETE
+        FROM
+            BP_HOLIDAY
+        WHERE
+            H_ID = #id#
+    </delete>
+    <delete id="deleteByYearMonth" parameterClass="map">
+        DELETE
+        FROM
+            BP_HOLIDAY
+        WHERE H_DATE &gt;= #startDay#
+        	AND H_DATE &lt;= #endDay#
+    </delete>
+</sqlMap>

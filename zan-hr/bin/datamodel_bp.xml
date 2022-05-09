@@ -1,0 +1,307 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<?xml-stylesheet type="text/xsl" href="datamodel.xsl"?>
+<schema name="" domain="com.epolleo" xmlns="http://www.hna.net/dmt/schema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.hna.net/dmt/schema datamodel.xsd" >
+    <table name="BP_SEQ" javaName="Sequence" title="号码表" module="bp.sys" geometry="30,30,169,116" collapsed="false">
+        <column name="SEQ_KEY" title="号码编码" type="VARCHAR" size="64" primaryKey="true" readonly="true" filtering="true"/>
+        <column name="NAME" title="号码名称" type="VARCHAR" size="128" notNull="true" filtering="true"/>
+        <column name="VALUE" title="当前值" type="NUMBER" size="20" notNull="true"/>
+        <column name="FORMAT_STR" title="格式化串" type="VARCHAR" size="32"/>
+        <column name="FETCH_SIZE" title="缓存大小" type="INTEGER" notNull="true"/>
+    </table>
+    <table name="BP_SYS_PARAM" javaName="SysParam" title="全局参数" module="bp.sys" geometry="215,13,197,142" collapsed="false">
+        <column name="PARAM_KEY" title="参数ID" type="VARCHAR" size="128" primaryKey="true" filtering="true"/>
+        <column name="PARAM_NAME" title="参数名称" type="VARCHAR" size="128" filtering="true"/>
+        <column name="PARAM_VALUE" title="参数值" type="VARCHAR" size="512"  filtering="true"/>
+        <column name="PARAM_TYPE" title="参数类型" type="ENUM">
+            <state value="1">布尔型</state>
+            <state value="2">整数</state>
+            <state value="3">浮点数</state>
+            <state value="4">字符串</state>
+            <state value="5">列表(逗号分隔)</state>
+        </column>
+        <column name="DEFAULT_VALUE" title="默认值" type="VARCHAR" size="512"/>
+        <column name="SYNC_FLAG" title="是否同步" type="BOOLEAN"/>
+        <column name="CREATE_USER" title="创建人" type="VARCHAR" size="32"/>
+        <column name="CREATE_TIME" title="创建时间" type="TIMESTAMP"/>
+        <column name="UPDATE_USER" title="更新人" type="VARCHAR" size="32"/>
+        <column name="UPDATE_TIME" title="更新时间" type="TIMESTAMP"/>
+    </table>
+    <table name="BP_AUDIT_LOG" javaName="AuditLog" title="审计日志" module="bp.sys" geometry="685,399,189,129" collapsed="false">
+        <column name="LOG_ID" title="日志ID" type="NUMBER" size="20" primaryKey="true"/>
+        <column name="USER_ID" title="用户ID" type="VARCHAR" size="32"/>
+        <column name="REMOTE_ADDR" title="远程地址" type="VARCHAR" size="64"/>
+        <column name="ACTION_NAME" title="动作名称" type="VARCHAR" size="128"/>
+        <column name="MODULE_NAME" title="模块名称" type="VARCHAR" size="64"/>
+        <column name="FUNC_CODE" title="功能编号" type="VARCHAR" size="64"/>
+        <column name="OPERATION_URL" title="URL" type="VARCHAR" size="512"/>
+        <column name="OPERATION_TIME" title="操作时间" type="TIMESTAMP"/>
+    </table>
+    <table name="BP_ORGAN_TYPE" javaName="OrganType" title="组织机构类型" module="soc.bp.organ" geometry="36,517,202,103" collapsed="false">
+        <column name="ORG_TYPE_ID" title="组织机构类型ID" type="INTEGER" primaryKey="true"/>
+        <column name="ORG_TYPE" title="组织机构类型" type="VARCHAR" size="128" notNull="true"/>
+        <column name="CREATE_USER" title="创建人" type="VARCHAR" size="32"/>
+        <column name="CREATE_TIME" title="创建时间" type="TIMESTAMP"/>
+        <column name="UPDATE_USER" title="更新人" type="VARCHAR" size="32"/>
+        <column name="UPDATE_TIME" title="更新时间" type="TIMESTAMP"/>
+    </table>
+    <table name="BP_ORGAN" javaName="Organization" title="组织机构" module="bp.organ" geometry="30,160,187,262" collapsed="false">
+		<column name="ORG_ID" title="组织机构ID" type="INTEGER" primaryKey="true" />
+		<column name="ORG_CODE" type="VARCHAR" size="16" title="机构标识码"></column>
+		<column name="FULL_ID" type="VARCHAR" size="128" title="机构全号"></column>
+		<column name="FULL_CODE" type="VARCHAR" size="128" title="机构全码"></column>
+		<column name="ORG_NAME" title="组织机构名称" type="VARCHAR" size="128" notNull="true" />
+		<column name="SHORTNAME" type="VARCHAR" size="64" title="简称"></column>
+		<column name="FULLNAME" type="VARCHAR" size="256" title="全称"></column>
+		<column name="ENABLE" type="BOOLEAN" title="是否有效"></column>
+		<column name="ORG_PINYIN" title="拼音码" type="VARCHAR" size="10" />
+		<column name="ORG_TYPE_ID" title="组织机构类型ID" type="ENUM">
+			<state value="0">集团级</state>
+			<state value="1">版块级</state>
+			<state value="2">公司级</state>
+			<state value="3">部门级</state>
+			<state value="4">中心级</state>
+			<state value="5">处室级</state>
+		</column>
+		<column name="LOC_ID" title="地理区域ID" type="INTEGER"/>
+        <column name="PARENT_ID" title="上级ID" type="INTEGER"/>
+        <column name="SHOW_ORDER" title="显示顺序" type="INTEGER"/>
+        <column name="CREATE_USER" title="创建人" type="VARCHAR" size="32"/>
+        <column name="CREATE_TIME" title="创建时间" type="TIMESTAMP"/>
+        <column name="UPDATE_USER" title="更新人" type="VARCHAR" size="32"/>
+        <column name="UPDATE_TIME" title="更新时间" type="TIMESTAMP"/>
+        <foreignKey name="FK_BP_ORGAN_ORG_TYPE_ID" foreignTable="BP_ORGAN_TYPE" real="true" constraint="1..1" geometry="">
+            <reference local="ORG_TYPE_ID" foreign="ORG_TYPE_ID"/>
+        </foreignKey>
+        <foreignKey name="FK_BP_ORGAN_PARENT_ID" foreignTable="BP_ORGAN" real="true" constraint="1..1" geometry="">
+            <reference local="PARENT_ID" foreign="ORG_ID"/>
+        </foreignKey>
+    </table>
+    <table name="BP_USER" javaName="LoginUser" title="用户" module="bp.user" geometry="273,416,187,186" collapsed="false">
+        <column name="USER_ID" title="登录ID" type="VARCHAR" size="32" primaryKey="true"/>
+        <column name="USER_NAME" title="姓名" type="VARCHAR" size="128" notNull="true" javaName="userName"/>
+        <column name="PASSWD" title="密码" type="VARCHAR" size="32" notNull="true" javaName="passWord"/>
+        <column name="PASSWD_TIME" title="密码设定时间" type="TIMESTAMP"/>
+        <column name="STATE" title="状态" type="ENUM" notNull="true">
+            <state value="1">正常</state>
+            <state value="2">锁定</state>
+            <state value="3">删除</state>
+        </column>
+        <column name="EMP_ID" title="员工ID" type="INTEGER" javaName="empId"/>
+        <column name="IS_SYS" title="系统用户标志" type="BOOLEAN" notNull="true" javaName="sysUser"/>
+        <column name="CREATE_USER" title="创建人" type="VARCHAR" size="32"/>
+        <column name="CREATE_TIME" title="创建时间" type="TIMESTAMP"/>
+        <column name="UPDATE_USER" title="更新人" type="VARCHAR" size="32"/>
+        <column name="UPDATE_TIME" title="更新时间" type="TIMESTAMP"/>
+        <foreignKey name="FK_BP_USER_EMP_ID" foreignTable="BP_EMPLOYEE" real="true" constraint="1..1" geometry="">
+            <reference local="EMP_ID" foreign="EMP_ID"/>
+        </foreignKey>
+    </table>
+    
+    <table name="BP_EMPLOYEE" javaName="Employee" title="员工" module="bp.emp" geometry="488,275,186,220" collapsed="false">
+        <column name="EMP_ID" title="员工ID" type="INTEGER" primaryKey="true"/>
+        <column name="EMP_NAME" title="姓名" type="VARCHAR" size="45" notNull="true"/>
+        <column name="EMP_PINYIN" title="拼音码" type="VARCHAR" size="10" notNull="true"/>
+        <column name="ALIAS_NAME" title="别名" type="VARCHAR" size="45" javaName="aliasName"/>
+        <column name="NICK_NAME" title="昵称" type="VARCHAR" size="45" javaName="nickName"/>
+        <column name="PHONE" title="电话" type="VARCHAR" size="32" javaName="phone"/>
+        <column name="MOBILE" title="手机号码" type="VARCHAR" size="32" javaName="mobile"/>
+        <column name="ADDRESS" title="地址" type="VARCHAR" size="256" javaName="address"/>
+        <column name="EMAIL" title="邮箱" type="VARCHAR" size="128" javaName="email"/>
+        <column name="STATE" title="状态" type="ENUM" notNull="true">
+            <state value="1">正常</state>
+            <state value="2">锁定</state>
+            <state value="3">删除</state>
+        </column>
+        <column name="DEFAULT_ORG_ID" title="部门编号" notNull="true" type="INTEGER" javaName="defaultOrgId"/>
+        <column name="CREATE_USER" title="创建人" type="VARCHAR" size="45"/>
+        <column name="CREATE_TIME" title="创建时间" type="TIMESTAMP"/>
+        <column name="UPDATE_USER" title="更新人" type="VARCHAR" size="45"/>
+        <column name="UPDATE_TIME" title="更新时间" type="TIMESTAMP"/>
+    </table>
+    
+    <table name="BP_EMPLOYEE_ORGAN" javaName="EmployeeOrgan" title="员工组织机构关系" module="bp.emp" geometry="33,425,243,80" collapsed="false">
+        <column name="EMP_ID" title="员工ID" type="INTEGER"/>
+        <column name="ORG_ID" title="机构ID" type="INTEGER"/>
+        <foreignKey name="FK_BP_EMPLOYEE_ORGAN_EMP_ID" foreignTable="BP_EMPLOYEE" real="true" constraint="m..1" geometry="">
+            <reference local="EMP_ID" foreign="EMP_ID"/>
+        </foreignKey>
+        <foreignKey name="FK_BP_EMPLOYEE_ORGAN_ORG_ID" foreignTable="BP_ORGAN" real="true" constraint="m..1" geometry="">
+            <reference local="ORG_ID" foreign="ORG_ID"/>
+        </foreignKey>
+    </table>
+    
+    <table name="BP_ROLE" javaName="Role" title="角色" module="bp.role" geometry="697,131,185,116" collapsed="false">
+        <column name="ROLE_ID" title="角色编号" type="INTEGER" primaryKey="true"/>
+        <column name="ROLE_NAME" title="角色名称" type="VARCHAR" size="64" notNull="true"/>
+        <column name="ROLE_DESC" title="角色描述" type="VARCHAR" size="256" notNull="true"/>
+        <column name="CREATE_USER" title="创建人" type="VARCHAR" size="32"/>
+        <column name="CREATE_TIME" title="创建时间" type="TIMESTAMP"/>
+        <column name="UPDATE_USER" title="更新人" type="VARCHAR" size="32"/>
+        <column name="UPDATE_TIME" title="更新时间" type="TIMESTAMP"/>
+    </table>
+    <table name="BP_USER_ROLE" javaName="UserRole" title="用户角色关系" module="bp.user" geometry="687,273,191,100" collapsed="false">
+        <column name="USER_ID" title="用户ID" type="VARCHAR" size="32"/>
+        <column name="ROLE_ID" title="角色Id" type="INTEGER"/>
+        <foreignKey name="FK_BP_USER_ROLE_USER" foreignTable="BP_ROLE" real="true" constraint="m..1" geometry="">
+            <reference local="ROLE_ID" foreign="ROLE_ID"/>
+        </foreignKey>
+        <foreignKey name="FK_BP_USER_ROLE_ROLE" foreignTable="BP_USER" real="true" constraint="m..1" geometry="">
+            <reference local="USER_ID" foreign="USER_ID"/>
+        </foreignKey>
+    </table>
+    <table name="BP_ROLE_FUNC" javaName="RoleFunction" title="角色功能关系" module="bp.role" geometry="466,20,193,88" collapsed="false">
+        <column name="ROLE_ID" title="角色编号" type="INTEGER"/>
+        <column name="FUNC_CODE" title="功能编码" type="VARCHAR" size="64"/>
+        <foreignKey name="FK_BP_ROLE_FUNC_FUNC_CODE" foreignTable="BP_FUNCTION" real="true" constraint="m..1" geometry="">
+            <reference local="FUNC_CODE" foreign="FUNC_CODE"/>
+        </foreignKey>
+        <foreignKey name="FK_BP_ROLE_FUNC_FUNC_ROLE" foreignTable="BP_ROLE" real="true" constraint="m..1" geometry="">
+            <reference local="ROLE_ID" foreign="ROLE_ID"/>
+        </foreignKey>
+    </table>
+    <table name="BP_FUNCTION" javaName="Function" title="系统功能" module="bp.func" geometry="446,122,185,155" collapsed="false">
+        <column name="FUNC_CODE" title="功能ID" type="VARCHAR" size="64" primaryKey="true"/>
+        <column name="FUNC_NAME" title="功能名称" type="VARCHAR" size="128" notNull="true"/>
+        <column name="STATE" title="有效标志" type="BOOLEAN" invisiable="true"/>
+        <column name="FUNC_ORDER" title="功能顺序" type="INTEGER" notNull="true" javaName="position"/>
+        <column name="PARENT" title="上级功能" type="VARCHAR" size="64"/>
+        <column name="FUNC_NOTE" title="功能备注" type="VARCHAR" size="256"/>
+        <column name="CREATE_USER" title="创建人" type="VARCHAR" size="32"/>
+        <column name="CREATE_TIME" title="创建时间" type="TIMESTAMP"/>
+        <column name="UPDATE_USER" title="更新人" type="VARCHAR" size="32"/>
+        <column name="UPDATE_TIME" title="更新时间" type="TIMESTAMP"/>
+    </table>
+    <table name="BP_MENU" javaName="Menu" title="菜单" module="bp.menu" geometry="227,144,168,259" collapsed="false">
+        <column name="MENU_ID" title="菜单编号" type="INTEGER" primaryKey="true"/>
+        <column name="TITLE" title="菜单名称" type="VARCHAR" size="32" notNull="true" javaName="name"/>
+        <column name="PATH" title="菜单URL" type="VARCHAR" size="128"/>
+        <column name="FUNC_CODE" title="功能编码" type="VARCHAR" size="64"/>
+        <column name="MENU_ORDER" title="菜单顺序" type="INTEGER" notNull="true" javaName="position"/>
+        <column name="PARENT_ID" title="父菜单" type="INTEGER" javaName="parentId"/>
+        <column name="CREATE_USER" title="创建人" type="VARCHAR" size="32"/>
+        <column name="CREATE_TIME" title="创建时间" type="TIMESTAMP"/>
+        <column name="UPDATE_USER" title="更新人" type="VARCHAR" size="32"/>
+        <column name="UPDATE_TIME" title="更新时间" type="TIMESTAMP"/>
+        <column name="MENU_KIND" title="菜单类型" type="ENUM">
+			<state value="0">普通</state>
+			<state value="1">Win8</state>
+			<state value="2">其它</state>
+        </column>
+        <column name="MENU_INFO" title="菜单信息" type="VARCHAR" size="256"/>
+        <column name="WIDTH" title="宽度" type="INTEGER"/>
+        <column name="HEIGHT" title="高度" type="INTEGER"/>
+        <column name="BACK_COLOR" title="背景色" type="VARCHAR" size="32"/>
+        <column name="ICON_PATH" title="图标" type="VARCHAR" size="128"/>
+        <column name="SHOW_IN" title="需要菜单显示的地方" type="VARCHAR" size="128"/>
+        <column name="TARGET" title="链接打开方式组合" type="VARCHAR" size="10"/>
+    </table>
+    <table name="BP_ONLINE_USER" title="在线用户" geometry="694,4,192,100" collapsed="false">
+        <column name="SESSIONID" title="会话ID" type="VARCHAR" size="128" primaryKey="true"/>
+        <column name="REMOTE_ADDR" title="远程地址" type="VARCHAR" size="64" notNull="true"/>
+        <column name="BIRTH_TIME" title="产生时间" type="TIMESTAMP" notNull="true"/>
+        <column name="LOGIN_STATE" title="在线状态" type="BOOLEAN" notNull="true"/>
+        <column name="USER_ID" title="用户ID" type="VARCHAR" size="32"/>
+        <column name="USER_AGENT" title="浏览器" type="VARCHAR" size="128"/>
+    </table>
+    <table name="BP_FORUM_GROUP" title="论坛版块" module="bp.forum" javaName="ForumGroup" geometry="27,628,192,129" collapsed="false">
+        <column name="GROUP_ID" title="版块ID" type="INTEGER" size="32" primaryKey="true"/>
+        <column name="GROUP_NAME" title="版块名称" type="VARCHAR" size="255"/>
+        <column name="GROUP_DESC" title="板块描述" type="VARCHAR" size="255" />
+        <column name="CREATER_ID" title="创建者ID" type="VARCHAR" size="32"/>
+        <column name="CREATER_NAME" title="创建者姓名" type="VARCHAR" size="255"/>
+        <column name="DISABLE_FLAG" title="禁用标志" type="VARCHAR" size="255"/>
+        <column name="UPDATE_TIME" title="更新时间" type="TIMESTAMP" />
+        <column name="CREATE_TIME" title="创建时间" type="TIMESTAMP" />
+    </table>
+    <table name="BP_FORUM_TOPIC" title="论坛主题" module="bp.forum" javaName="ForumTopic" geometry="259,604,192,168" collapsed="false" >
+        <column name="GROUP_ID" title="版块ID" type="INTEGER" size="32"/>
+        <column name="TOPIC_ID" title="主题ID" type="INTEGER" size="32" primaryKey="true"/>
+        <column name="PARENT_ID" title="父主题ID" type="INTEGER" size="32"/>
+        <column name="ROOT_ID" title="根主题ID" type="INTEGER" size="32"/>
+        <column name="TOPIC_NAME" title="主题名称" type="VARCHAR" size="255"/>
+        <column name="TOPIC_CONTEXT" title="主题内容" type="VARCHAR" size="255"/>
+        <column name="CREATER_ID" title="创建者ID" type="VARCHAR" size="32"/>
+        <column name="CREATER_NAME" title="创建者姓名" type="VARCHAR" size="255"/>
+        <column name="CREATE_TIME" title="创建时间" type="TIMESTAMP" />
+        <column name="ISLEAF" title="叶标志" type="INTEGER" size="32" />
+        <column name="REPLYCOUNT" title="回复数" type="INTEGER" size="32"/>
+    </table>
+    <table name="BP_TASK_DEF" title="定时任务" module="bp.task" javaName="TaskDef" geometry="477,567,168,194" collapsed="false">
+    	<column name="TASK_ID" title="任务ID" javaName="taskId" type="INTEGER" primaryKey="true"></column>
+    	<column name="TASK_REF_ID" title="任务标识" javaName="beanId" type="VARCHAR" size="128" filtering="true" notNull="true"></column>
+    	<column name="TASK_ENABLE" title="启停状态" javaName="enable" type="BOOLEAN" notNull="true"></column>
+    	<column name="TASK_NAME" title="任务名称" javaName="taskName" type="VARCHAR" size="128" notNull="true"></column>
+    	<column name="START_TIME" title="启用时间" type="TIMESTAMP"></column>
+    	<column name="END_TIME" title="终止时间" type="TIMESTAMP"></column>
+    	<column name="SHED_TYPE" title="定时方式" javaName="shedType" type="ENUM">
+    		<state value="1">SIMPLE</state><state value="2">CRON</state>
+    	</column>
+    	<column name="EXEC_ID" title="执行标识" type="VARCHAR" size="128"></column>
+    	<column name="SHED_EXPR" title="定时设置" javaName="shedExpr" type="VARCHAR" size="128"></column>
+        <column name="UPDATE_USER" title="更新人" type="VARCHAR" size="32"/>
+        <column name="UPDATE_TIME" title="更新时间" type="TIMESTAMP"/>
+    </table>
+    <table name="BP_TASK_RUN" title="定时执行" module="bp.task" javaName="TaskRun" geometry="477,567,168,194" collapsed="false">
+    	<column name="TASK_ID" title="任务ID" javaName="taskId" type="INTEGER" primaryKey="true"></column>
+    	<column name="EXEC_ID" title="执行标识" type="VARCHAR" size="128" primaryKey="true"></column>
+    	<column name="LAST_TIME" title="上次执行时间" type="TIMESTAMP"></column>
+    	<column name="LAST_INFO" title="上次执行情况" type="VARCHAR" size="512"></column>
+    	<column name="NEXT_TIME" title="下次执行时间" type="TIMESTAMP"></column>
+        <column name="UPDATE_USER" title="更新人" type="VARCHAR" size="32"/>
+        <column name="UPDATE_TIME" title="更新时间" type="TIMESTAMP"/>
+    </table>
+    <table name="BP_ANNOUNCEINFO" title="通告信息" javaName="AnnounceInfo" module="bp.announce" geometry="666,681,184,103" collapsed="false">
+		<column name="Id" type="INTEGER" title="编号" primaryKey="true"/>
+		<column name="Content" type="VARCHAR" title="通告内容" size="512"></column>
+		<column name="EffDate" type="DATE" title="生效日期" notNull="true"/>
+		<column name="ExpDate" type="DATE" title="失效日期"/>
+		<column name="UpdateBy" title="更新人" type="VARCHAR" size="32"/>
+        <column name="UpdateDate" title="更新时间" type="TIMESTAMP"/>
+        <column name="State" title="通知状态" type="INTEGER" notNull="true"/>
+        <column name="FuncIds" title="功能ID" type="VARCHAR" size="256"/>
+        <column name="Url" title="页面URL" type="VARCHAR" size="512"/>
+        <column name="OrgCodes" title="机构标识码" type="VARCHAR" size="128"/>
+	</table>
+    <table name="BP_RPT_RECORD" title="报表记录" javaName="ReportRecord" module="bp.report" geometry="668,535,185,129" collapsed="false">
+    	<column name="RPT_SEQ_ID" type="INTEGER" title="流水号" primaryKey="true"></column>
+    	<column name="RPT_ID" type="VARCHAR" size="128" notNull="true" title="报表ID"></column>
+    	<column name="RPT_KEY" type="VARCHAR" size="1024" title="报表参数"></column>
+    	<column name="RPT_TITLE" type="VARCHAR" size="128" notNull="true" title="报表名称"></column>
+    	<column name="RPT_OBJECT" type="BLOB" title="报表对象"></column>
+        <column name="CREATE_ORG_ID" title="创建机构" type="VARCHAR" size="32"/>
+        <column name="CREATE_USER" title="创建人" type="VARCHAR" size="32"/>
+        <column name="CREATE_TIME" title="创建时间" notNull="true" type="TIMESTAMP"/>
+        <index name="BP_RPT_RECORD_IDX" unique="true">
+        	<column>RPT_ID</column>
+        	<column>RPT_KEY</column>
+        </index>
+    </table>
+    <table name="BP_LOCATION" title="地理区域" module="bp.loc" geometry="888,314,168,168" collapsed="false">
+		<column name="LOC_ID" title="地理区域ID" type="INTEGER" primaryKey="true"></column>
+		<column name="LOC_NAME" title="地理区域名称" type="VARCHAR" size="256" note="VARCHAR"></column>
+		<column name="LOC_NOTE" title="地理区域备注" type="VARCHAR" size="512" note="VARCHAR"></column>
+		<column name="LOC_X" title="X坐标" type="INTEGER"></column>
+		<column name="LOC_Y" title="Y坐标" type="INTEGER"></column>
+		<column name="LOC_CODE" title="标识码" type="VARCHAR" size="64"></column>
+		<column name="ENABLE" title="状态" type="BOOLEAN"></column>
+		<column name="CREATE_USER" title="创建人" type="VARCHAR" size="32" />
+		<column name="CREATE_TIME" title="创建时间" type="TIMESTAMP" />
+		<column name="UPDATE_USER" title="更新人" type="VARCHAR" size="32" />
+		<column name="UPDATE_TIME" title="更新时间" type="TIMESTAMP" />
+	</table>
+	
+	<table name="BP_HOLIDAY" title="节假日管理" module="bp.holiday" javaName="Holiday" geometry="887,533,185,168" collapsed="false">
+		<column name="H_ID" title="假日ID" type="INTEGER" primaryKey="true"></column>
+		<column name="H_DATE" title="假日日期" type="DATE" note="VARCHAR"></column>
+		<column name="H_CONTENT" title="假日内容" type="VARCHAR" size="256" note="VARCHAR"></column>
+		<column name="DATE_TYPE" title="日期类型" type="ENUM">
+			<state value="0">节假日</state>
+			<state value="1">工作日</state>
+		</column>
+		<column name="CREATE_USER" title="创建人" type="VARCHAR" size="32" />
+		<column name="CREATE_TIME" title="创建时间" type="TIMESTAMP" />
+		<column name="UPDATE_USER" title="更新人" type="VARCHAR" size="32" />
+		<column name="UPDATE_TIME" title="更新时间" type="TIMESTAMP" />
+	</table>
+</schema>

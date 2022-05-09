@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "sql-map-2.dtd">
+<sqlMap namespace="LocBean">
+	<cacheModel id="locationDict" type="OSCACHE">
+		<flushInterval minutes="30" />
+		<flushOnExecute statement="insertLoc" />
+		<flushOnExecute statement="updateLoc" />
+		<flushOnExecute statement="deleteLoc" />
+	</cacheModel>
+	<typeAlias alias="tLocBean"
+		type="com.epolleo.bp.location.bean.LocBean" />
+	<resultMap id="tLocResult" class="tLocBean">
+		<result property="locId" column="LOC_ID" />
+		<result property="locName" column="LOC_NAME" />
+		<result property="locNote" column="LOC_NOTE" />
+		<result property="locX" column="LOC_X" />
+		<result property="locY" column="LOC_Y" />
+		<result property="locCode" column="LOC_CODE" />
+		<result property="enable" column="ENABLE" />
+		<result property="createUser" column="CREATE_USER" />
+		<result property="createTime" column="CREATE_TIME" />
+		<result property="updateUser" column="UPDATE_USER" />
+		<result property="updateTime" column="UPDATE_TIME" />
+	</resultMap>
+	<!-- 分页查询 -->
+	<select id="queryLocPage" resultMap="tLocResult"
+		parameterClass="map">
+		SELECT
+		    LOC_ID,
+		    LOC_NAME,
+		    LOC_NOTE,
+		    LOC_X,
+		    LOC_Y,
+		    LOC_CODE,
+		    ENABLE,
+		    CREATE_USER,
+		    CREATE_TIME,
+		    UPDATE_USER,
+		    UPDATE_TIME
+		FROM
+		    BP_LOCATION
+		<dynamic prepend=" where "></dynamic>
+		<dynamic>
+			<isNotEmpty prepend=" order by " property="sort">
+				<isEqual property="sort" compareValue="locId">
+					LOC_ID
+				</isEqual>
+				<isEqual property="sort" compareValue="locName">
+					LOC_NAME
+				</isEqual>
+				<isEqual property="sort" compareValue="locNote">
+					LOC_NOTE
+				</isEqual>
+				<isEqual property="sort" compareValue="locCode">
+					LOC_CODE
+				</isEqual>
+				<isEqual property="sort" compareValue="enable">
+					ENABLE
+				</isEqual>
+				<isEqual property="sort" compareValue="createUser">
+					CREATE_USER
+				</isEqual>
+				<isEqual property="sort" compareValue="createTime">
+					CREATE_TIME
+				</isEqual>
+				<isEqual property="sort" compareValue="updateUser">
+					UPDATE_USER
+				</isEqual>
+				<isEqual property="sort" compareValue="updateTime">
+					UPDATE_TIME
+				</isEqual>
+				<isNotEmpty prepend=" " property="order">
+					<isEqual property="order" compareValue="asc">
+						asc
+					</isEqual>
+					<isEqual property="order" compareValue="desc">
+						desc
+					</isEqual>
+				</isNotEmpty>
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	<!-- 查询所有记录 -->
+	<select id="queryLocList" resultMap="tLocResult"
+		parameterClass="map" >
+		SELECT
+		    LOC_ID,
+		    LOC_NAME,
+		    LOC_NOTE,
+		    LOC_X,
+		    LOC_Y,
+		    LOC_CODE,
+		    ENABLE,
+		    CREATE_USER,
+		    CREATE_TIME,
+		    UPDATE_USER,
+		    UPDATE_TIME
+		FROM
+		    BP_LOCATION
+	</select>
+	<!-- 查询所有正常使用的地理区域 -->
+	<select id="queryEnableLoc" resultMap="tLocResult">
+		SELECT
+		    LOC_ID,
+		    LOC_NAME,
+		    LOC_NOTE,
+		    LOC_X,
+		    LOC_Y,
+		    LOC_CODE,
+		    ENABLE,
+		    CREATE_USER,
+		    CREATE_TIME,
+		    UPDATE_USER,
+		    UPDATE_TIME
+		FROM
+		    BP_LOCATION
+		WHERE ENABLE = 1 order by LOC_ID
+	</select>
+	<select id="queryLocDict"
+		resultClass="com.epolleo.bp.location.bean.LocBean"
+		parameterClass="map" cacheModel="locationDict">
+		SELECT
+		    LOC_ID   AS locId,
+		    LOC_NAME AS locName
+		FROM
+		    BP_LOCATION
+	</select>
+	<select id="queryLocById" resultMap="tLocResult"
+		parameterClass="Long">
+		SELECT
+		    LOC_ID,
+		    LOC_NAME,
+		    LOC_NOTE,
+		    LOC_X,
+		    LOC_Y,
+		    LOC_CODE,
+		    ENABLE,
+		    CREATE_USER,
+		    CREATE_TIME,
+		    UPDATE_USER,
+		    UPDATE_TIME
+		FROM
+		    BP_LOCATION
+		WHERE
+		    LOC_ID = #id#
+	</select>
+	<insert id="insertLoc" parameterClass="tLocBean">
+		INSERT
+		INTO
+		    BP_LOCATION
+		    (
+		        LOC_ID,
+		        LOC_NAME,
+		        LOC_NOTE,
+		        LOC_X,
+		        LOC_Y,
+		        LOC_CODE,
+		        ENABLE,
+		        CREATE_USER,
+		        CREATE_TIME,
+		        UPDATE_USER,
+		        UPDATE_TIME
+		    )
+		    VALUES
+		    (
+		        #locId#,
+		        #locName#,
+		        #locNote#,
+		        #locX#,
+		        #locY#,
+		        #locCode#,
+		        #enable#,
+		        #createUser#,
+		        #createTime#,
+		        #updateUser#,
+		        #updateTime#
+		    )
+	</insert>
+	<!-- 修改地理区域表 -->
+	<update id="updateLoc" parameterClass="tLocBean">
+		UPDATE
+		    BP_LOCATION
+		SET
+		    LOC_NAME    = #locName#,
+		    LOC_NOTE    = #locNote#,
+		    LOC_X       = #locX#,
+		    LOC_Y       = #locY#,
+		    LOC_CODE    = #locCode#,
+		    ENABLE      = #enable#,
+		    CREATE_USER = #createUser#,
+		    CREATE_TIME = #createTime#,
+		    UPDATE_USER = #updateUser#,
+		    UPDATE_TIME = #updateTime#
+		WHERE
+		    LOC_ID = #locId#
+	</update>
+	<!-- 删除地理区域表 -->
+	<delete id="deleteLoc" parameterClass="String">
+		DELETE FROM BP_LOCATION WHERE LOC_ID = #id#
+	</delete>
+	<select id="queryLocByIdcId" parameterClass="java.lang.String"
+		resultMap="tLocResult">
+		SELECT
+		    LOC_ID,
+		    LOC_NAME,
+		    LOC_NOTE,
+		    LOC_X,
+		    LOC_Y,
+		    LOC_CODE,
+		    ENABLE,
+		    CREATE_USER,
+		    CREATE_TIME,
+		    UPDATE_USER,
+		    UPDATE_TIME
+		FROM
+		    BP_LOCATION
+		WHERE
+		    LOC_ID =
+		    (
+		        SELECT
+		            LOC_ID
+		        FROM
+		            T_IDC_INFO
+		        WHERE
+		            IDC_ID = #id#
+		    )
+	</select>
+</sqlMap>

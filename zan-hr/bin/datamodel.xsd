@@ -1,0 +1,565 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema targetNamespace="http://www.hna.net/dmt/schema"
+	elementFormDefault="qualified" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	xmlns="http://www.hna.net/dmt/schema">
+
+	<xsd:annotation>
+		<xsd:documentation>@version 0.9</xsd:documentation>
+		<xsd:documentation>java -Dfile.encoding=UTF-8 -cp d:\sun\java\lib\tools.jar com.sun.tools.internal.xjc.Driver -npa -no-header datamodel.xsd</xsd:documentation>
+		<xsd:documentation>xjc -npa -no-header datamodel.xsd
+		</xsd:documentation>
+	</xsd:annotation>
+	<xsd:element name="schema" type="Schema">
+		<xsd:annotation>
+			<xsd:documentation>数据模型，根元素。</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+
+	<xsd:complexType name="Schema">
+		<xsd:annotation>
+			<xsd:documentation>数据库或者模式</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence minOccurs="1" maxOccurs="1">
+			<xsd:element name="table" type="Table" minOccurs="0"
+				maxOccurs="unbounded">
+			</xsd:element>
+			<xsd:element name="view" type="View" minOccurs="0" maxOccurs="unbounded"></xsd:element>
+			<xsd:element name="sheet" type="Sheet" minOccurs="0"
+				maxOccurs="unbounded">
+				<xsd:annotation>
+					<xsd:documentation>辅助图表页</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:sequence>
+		<xsd:attribute name="version" type="xsd:string" use="optional"></xsd:attribute>
+		<xsd:attribute name="vendor" type="Vendor" use="optional">
+			<xsd:annotation>
+				<xsd:documentation>厂商</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+		<xsd:attribute name="locale" type="xsd:string" use="optional">
+			<xsd:annotation>
+				<xsd:documentation>语区，所有title和note可以应用该种语言</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+		<xsd:attribute name="name" type="xsd:string" use="required">
+			<xsd:annotation>
+				<xsd:documentation>数据库名或者模式名</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+		<xsd:attribute name="dsn" type="xsd:string" use="optional">
+			<xsd:annotation>
+				<xsd:documentation>在IDE中的数据源名</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+		<xsd:attribute name="domain" type="xsd:string" use="required">
+			<xsd:annotation>
+				<xsd:documentation>业务域，用于包名前缀如：com.app</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+		<xsd:attribute name="path" type="xsd:string" use="optional">
+			<xsd:annotation>
+				<xsd:documentation>代码生成路径</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+		<xsd:attribute name="geometry" type="xsd:string" use="optional">
+			<xsd:annotation>
+				<xsd:documentation>图形参数，用于可视化显示</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+	</xsd:complexType>
+
+	<xsd:complexType name="Table">
+		<xsd:annotation>
+			<xsd:documentation>数据表定义</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence minOccurs="1" maxOccurs="1">
+			<xsd:element name="column" type="Column" minOccurs="1"
+				maxOccurs="unbounded">
+			</xsd:element>
+			<xsd:element name="index" type="Index" minOccurs="0"
+				maxOccurs="unbounded">
+			</xsd:element>
+			<xsd:element name="foreignKey" type="ForeignKey"
+				minOccurs="0" maxOccurs="unbounded">
+			</xsd:element>
+		</xsd:sequence>
+		<xsd:attribute name="name" type="xsd:string" use="required">
+			<xsd:annotation>
+				<xsd:documentation>表名，一般使用大写字母+下划线写法</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+		<xsd:attribute name="javaName" type="xsd:string" use="optional">
+			<xsd:annotation>
+				<xsd:documentation>
+					Java实体Bean名，可选，使用默认机制从name生成
+				</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+		<xsd:attribute name="title" type="xsd:string" use="required">
+			<xsd:annotation>
+				<xsd:documentation>
+					业务名称，可使用中文或本地语言，必选
+				</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+		<xsd:attribute name="module" type="xsd:string" use="optional">
+			<xsd:annotation>
+				<xsd:documentation>
+					模块名，对包名有影响，若为user，则包名为：com.app.user
+				</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+		<xsd:attribute name="list" type="xsd:boolean" use="optional"
+			default="true">
+			<xsd:annotation>
+				<xsd:documentation>是否具有列表页面</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+		<xsd:attribute name="tree" type="xsd:boolean" use="optional"
+			default="false">
+			<xsd:annotation>
+				<xsd:documentation>是否具有树形页面</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+		<xsd:attribute name="detail" type="xsd:boolean" use="optional"
+			default="true">
+			<xsd:annotation>
+				<xsd:documentation>是否具有明细页面</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+		<xsd:attribute name="create" type="xsd:boolean" use="optional"
+			default="true">
+			<xsd:annotation>
+				<xsd:documentation>是否具有增加页面</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+		<xsd:attribute name="update" type="xsd:boolean" use="optional"
+			default="true">
+			<xsd:annotation>
+				<xsd:documentation>是否具有更新页面</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+		<xsd:attribute name="delete" type="xsd:boolean" use="optional"
+			default="true">
+			<xsd:annotation>
+				<xsd:documentation>是否具有删除页面</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+		<xsd:attribute name="note" type="xsd:string" use="optional">
+			<xsd:annotation>
+				<xsd:documentation>
+					表的注释，可使用本地语言描述业务含义
+				</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+		<xsd:attribute name="geometry" type="xsd:string" use="optional">
+			<xsd:annotation>
+				<xsd:documentation>图形化参数，用于IDE显示和编辑</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+		<xsd:attribute name="collapsed" type="xsd:boolean"
+			default="false" use="optional">
+			<xsd:annotation>
+				<xsd:documentation>折叠显示与否</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+	</xsd:complexType>
+
+	<xsd:complexType name="Column">
+		<xsd:annotation>
+			<xsd:documentation>列的定义。</xsd:documentation>
+		</xsd:annotation>
+		<xsd:choice minOccurs="0" maxOccurs="1">
+			<xsd:element name="sequence" type="Sequence" minOccurs="0"
+				maxOccurs="1">
+			</xsd:element>
+			<xsd:element name="state" type="State" minOccurs="0"
+				maxOccurs="unbounded">
+			</xsd:element>
+		</xsd:choice>
+		<xsd:attribute name="name" type="xsd:string" use="required">
+			<xsd:annotation>
+				<xsd:documentation>列名</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+		<xsd:attribute name="title" type="xsd:string" use="required">
+			<xsd:annotation>
+				<xsd:documentation>列的业务名称，必选</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+		<xsd:attribute name="type" type="Type" use="required">
+			<xsd:annotation>
+				<xsd:documentation>
+					列的数据库类型。当type是ENUM时，需指定状态列表
+				</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+		<xsd:attribute name="size" type="xsd:int" use="optional"
+			default="0">
+			<xsd:annotation>
+				<xsd:documentation>
+					数据类型的长度，如类型是varchar，长度为20
+				</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+		<xsd:attribute name="scale" type="xsd:int" use="optional"
+			default="0">
+			<xsd:annotation>
+				<xsd:documentation>
+					类型的精度，如类型是decimal，长度是10，精度是2，表示最多两位小数
+				</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+		<xsd:attribute name="primaryKey" type="xsd:boolean" use="optional"
+			default="false">
+			<xsd:annotation>
+				<xsd:documentation>是否是主键，默认是false</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+		<xsd:attribute name="notNull" type="xsd:boolean" use="optional"
+			default="false">
+			<xsd:annotation>
+				<xsd:documentation>是否非空，默认是false</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+		<xsd:attribute name="javaName" type="xsd:string" use="optional">
+			<xsd:annotation>
+				<xsd:documentation>
+					对应的Java实体Bean的字段名，要符合Java命名规范。可选，通过name以默认机制生成
+				</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+		<xsd:attribute name="javaType" type="xsd:string" use="optional">
+			<xsd:annotation>
+				<xsd:documentation>
+					对应的Java类型，可选，通过type自动映射
+				</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+		<xsd:attribute name="invisiable" type="xsd:boolean" use="optional"
+			default="false">
+			<xsd:annotation>
+				<xsd:documentation>是否不可显示，如审计所用的创建、更新时间等，是不需要显示的。
+				</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+		<xsd:attribute name="readonly" type="xsd:boolean" use="optional"
+			default="false">
+			<xsd:annotation>
+				<xsd:documentation>是否不可更改，比如用户的是否系统属性，是不可修改的。</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+		<xsd:attribute name="sorting" type="xsd:boolean" use="optional"
+			default="true">
+			<xsd:annotation>
+				<xsd:documentation>是否在列表上是否参与排序。</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+		<xsd:attribute name="filtering" type="xsd:boolean" use="optional"
+			default="false">
+			<xsd:annotation>
+				<xsd:documentation>是否参与到查询过滤条件中。</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+		<xsd:attribute name="note" type="xsd:string" use="optional">
+			<xsd:annotation>
+				<xsd:documentation>列的业务备注</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+	</xsd:complexType>
+
+	<xsd:complexType name="Index">
+		<xsd:annotation>
+			<xsd:documentation>索引的定义</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence minOccurs="1" maxOccurs="1">
+			<xsd:element name="column" type="xsd:string" minOccurs="1"
+				maxOccurs="unbounded">
+				<xsd:annotation>
+					<xsd:documentation>索引包含的列</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:sequence>
+		<xsd:attribute name="name" type="xsd:string" use="required">
+			<xsd:annotation>
+				<xsd:documentation>索引名</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+		<xsd:attribute name="unique" type="xsd:boolean" use="required">
+			<xsd:annotation>
+				<xsd:documentation>是否是唯一性索引</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+	</xsd:complexType>
+
+	<xsd:complexType name="ForeignKey">
+		<xsd:annotation>
+			<xsd:documentation>外键定义</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence minOccurs="1" maxOccurs="1">
+			<xsd:element name="reference" type="Reference" minOccurs="1"
+				maxOccurs="unbounded">
+				<xsd:annotation>
+					<xsd:documentation>外键的引用定义</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:sequence>
+		<xsd:attribute name="name" type="xsd:string" use="required">
+			<xsd:annotation>
+				<xsd:documentation>外键名</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+		<xsd:attribute name="foreignTable" type="xsd:string"
+			use="required">
+			<xsd:annotation>
+				<xsd:documentation>外键所引用的表</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+		<xsd:attribute name="real" type="xsd:boolean" use="optional"
+			default="true">
+			<xsd:annotation>
+				<xsd:documentation>是否物理存在</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+		<xsd:attribute name="constraint" type="Constraint" use="optional"
+			default="1..1">
+			<xsd:annotation>
+				<xsd:documentation>约束类型</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+		<xsd:attribute name="note" type="xsd:string" use="optional">
+			<xsd:annotation>
+				<xsd:documentation>注释</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+		<xsd:attribute name="geometry" type="xsd:string" use="optional">
+			<xsd:annotation>
+				<xsd:documentation>图形参数，用于IDE显示和编辑</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+	</xsd:complexType>
+
+	<xsd:simpleType name="Type">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="VARCHAR"></xsd:enumeration>
+			<xsd:enumeration value="INTEGER"></xsd:enumeration>
+			<xsd:enumeration value="BOOLEAN"></xsd:enumeration>
+			<xsd:enumeration value="ENUM"></xsd:enumeration>
+			<xsd:enumeration value="NUMBER"></xsd:enumeration>
+			<xsd:enumeration value="CHAR"></xsd:enumeration>
+			<xsd:enumeration value="DATE"></xsd:enumeration>
+			<xsd:enumeration value="TIME"></xsd:enumeration>
+			<xsd:enumeration value="TIMESTAMP"></xsd:enumeration>
+			<xsd:enumeration value="BLOB"></xsd:enumeration>
+			<xsd:enumeration value="CLOB"></xsd:enumeration>
+		</xsd:restriction>
+	</xsd:simpleType>
+
+	<xsd:simpleType name="Vendor">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="oracle"></xsd:enumeration>
+			<xsd:enumeration value="mysql"></xsd:enumeration>
+			<xsd:enumeration value="sqlserver"></xsd:enumeration>
+			<xsd:enumeration value="db2"></xsd:enumeration>
+		</xsd:restriction>
+	</xsd:simpleType>
+
+	<xsd:simpleType name="Constraint">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="1..1"></xsd:enumeration>
+			<xsd:enumeration value="1..n"></xsd:enumeration>
+			<xsd:enumeration value="m..1"></xsd:enumeration>
+			<xsd:enumeration value="m..n"></xsd:enumeration>
+		</xsd:restriction>
+	</xsd:simpleType>
+
+	<xsd:complexType name="Reference">
+		<xsd:annotation>
+			<xsd:documentation>外键的引用定义</xsd:documentation>
+		</xsd:annotation>
+		<xsd:attribute name="local" type="xsd:string" use="required">
+			<xsd:annotation>
+				<xsd:documentation>本表列名</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+		<xsd:attribute name="foreign" type="xsd:string" use="required">
+			<xsd:annotation>
+				<xsd:documentation>父表列名</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+	</xsd:complexType>
+
+
+	<xsd:complexType name="Sequence">
+		<xsd:annotation>
+			<xsd:documentation>编号生成机制的定义</xsd:documentation>
+		</xsd:annotation>
+		<xsd:attribute name="length" type="xsd:int" use="optional"
+			default="0">
+			<xsd:annotation>
+				<xsd:documentation>编号的长度</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+		<xsd:attribute name="prefix" type="xsd:string" use="optional">
+			<xsd:annotation>
+				<xsd:documentation>前缀，可选</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+		<xsd:attribute name="suffix" type="xsd:string" use="optional">
+			<xsd:annotation>
+				<xsd:documentation>后缀，可选</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+		<xsd:attribute name="fetchSize" type="xsd:int" use="required">
+			<xsd:annotation>
+				<xsd:documentation>编号预取集合的大小，一般在1-10000之间</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+	</xsd:complexType>
+
+	<xsd:complexType name="State" mixed="true">
+		<xsd:annotation>
+			<xsd:documentation>枚举类型列的定义</xsd:documentation>
+		</xsd:annotation>
+		<xsd:attribute name="value" type="xsd:byte" use="required">
+			<xsd:annotation>
+				<xsd:documentation>枚举值</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+	</xsd:complexType>
+
+
+	<xsd:complexType name="Sheet">
+		<xsd:annotation>
+			<xsd:documentation>辅助图表页</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence minOccurs="1" maxOccurs="1">
+			<xsd:element name="table" type="TableRef" minOccurs="0" maxOccurs="unbounded"></xsd:element>
+		</xsd:sequence>
+		<xsd:attribute name="name" type="xsd:string" use="required">
+			<xsd:annotation>
+				<xsd:documentation>页名</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+	</xsd:complexType>
+
+	<xsd:complexType name="TableRef">
+		<xsd:annotation>
+			<xsd:documentation>数据表引用</xsd:documentation>
+		</xsd:annotation>
+		<xsd:attribute name="name" type="xsd:string" use="required">
+			<xsd:annotation>
+				<xsd:documentation>数据表名</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+		<xsd:attribute name="geometry" type="xsd:string" use="optional">
+			<xsd:annotation>
+				<xsd:documentation>图形化参数，用于IDE显示和编辑</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+		<xsd:attribute name="collapsed" type="xsd:boolean"
+			default="false" use="optional">
+			<xsd:annotation>
+				<xsd:documentation>折叠显示与否</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+	</xsd:complexType>
+
+	<xsd:complexType name="View">
+		<xsd:annotation>
+			<xsd:documentation>视图定义</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence minOccurs="1" maxOccurs="1">
+			<xsd:element name="column" type="xsd:string" minOccurs="1"
+				maxOccurs="unbounded">
+				<xsd:annotation>
+					<xsd:documentation>View包含的列</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:sequence>
+		<xsd:attribute name="name" type="xsd:string" use="required">
+			<xsd:annotation>
+				<xsd:documentation>表名，一般使用大写字母+下划线写法</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+		<xsd:attribute name="table" type="xsd:string"></xsd:attribute>
+		<xsd:attribute name="javaName" type="xsd:string"
+			use="optional">
+			<xsd:annotation>
+				<xsd:documentation>
+					Java实体Bean名，可选，使用默认机制从name生成
+				</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+		<xsd:attribute name="title" type="xsd:string" use="required">
+			<xsd:annotation>
+				<xsd:documentation>
+					业务名称，可使用中文或本地语言，必选
+				</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+		<xsd:attribute name="module" type="xsd:string" use="optional">
+			<xsd:annotation>
+				<xsd:documentation>
+					模块名，对包名有影响，若为user，则包名为：com.app.user
+				</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+		<xsd:attribute name="list" type="xsd:boolean" use="optional"
+			default="true">
+			<xsd:annotation>
+				<xsd:documentation>是否具有列表页面</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+		<xsd:attribute name="tree" type="xsd:boolean" use="optional"
+			default="false">
+			<xsd:annotation>
+				<xsd:documentation>是否具有树形页面</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+		<xsd:attribute name="detail" type="xsd:boolean" use="optional"
+			default="true">
+			<xsd:annotation>
+				<xsd:documentation>是否具有明细页面</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+		<xsd:attribute name="create" type="xsd:boolean" use="optional"
+			default="true">
+			<xsd:annotation>
+				<xsd:documentation>是否具有增加页面</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+		<xsd:attribute name="update" type="xsd:boolean" use="optional"
+			default="true">
+			<xsd:annotation>
+				<xsd:documentation>是否具有更新页面</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+		<xsd:attribute name="delete" type="xsd:boolean" use="optional"
+			default="true">
+			<xsd:annotation>
+				<xsd:documentation>是否具有删除页面</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+		<xsd:attribute name="note" type="xsd:string" use="optional">
+			<xsd:annotation>
+				<xsd:documentation>
+					表的注释，可使用本地语言描述业务含义
+				</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+		<xsd:attribute name="geometry" type="xsd:string"
+			use="optional">
+			<xsd:annotation>
+				<xsd:documentation>图形化参数，用于IDE显示和编辑</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+		<xsd:attribute name="collapsed" type="xsd:boolean"
+			default="false" use="optional">
+			<xsd:annotation>
+				<xsd:documentation>折叠显示与否</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+	</xsd:complexType>
+</xsd:schema>

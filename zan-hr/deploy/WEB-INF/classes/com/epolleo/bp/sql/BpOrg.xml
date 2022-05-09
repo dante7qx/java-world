@@ -1,0 +1,368 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "sql-map-2.dtd">
+<sqlMap namespace="OrgBean">
+	<cacheModel type="OSCACHE" id="orgSimpleTree">
+		<flushInterval hours="120" />
+		<flushOnExecute statement="updateOrg" />
+		<flushOnExecute statement="updateOrgParent" />
+		<flushOnExecute statement="insertOrg" />
+		<flushOnExecute statement="deleteOrg" />
+	</cacheModel>
+	<cacheModel type="OSCACHE" id="OrgBean_queryOrgById">
+		<flushInterval hours="8" />
+		<flushOnExecute statement="updateOrg" />
+		<flushOnExecute statement="updateOrgParent" />
+		<flushOnExecute statement="insertOrg" />
+		<flushOnExecute statement="deleteOrg" />
+	</cacheModel>
+	<cacheModel type="OSCACHE" id="orgNodeTree">
+		<flushInterval hours="120" />
+		<flushOnExecute statement="updateOrgFullId" />
+		<flushOnExecute statement="updateOrg" />
+		<flushOnExecute statement="updateOrgParent" />
+		<flushOnExecute statement="insertOrg" />
+		<flushOnExecute statement="deleteOrg" />
+	</cacheModel>
+	<typeAlias alias="orgBean" type="com.epolleo.bp.org.bean.OrgBean" />
+	<resultMap id="orgBeanResult" class="orgBean">
+		<result property="orgId" column="ORG_ID" />
+		<result property="fullId" column="FULL_ID" />
+		<result property="fullCode" column="FULL_CODE" />
+		<result property="orgCode" column="ORG_CODE" />
+		<result property="fullName" column="FULLNAME" />
+		<result property="shortName" column="SHORTNAME" />
+		<result property="enable" column="ENABLE" />
+		<result property="orgName" column="ORG_NAME" />
+		<result property="orgPinYin" column="ORG_PINYIN" />
+		<result property="orgTypeId" column="ORG_TYPE_ID" />
+		<result property="parentId" column="PARENT_ID" />
+		<result property="showOrder" column="SHOW_ORDER" />
+		<result property="createUser" column="CREATE_USER" />
+		<result property="createTime" column="CREATE_TIME" />
+		<result property="updateUser" column="UPDATE_USER" />
+		<result property="updateTime" column="UPDATE_TIME" />
+		<result property="locId" column="LOC_ID" />
+	</resultMap>
+	<update id="updateOrg" parameterClass="orgBean">
+		UPDATE
+		    BP_ORGAN
+		SET
+		    ORG_CODE    = #orgCode#,
+		    FULLNAME    = #fullName#,
+		    SHORTNAME   = #shortName#,
+		    FULL_ID     = #fullId#,
+		    FULL_CODE   = #fullCode#,
+		    ENABLE      = #enable#,
+		    ORG_NAME    = #orgName#,
+		    ORG_PINYIN  = #orgPinYin#,
+		    ORG_TYPE_ID = #orgTypeId#,
+		    PARENT_ID   = #parentId#,
+		    SHOW_ORDER  = #showOrder#,
+		    UPDATE_USER = #updateUser#,
+		    UPDATE_TIME = #updateTime#,
+		    LOC_ID      = #locId#
+		WHERE
+		    ORG_ID = #orgId#
+	</update>
+	<update id="updateOrgParent" parameterClass="orgBean">
+		UPDATE
+		    BP_ORGAN
+		SET
+		    PARENT_ID   = #parentId#,
+		    UPDATE_USER = #updateUser#,
+		    UPDATE_TIME = #updateTime#
+		WHERE
+		    ORG_ID = #orgId#
+	</update>
+	<insert id="insertOrg" parameterClass="orgBean">
+		INSERT
+		INTO
+		    BP_ORGAN
+		    (
+		        ORG_ID,
+		        ORG_NAME,
+		        ORG_CODE,
+		        FULLNAME,
+		        SHORTNAME,
+		        FULL_ID,
+		        FULL_CODE,
+		        ENABLE,
+		        ORG_PINYIN,
+		        ORG_TYPE_ID,
+		        PARENT_ID,
+		        SHOW_ORDER,
+		        CREATE_USER,
+		        CREATE_TIME,
+		        UPDATE_USER,
+		        UPDATE_TIME,
+		        LOC_ID
+		    )
+		    VALUES
+		    (
+		        #orgId#,
+		        #orgName#,
+		        #orgCode#,
+		        #fullName#,
+		        #shortName#,
+		        #fullId#,
+		        #fullCode#,
+		        #enable#,
+		        #orgPinYin#,
+		        #orgTypeId#,
+		        #parentId#,
+		        #showOrder#,
+		        #createUser#,
+		        #createTime#,
+		        #updateUser#,
+		        #updateTime#,
+		        #locId#
+		    )
+	</insert>
+	<delete id="deleteOrg" parameterClass="integer">
+		DELETE FROM BP_ORGAN WHERE ORG_ID = #id#
+	</delete>
+	<select id="queryOrgSimple"
+		resultClass="com.epolleo.bp.org.bean.OrgNodeBean">
+		SELECT
+		    PARENT_ID AS parentId,
+		    ORG_NAME  AS orgName,
+		    ORG_ID    AS orgId,
+		    SHOW_ORDER
+		FROM
+		    BP_ORGAN
+		ORDER BY
+		    PARENT_ID,
+		    SHOW_ORDER,
+		    ORG_ID ASC
+	</select>
+	<select id="queryOrgByCode" parameterClass="String"
+		resultClass="com.epolleo.bp.org.bean.OrgNodeBean">
+		SELECT
+		    ORG_NAME  AS orgName,
+		    ORG_ID    AS orgId
+		FROM
+		    BP_ORGAN
+		where ORG_CODE = #orgCode#
+	</select>
+	<select id="querySimpleOrgExcludeId" parameterClass="int"
+		resultClass="com.epolleo.bp.org.bean.OrgNodeBean">
+		SELECT
+		    PARENT_ID AS parentId,
+		    ORG_NAME  AS orgName,
+		    ORG_ID    AS orgId,
+		    SHOW_ORDER
+		FROM
+		    BP_ORGAN
+		WHERE
+		    ORG_ID &lt;&gt; #excludeId#
+		    AND
+		    (
+		        PARENT_ID    &lt;&gt; #excludeId#
+		        OR PARENT_ID IS NULL
+		    )
+		ORDER BY
+		    PARENT_ID,
+		    SHOW_ORDER
+	</select>
+	<select id="queryOrgChildAndType" parameterClass="integer"
+		resultClass="orgBean">
+		SELECT
+		    organ.PARENT_ID   AS parentId,
+		    organ.ORG_NAME    AS orgName,
+		    organ.ORG_CODE    AS orgCode,
+		    organ.FULL_ID     AS fullId,
+		    organ.FULL_CODE   AS fullCode,
+		    organ.FULLNAME    AS fullName,
+		    organ.SHORTNAME   AS shortName,
+		    organ.ENABLE      AS enable,
+		    organ.ORG_PINYIN  AS orgPinYin,
+		    organ.ORG_ID      AS orgId,
+		    organ.ORG_TYPE_ID AS orgTypeId,
+		    organ.SHOW_ORDER  AS showOrder,
+		    organ.LOC_ID      AS locId,
+		    t.ORG_TYPE        AS orgType
+		FROM
+		    BP_ORGAN organ
+		LEFT JOIN BP_ORGAN_TYPE t
+		ON
+		    organ.ORG_TYPE_ID=t.ORG_TYPE_ID
+		WHERE
+		    organ.PARENT_ID=#parentId#
+		ORDER BY
+		    SHOW_ORDER ASC,
+		    ORG_ID ASC
+	</select>
+	<select id="queryAllRootOrgNode" resultClass="orgBean">
+		SELECT
+		    organ.PARENT_ID   AS parentId,
+		    organ.ORG_NAME    AS orgName,
+		    organ.ORG_CODE    AS orgCode,
+		    organ.FULL_ID     AS fullId,
+		    organ.FULL_CODE   AS fullCode,
+		    organ.FULLNAME    AS fullName,
+		    organ.SHORTNAME   AS shortName,
+		    organ.ENABLE      AS enable,
+		    organ.ORG_PINYIN  AS orgPinYin,
+		    organ.ORG_ID      AS orgId,
+		    organ.ORG_TYPE_ID AS orgTypeId,
+		    organ.SHOW_ORDER  AS showOrder,
+		    organ.LOC_ID      AS locId,
+		    t.ORG_TYPE        AS orgType
+		FROM
+		    BP_ORGAN organ
+		LEFT JOIN BP_ORGAN_TYPE t
+		ON
+		    organ.ORG_TYPE_ID=t.ORG_TYPE_ID
+		WHERE
+		    organ.PARENT_ID IS NULL
+		ORDER BY
+		    SHOW_ORDER ASC,
+		    ORG_ID ASC
+	</select>
+	
+	<select id="queryOrgNodeByTypeId" resultClass="orgBean" parameterClass="integer">
+		SELECT
+		    organ.PARENT_ID   AS parentId,
+		    organ.ORG_NAME    AS orgName,
+		    organ.ORG_CODE    AS orgCode,
+		    organ.FULL_ID     AS fullId,
+		    organ.FULL_CODE   AS fullCode,
+		    organ.FULLNAME    AS fullName,
+		    organ.SHORTNAME   AS shortName,
+		    organ.ENABLE      AS enable,
+		    organ.ORG_PINYIN  AS orgPinYin,
+		    organ.ORG_ID      AS orgId,
+		    organ.ORG_TYPE_ID AS orgTypeId,
+		    organ.SHOW_ORDER  AS showOrder,
+		    organ.LOC_ID      AS locId,
+		    t.ORG_TYPE        AS orgType
+		FROM
+		    BP_ORGAN organ
+		LEFT JOIN BP_ORGAN_TYPE t
+		ON
+		    organ.ORG_TYPE_ID=t.ORG_TYPE_ID
+		WHERE
+		    organ.ORG_TYPE_ID = #typeId#
+		ORDER BY
+		    SHOW_ORDER ASC,
+		    ORG_ID ASC
+	</select>
+	
+	<select id="queryOrgNodeByPidAndTypeId" resultClass="orgBean">
+		SELECT
+		    organ.PARENT_ID   AS parentId,
+		    organ.ORG_NAME    AS orgName,
+		    organ.ORG_CODE    AS orgCode,
+		    organ.FULL_ID     AS fullId,
+		    organ.FULL_CODE   AS fullCode,
+		    organ.FULLNAME    AS fullName,
+		    organ.SHORTNAME   AS shortName,
+		    organ.ENABLE      AS enable,
+		    organ.ORG_PINYIN  AS orgPinYin,
+		    organ.ORG_ID      AS orgId,
+		    organ.ORG_TYPE_ID AS orgTypeId,
+		    organ.SHOW_ORDER  AS showOrder,
+		    organ.LOC_ID      AS locId,
+		    t.ORG_TYPE        AS orgType
+		FROM
+		    BP_ORGAN organ
+		LEFT JOIN BP_ORGAN_TYPE t
+		ON
+		    organ.ORG_TYPE_ID=t.ORG_TYPE_ID
+		WHERE
+			organ.PARENT_ID = #1#
+			AND
+		    organ.ORG_TYPE_ID = #2#
+		ORDER BY
+		    SHOW_ORDER ASC,
+		    ORG_ID ASC
+	</select>
+
+	<select id="countUsedOrgTypeId" resultClass="integer"
+		parameterClass="integer">
+		SELECT
+		    COUNT(1)
+		FROM
+		    BP_ORGAN organ
+		WHERE
+		    ORG_TYPE_ID = #id#
+	</select>
+
+	<select id="queryOrgById" resultMap="orgBeanResult" cacheModel="OrgBean_queryOrgById">
+		SELECT
+		    ORG_ID,
+		    ORG_CODE,
+		    FULLNAME,
+		    SHORTNAME,
+		    FULL_ID,
+		    FULL_CODE,
+		    ENABLE,
+		    ORG_NAME,
+		    ORG_PINYIN,
+		    ORG_TYPE_ID,
+		    PARENT_ID,
+		    SHOW_ORDER,
+		    CREATE_USER,
+		    CREATE_TIME,
+		    UPDATE_USER,
+		    UPDATE_TIME,
+		    LOC_ID
+		FROM
+		    BP_ORGAN
+		WHERE
+		    ORG_ID = #orgId#
+	</select>
+
+	<select id="queryOrgBeanTreeFromId" parameterClass="string"
+		resultClass="com.epolleo.bp.org.bean.OrgNodeBean"
+		cacheModel="orgSimpleTree">
+		SELECT
+		    o.PARENT_ID AS parentId,
+		    o.ORG_NAME  AS orgName,
+		    o.ORG_ID    AS orgId
+		FROM
+		    BP_ORGAN o
+		WHERE
+		    o.FULL_ID LIKE #1#
+		ORDER BY
+		    PARENT_ID ASC,
+		    SHOW_ORDER ASC,
+		    ORG_ID ASC
+	</select>
+
+	<select id="getOrgRelationMap" cacheModel="orgNodeTree"
+		resultClass="com.epolleo.bp.org.bean.OrgNodeBean">
+		SELECT
+		    ORG_ID    AS orgId,
+		    ORG_NAME  AS orgName,
+		    PARENT_ID AS parentId
+		FROM
+		    BP_ORGAN
+		ORDER BY
+		    PARENT_ID ASC,
+		    SHOW_ORDER ASC,
+		    ORG_ID ASC
+	</select>
+
+	<update id="updateOrgFullId">
+		UPDATE
+		    BP_ORGAN
+		SET
+		    FULL_ID = #2#
+		WHERE
+		    ORG_ID = #1#
+	</update>
+
+	<!-- select id="getOrgFullId" parameterClass="integer"
+		resultClass="java.lang.String">
+		SELECT
+		FULL_ID AS fullId
+		FROM
+		BP_ORGAN
+		WHERE
+		ORG_ID = #1#
+		</select -->
+	<select id="getOrgDir" resultClass="integer">
+		SELECT DISTINCT PARENT_ID FROM BP_ORGAN
+	</select>
+</sqlMap>

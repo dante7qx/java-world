@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<b:beans xmlns:b="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+	<b:bean id="contextSource"
+		class="org.springframework.ldap.core.support.LdapContextSource">
+		<!-- 测试服务器 -->
+		<b:property name="urls" value="${ldap.url}" />
+		<b:property name="base" value="${ldap.base.dn}" /><!-- 查询目录根节点 -->
+		<b:property name="userDn" value="${ldap.admin.dn}" /><!-- 管理员DN -->
+		<b:property name="password" value="${ldap.admin.pass}" /><!-- 
+			管理员密码 -->
+		<b:property name="pooled" value="true" />
+	</b:bean>
+	<b:bean id="ldapTemplate" class="org.springframework.ldap.core.LdapTemplate">
+		<b:constructor-arg ref="contextSource" />
+	</b:bean>
+	<b:bean id="ldapAuthentication" class="com.epolleo.webx.valve.LdapAuthentication">
+		<b:constructor-arg ref="ldapTemplate" />
+		<b:property name="userDnPatterns">
+			<b:list>
+				<b:value>uid={0},ou=users</b:value>
+			</b:list>
+		</b:property>
+		<b:property name="searchFilter" value="(&amp;(objectClass=person)(uid={0}))"/>
+	</b:bean>
+</b:beans>

@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "sql-map-2.dtd">
+<sqlMap namespace="EmployeeOrgan">
+	<typeAlias alias="EmployeeOrgan"
+		type="com.epolleo.bp.employee.bean.EmployeeOrgan" />
+	<resultMap id="EmployeeOrganResult" class="EmployeeOrgan">
+		<result property="orgId" column="ORG_ID" />
+		<result property="orgType" column="ORG_TYPE" />
+		<result property="orgName" column="ORG_NAME" />
+		<result property="parentId" column="PARENT_ID" />
+		<result property="employeeId" column="EMP_ID" />
+		<result property="defaultOrgId" column="DEFAULT_ORG_ID" />
+	</resultMap>
+	<resultMap id="EmployeeOrganResult3" class="EmployeeOrgan">
+		<result property="employeeId" column="EMP_ID" />
+		<result property="orgId" column="ORG_ID" />
+	</resultMap>
+	<resultMap id="EmployeeOrganResult4" class="EmployeeOrgan">
+		<result property="orgId" column="ORG_ID" />
+		<result property="orgType" column="ORG_TYPE" />
+		<result property="orgName" column="ORG_NAME" />
+		<result property="parentId" column="PARENT_ID" />
+		<result property="employeeId" column="EMP_ID" />
+		<result property="defaultOrgId" column="DEFAULT_ORG_ID" />
+	</resultMap>
+	<select id="selectEmployeeOrgan" resultClass="EmployeeOrgan">
+		SELECT
+		    o.ORG_ID         AS orgId,
+		    ot.ORG_TYPE      AS orgType,
+		    o.ORG_NAME       AS orgName,
+		    o.PARENT_ID      AS parentId,
+		    uo.EMP_ID        AS employeeId,
+		    u.DEFAULT_ORG_ID AS defaultOrgId
+		FROM
+		    BP_ORGAN_TYPE ot
+		RIGHT JOIN BP_ORGAN o
+		ON
+		    ot.ORG_TYPE_ID = o.ORG_TYPE_ID
+		LEFT JOIN BP_EMPLOYEE_ORGAN uo
+		ON
+		    o.ORG_ID      = uo.ORG_ID
+		    AND uo.EMP_ID = #employeeId#
+		LEFT JOIN BP_EMPLOYEE u
+		ON
+		    uo.EMP_ID = u.EMP_ID
+		ORDER BY
+		    o.parent_id
+	</select>
+	<select id="selectOrganNoEmployee" resultClass="EmployeeOrgan">
+		SELECT
+		    ot.ORG_TYPE AS orgType,
+		    o.ORG_ID    AS orgId,
+		    o.ORG_NAME  AS orgName,
+		    o.PARENT_ID AS parentId
+		FROM
+		    BP_ORGAN_TYPE ot
+		RIGHT JOIN BP_ORGAN o
+		ON
+		    ot.ORG_TYPE_ID=o.ORG_TYPE_ID
+		ORDER BY
+		    o.parent_id
+	</select>
+	<delete id="deleteEmployeeOrg" parameterClass="integer">
+		DELETE
+		FROM
+		    BP_EMPLOYEE_ORGAN
+		WHERE
+		    EMP_ID = #employeeId#
+	</delete>
+	<insert id="insertEmployeeOrg" parameterClass="EmployeeOrgan">
+		INSERT
+		INTO
+		    BP_EMPLOYEE_ORGAN
+		    (
+		        EMP_ID,
+		        ORG_ID
+		    )
+		    VALUES
+		    (
+		        #employeeId#,
+		        #orgId#
+		    )
+	</insert>
+	<select id="selectEmployeeOrgCount" resultClass="int"
+		parameterClass="EmployeeOrgan">
+		SELECT
+		    COUNT(1)
+		FROM
+		    BP_EMPLOYEE_ORGAN
+		WHERE
+		    EMP_ID     = #employeeId#
+		    AND ORG_ID = #orgId#
+	</select>
+	<select id="selectOrgForCurrentUser" resultClass="int"
+		parameterClass="String">
+		SELECT
+		    be.DEFAULT_ORG_ID
+		FROM
+		    BP_EMPLOYEE be,
+		    BP_USER bu
+		WHERE
+		    bu.USER_ID    = #userId#
+		    AND bu.EMP_ID = be.EMP_ID
+	</select>
+	<select id="getOrgByEmployeeId"
+		resultClass="java.util.LinkedHashMap">
+		SELECT
+		    ORG_ID   AS ORG_ID,
+		    ORG_NAME AS ORG_NAME,
+		    PARENT_ID
+		FROM
+		    BP_ORGAN
+		WHERE
+		    ORG_ID IN
+		    (
+		        SELECT
+		            ORG_ID
+		        FROM
+		            BP_EMPLOYEE_ORGAN
+		        WHERE
+		            EMP_ID=#employeeId#
+		    )
+		ORDER BY
+		    PARENT_ID,
+		    SHOW_ORDER,
+		    ORG_ID ASC
+	</select>
+	<!--query the relation about user and organ -->
+	<select id="checkOrganEmployeeRelation"
+		resultMap="EmployeeOrganResult3" parameterClass="String">
+		SELECT
+		    uo.ORG_ID AS orgId
+		FROM
+		    BP_EMPLOYEE_ORGAN uo
+		WHERE
+		    ORG_ID = #id#
+	</select>
+	<select id="queryOrgByEmployeeId"
+		resultMap="EmployeeOrganResult4">
+		SELECT
+		    uo.ORG_ID,
+		    ot.ORG_TYPE,
+		    o.ORG_NAME,
+		    o.PARENT_ID,
+		    uo.EMP_ID,
+		    u.DEFAULT_ORG_ID
+		FROM
+		    BP_EMPLOYEE_ORGAN uo
+		JOIN BP_EMPLOYEE u
+		ON
+		    u.EMP_ID = uo.EMP_ID
+		JOIN BP_ORGAN o
+		ON
+		    o.ORG_ID = uo.ORG_ID
+		JOIN BP_ORGAN_TYPE ot
+		ON
+		    o.ORG_TYPE_ID = ot.ORG_TYPE_ID
+		    AND u.EMP_ID  = #employeeId#
+	</select>
+</sqlMap>

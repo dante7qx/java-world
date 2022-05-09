@@ -1,0 +1,46 @@
+package com.spirit.${context.packageName}.api.dto.req;
+
+/**
+ * ${table.comment} Req DTO
+ * 
+ * @author dante
+ * @date ${genDate}
+ *
+ */
+public class ${context.javaBeanName}ReqDTO {
+	
+#foreach($column in $columns)	
+	/**
+	 * ${column.comment}
+	 */
+#if(${column.javaFieldName} == "deleteFlag")
+	private Boolean deleteFlag;
+#elseif(${column.javaFieldName} == "updateDate")
+#else
+	private ${column.javaTypeBox} ${column.javaFieldName};
+#end
+#end
+
+#foreach(${column} in ${columns}) 
+#if(${column.javaFieldName} == "deleteFlag")
+	public void setDeleteFlag(Boolean deleteFlag){
+		this.deleteFlag = deleteFlag;
+	}
+
+	public Boolean getDeleteFlag() {
+		return deleteFlag;
+	}
+#elseif(${column.javaFieldName} == "updateDate")
+#else
+	public void set${column.javaFieldNameUF}(${column.javaTypeBox} ${column.javaFieldName}){
+		this.${column.javaFieldName} = ${column.javaFieldName};
+	}
+
+	public ${column.javaTypeBox} get${column.javaFieldNameUF}(){
+		return this.${column.javaFieldName};
+	}
+#end
+	
+
+#end
+}

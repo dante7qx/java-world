@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.dante.springmvc.mybatis.dao.PermissionDao">
+
+	<select id="findPermissionById" parameterType="Integer"
+		resultType="Permission">
+		select * from T_Permission where Id = #{id}
+	</select>
+
+	<select id="findPermissionByPid" parameterType="Integer"
+		resultType="Permission">
+		select * from T_Permission where Pid = #{pid}
+	</select>
+
+	<insert id="insertPermission" parameterType="Permission"
+		useGeneratedKeys="true" keyProperty="id">
+		insert into T_Permission(Name, Code, Pid) values (#{name}, #{code}, #{pid})
+	</insert>
+	
+	<update id="updatePermission" parameterType="Permission">
+		update T_Permission set Name = #{name}, Code = #{code}, Pid = ${pid} where Id = #{id}
+	</update>
+	
+	<delete id="deletePermissionById" parameterType="Integer">
+		delete from T_Permission where Id = #{id}
+	</delete>
+	
+	<delete id="deletePermissionByPid" parameterType="Integer">
+		delete from T_Permission where Pid = #{pid}
+	</delete>
+</mapper>

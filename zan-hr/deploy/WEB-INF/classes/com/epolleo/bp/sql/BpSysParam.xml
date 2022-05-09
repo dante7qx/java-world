@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "sql-map-2.dtd">
+<sqlMap namespace="SysParamBean">
+	<cacheModel id="sysParamBean" type="OSCACHE">
+		<flushInterval minutes="30" />
+		<flushOnExecute statement="updateSysParam" />
+		<flushOnExecute statement="deleteSysParam" />
+		<flushOnExecute statement="insertSysParam" />
+	</cacheModel>
+	<cacheModel id="sysParamBeanMap" type="OSCACHE">
+		<flushInterval minutes="30" />
+		<flushOnExecute statement="updateSysParam" />
+		<flushOnExecute statement="deleteSysParam" />
+		<flushOnExecute statement="insertSysParam" />
+	</cacheModel>
+	<typeAlias alias="sysParamBean"
+		type="com.epolleo.bp.sysparam.bean.SysParamBean" />
+	<resultMap id="sysParamBeanResult" class="sysParamBean">
+		<result property="paramKey" column="PARAM_KEY" />
+		<result property="paramName" column="PARAM_NAME" />
+		<result property="paramValue" column="PARAM_VALUE" />
+		<result property="paramType" column="PARAM_TYPE" />
+		<result property="defaultValue" column="DEFAULT_VALUE" />
+		<result property="syncFlag" column="SYNC_FLAG" />
+		<result property="createUser" column="CREATE_USER" />
+		<result property="createTime" column="CREATE_TIME" />
+		<result property="updateUser" column="UPDATE_USER" />
+		<result property="updateTime" column="UPDATE_TIME" />
+	</resultMap>
+	<resultMap id="sysParamMapResult" class="sysParamBean">
+		<result property="paramKey" column="PARAM_KEY" />
+		<result property="paramName" column="PARAM_NAME" />
+		<result property="paramValue" column="PARAM_VALUE" />
+		<result property="paramType" column="PARAM_TYPE" />
+		<result property="defaultValue" column="DEFAULT_VALUE" />
+	</resultMap>
+	<select id="selectSysParam" resultMap="sysParamBeanResult"
+		parameterClass="map">
+		SELECT
+		    PARAM_KEY,
+		    PARAM_NAME,
+		    PARAM_VALUE,
+		    PARAM_TYPE,
+		    DEFAULT_VALUE,
+		    SYNC_FLAG,
+		    CREATE_USER,
+		    CREATE_TIME,
+		    UPDATE_USER,
+		    UPDATE_TIME
+		FROM
+		    BP_SYS_PARAM
+		<dynamic prepend=" where ">
+			<isPropertyAvailable prepend=" and "
+				removeFirstPrepend="true" property="paramKey">
+				PARAM_KEY like #paramKey#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend=" and "
+				removeFirstPrepend="true" property="paramName">
+				PARAM_NAME like #paramName#
+			</isPropertyAvailable>
+		</dynamic>
+		<isNotEmpty prepend=" order by " property="sort">
+			<isEqual property="sort" compareValue="paramKey">
+				PARAM_KEY
+			</isEqual>
+			<isEqual property="sort" compareValue="paramName">
+				PARAM_NAME
+			</isEqual>
+			<isEqual property="sort" compareValue="paramType">
+				PARAM_TYPE
+			</isEqual>
+			<isNotEmpty prepend=" " property="order">
+				<isEqual property="order" compareValue="asc">
+					asc
+				</isEqual>
+				<isEqual property="order" compareValue="desc">
+					desc
+				</isEqual>
+			</isNotEmpty>
+		</isNotEmpty>
+	</select>
+	<select id="getSysParamAll" resultMap="sysParamBeanResult">
+		SELECT
+		    PARAM_KEY,
+		    PARAM_NAME,
+		    PARAM_VALUE,
+		    PARAM_TYPE,
+		    DEFAULT_VALUE,
+		    SYNC_FLAG,
+		    CREATE_USER,
+		    CREATE_TIME,
+		    UPDATE_USER,
+		    UPDATE_TIME
+		FROM
+		    BP_SYS_PARAM
+		ORDER BY
+		    PARAM_KEY ASC
+	</select>
+	<update id="updateSysParam" parameterClass="sysParamBean">
+		UPDATE
+		    BP_SYS_PARAM
+		SET
+		    PARAM_NAME    = #paramName#,
+		    PARAM_VALUE   = #paramValue#,
+		    PARAM_TYPE    = #paramType#,
+		    DEFAULT_VALUE = #defaultValue#,
+		    SYNC_FLAG     = #syncFlag#,
+		    UPDATE_USER   = #updateUser#,
+		    UPDATE_TIME   = #updateTime#
+		WHERE
+		    PARAM_KEY = #paramKey#
+	</update>
+	<insert id="insertSysParam" parameterClass="sysParamBean">
+		INSERT
+		INTO
+		    BP_SYS_PARAM
+		    (
+		        PARAM_KEY,
+		        PARAM_NAME,
+		        PARAM_VALUE,
+		        PARAM_TYPE,
+		        DEFAULT_VALUE,
+		        SYNC_FLAG,
+		        CREATE_USER,
+		        CREATE_TIME,
+		        UPDATE_USER,
+		        UPDATE_TIME
+		    )
+		    VALUES
+		    (
+		        #paramKey#,
+		        #paramName#,
+		        #paramValue#,
+		        #paramType#,
+		        #defaultValue#,
+		        #syncFlag#,
+		        #createUser#,
+		        #createTime#,
+		        #updateUser#,
+		        #updateTime#
+		    )
+	</insert>
+	<delete id="deleteSysParam" parameterClass="String">
+		DELETE FROM BP_SYS_PARAM WHERE PARAM_KEY = #id#
+	</delete>
+	<select id="getSysParamBean" parameterClass="String"
+		cacheModel="sysParamBean" resultMap="sysParamBeanResult">
+		SELECT
+		    PARAM_KEY,
+		    PARAM_NAME,
+		    PARAM_VALUE,
+		    PARAM_TYPE,
+		    DEFAULT_VALUE,
+		    SYNC_FLAG,
+		    CREATE_USER,
+		    CREATE_TIME,
+		    UPDATE_USER,
+		    UPDATE_TIME
+		FROM
+		    BP_SYS_PARAM
+		WHERE
+		    PARAM_KEY = #id#
+	</select>
+	<select id="getSysParamBeanMap" parameterClass="String"
+		cacheModel="sysParamBeanMap" resultMap="sysParamMapResult">
+		SELECT
+		    PARAM_KEY,
+		    PARAM_NAME,
+		    PARAM_VALUE,
+		    PARAM_TYPE,
+		    DEFAULT_VALUE
+		FROM
+		    BP_SYS_PARAM
+		WHERE
+		    PARAM_KEY LIKE #keyPrefix#
+	</select>
+</sqlMap>
