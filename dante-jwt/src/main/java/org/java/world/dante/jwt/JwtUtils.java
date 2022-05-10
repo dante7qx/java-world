@@ -19,7 +19,6 @@ import io.jsonwebtoken.JwsHeader;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.SignatureException;
 import io.jsonwebtoken.impl.DefaultClaims;
 
 public class JwtUtils {
@@ -35,7 +34,6 @@ public class JwtUtils {
 		} catch (ClassNotFoundException | IOException e) {
 			e.printStackTrace();
 		}
-		
 	}
 
 	public static String generateToken(Key key) {
@@ -49,20 +47,22 @@ public class JwtUtils {
 		claim.setSubject("dante");
 		claim.setIssuedAt(IssuedA);
 		claim.setExpiration(expDate);
-		
+
 		String compactJws = Jwts.builder()
 				.setHeaderParam("typ", "jwt")
 				.setSubject("Joe")
 				.setClaims(claim)
-				.signWith(SignatureAlgorithm.RS256, key).compact();
+				.signWith(key, SignatureAlgorithm.RS256).compact();
 		System.out.println(compactJws);
 		return compactJws;
 	}
 	
 	public static void parseToken(Key key, String token) {
 		try {
-
-		    Jws<Claims> parseClaimsJws = Jwts.parser().setSigningKey(key).parseClaimsJws(token);
+		    Jws<Claims> parseClaimsJws = Jwts.parserBuilder()
+		    		.setSigningKey(key)
+		    		.build()
+		    		.parseClaimsJws(token);
 		    //OK, we can trust this JWT
 		    JwsHeader<?> header = parseClaimsJws.getHeader();
 		    Claims body = parseClaimsJws.getBody();
@@ -71,8 +71,7 @@ public class JwtUtils {
 		    System.out.println(header.getType() + ' ' + header.getAlgorithm());
 		    System.out.println(body);
 		    System.out.println(sign);
-		} catch (SignatureException | MalformedJwtException e) {
-            // TODO: handle exception
+		} catch (SecurityException | MalformedJwtException e) {
             // don't trust the JWT!
             // jwt 解析错误
         } catch (ExpiredJwtException e) {

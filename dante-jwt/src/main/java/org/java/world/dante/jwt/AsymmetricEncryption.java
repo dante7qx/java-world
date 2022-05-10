@@ -166,6 +166,7 @@ public class AsymmetricEncryption {
 	 * @throws FileNotFoundException
 	 * @throws IOException
 	 */
+	@SuppressWarnings("unused")
 	private static byte[] loadData() throws FileNotFoundException, IOException {
 		FileInputStream fileInputStream = new FileInputStream(new File(ENCRYPT_DATA));
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
