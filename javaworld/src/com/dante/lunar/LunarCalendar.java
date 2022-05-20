@@ -348,6 +348,6 @@ public class LunarCalendar {
 	}
 	
 	public static void main(String[] args) throws Exception {
-		System.out.println(LunarCalendar.getLastLunarDate("2017-1-28"));
+		System.out.println(LunarCalendar.getLastLunarDate("2023-1-29"));
 	}
 }
