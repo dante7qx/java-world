@@ -1,4 +1,4 @@
-package com.dante.idcard;
+package com.dante.hutool;
 
 import org.junit.Test;
 import cn.hutool.core.util.IdcardUtil;

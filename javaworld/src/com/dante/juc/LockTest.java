@@ -40,7 +40,7 @@ public class LockTest {
 				lock.unlock();
 			}
 		} else {
-			System.out.println("当前任务正在运行！");
+			System.out.println("当前任务 [" + curThread + "] 正在运行！");
 		}
 	}
 	
