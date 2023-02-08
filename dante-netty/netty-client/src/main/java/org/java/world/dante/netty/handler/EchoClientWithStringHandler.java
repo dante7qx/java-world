@@ -6,13 +6,14 @@ import io.netty.util.ReferenceCountUtil;
 
 public class EchoClientWithStringHandler extends ChannelInboundHandlerAdapter {
 	
-	final int REPEAT = 50;	// 重复发送次数
+	final int REPEAT = 1;	// 重复发送次数
 	
 	@Override
 	public void channelActive(ChannelHandlerContext ctx) throws Exception {
 		for (int i = 0; i < REPEAT; i++) {
 			// 发送数据
-			ctx.writeAndFlush("{客户端} Say Hello! " + i + System.getProperty("line.separator"));
+//			ctx.writeAndFlush("{客户端} Say Hello! " + i + System.getProperty("line.separator"));
+			ctx.writeAndFlush("1");
 		}
 	}	
 	

@@ -1,6 +1,8 @@
 package com.dante.hutool;
 
 import org.junit.Test;
+
+import cn.hutool.core.util.DesensitizedUtil;
 import cn.hutool.core.util.IdcardUtil;
 
 public class IdCardTest {
@@ -58,6 +60,12 @@ public class IdCardTest {
 		System.out.println("ID_18: " + city);
 		System.out.println("ID_15: " + city2);
 		
+	}
+	
+	@Test
+	public void testDesensitized() {
+		String idCardNum = DesensitizedUtil.idCardNum("51343620000320711X", 1, 2);
+		System.out.println(idCardNum);
 	}
 	
 	

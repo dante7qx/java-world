@@ -3,16 +3,16 @@ package org.java.world.dante.json;
 import java.util.Arrays;
 import java.util.List;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+
 import org.java.world.dante.json.vo.BaseResp;
 import org.java.world.dante.json.vo.Country;
 import org.java.world.dante.json.vo.Province;
 import org.java.world.dante.json.vo.Result;
 import org.junit.Before;
 import org.junit.Test;
-
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 
 /**
  * 配置信息：http://blog.csdn.net/kobejayandy/article/details/45869861

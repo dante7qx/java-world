@@ -11,7 +11,7 @@ import io.netty.util.ReferenceCountUtil;
 
 public class EchoClientPackageHandler extends ChannelInboundHandlerAdapter {
 	
-	final int REPEAT = 50;	// 重复发送次数
+	final int REPEAT = 1;	// 重复发送次数
 	
 	@Override
 	public void channelActive(ChannelHandlerContext ctx) throws Exception {

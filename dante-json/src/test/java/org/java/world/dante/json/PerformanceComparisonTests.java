@@ -6,14 +6,17 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.java.world.dante.json.vo.UserVO;
-import org.junit.Before;
-import org.junit.Test;
-
 import com.alibaba.fastjson.JSON;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 
+import org.java.world.dante.json.vo.UserVO;
+import org.junit.Before;
+import org.junit.Test;
+
+import cn.hutool.core.date.StopWatch;
+import cn.hutool.json.JSONConfig;
+import cn.hutool.json.JSONUtil;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -70,9 +73,18 @@ public class PerformanceComparisonTests {
 		com.alibaba.fastjson2.JSON.toJSONString(users);
 		long end21 = new Date().getTime();
 		log.info("fastjson2转换共用时：" + (end21 - start21) + "ms");
-
+		
+		// 测试Hutool JSONUtil用时
+		long start3 = new Date().getTime();
+		JSONConfig jsonConfig = new JSONConfig();
+		jsonConfig.setDateFormat("yyyy-MM-dd HH:mm:ss");
+		JSONUtil.toJsonStr(users, jsonConfig);
+		long end3 = new Date().getTime();
+		log.info("Hutool JSONUtil转换共用时：" + (end3 - start3) + "ms");
+		
 		String json = mapper.writeValueAsString(users);
 //		log.info(json);
+//		log.info(hutoolJson);
 		
 		log.info("===================反序列化用时====================");
 		// 测试jackson用时
@@ -102,8 +114,14 @@ public class PerformanceComparisonTests {
 		com.alibaba.fastjson2.JSON.parseObject(json, List.class);
 		long e4 = new Date().getTime();
 		log.info("fastjson2转换共用时：" + (e4 - s4) + "ms");
-		log.info("==================================================");
 		
+		// 测试Hutool JSONUtil用时
+		StopWatch stopWatch = new StopWatch("Hutool JSONUtil");
+		stopWatch.start();
+		JSONUtil.parseArray(json, jsonConfig);
+		stopWatch.stop();
+		log.info("Hutool JSONUtil转换共用时：{}ms", stopWatch.getTotalTimeMillis());
+		log.info("==================================================");
 	}
 	
 }

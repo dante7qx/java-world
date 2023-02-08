@@ -4,15 +4,15 @@ import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.List;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
 import org.java.world.dante.json.vo.BaseResp;
 import org.java.world.dante.json.vo.Country;
 import org.java.world.dante.json.vo.Province;
 import org.java.world.dante.json.vo.Result;
 import org.junit.Before;
 import org.junit.Test;
-
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 
 public class GsonTests {
 	

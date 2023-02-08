@@ -3,15 +3,15 @@ package org.java.world.dante.json;
 import java.util.Arrays;
 import java.util.List;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.TypeReference;
+
 import org.java.world.dante.json.vo.BaseResp;
 import org.java.world.dante.json.vo.Country;
 import org.java.world.dante.json.vo.Province;
 import org.java.world.dante.json.vo.Result;
 import org.junit.Before;
 import org.junit.Test;
-
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.TypeReference;
 
 /**
  * 测试 FastJson

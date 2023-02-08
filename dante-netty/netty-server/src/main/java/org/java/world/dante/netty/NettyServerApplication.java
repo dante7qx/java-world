@@ -1,6 +1,6 @@
 package org.java.world.dante.netty;
 
-import org.java.world.dante.netty.server.HttpServer;
+import org.java.world.dante.netty.server.EchoServer;
 import org.java.world.dante.util.HostInfo;
 
 public class NettyServerApplication {
@@ -12,7 +12,7 @@ public class NettyServerApplication {
 //		new DiscardServer().run(HostInfo.PORT);
 		
 		// 启动运行 EchoServer
-//		new EchoServer().run(HostInfo.PORT);
+		new EchoServer().run(HostInfo.PORT);
 //		new EchoPackageServer().run(HostInfo.PORT);
 //		new EchoServerWithString().run(HostInfo.PORT);
 //		new EchoServerCustomerSeparator().run(HostInfo.PORT);
@@ -22,6 +22,6 @@ public class NettyServerApplication {
 //		new EchoServerFastJsonSerializable().run(HostInfo.PORT);
 		
 		// 启动运行 HttpServer
-		new HttpServer().run(HostInfo.PORT);
+//		new HttpServer().run(HostInfo.PORT);
 	}
 }

@@ -36,7 +36,8 @@ public class EchoMsgPackSerializableClient {
 				.handler(new ChannelInitializer<SocketChannel>() {
 					@Override
 					protected void initChannel(SocketChannel socketChannel) throws Exception {
-						socketChannel.pipeline().addLast(new LengthFieldBasedFrameDecoder(65536, 0, 4, 0, 4));
+						// 65536
+						socketChannel.pipeline().addLast(new LengthFieldBasedFrameDecoder(1213486164, 0, 4, 0, 4));
 						socketChannel.pipeline().addLast(new MessagePackDecoder());
 						socketChannel.pipeline().addLast(new LengthFieldPrepender(4));
 						socketChannel.pipeline().addLast(new MessagePackEncoder());

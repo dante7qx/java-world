@@ -10,7 +10,6 @@
 		<groupId>org.java.world</groupId>
 		<artifactId>dante-netty</artifactId>
 		<version>1.0</version>
-		<relativePath />
 	</parent>
 
 	<dependencies>

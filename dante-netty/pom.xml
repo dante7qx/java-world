@@ -12,10 +12,10 @@
 	<url>http://maven.apache.org</url>
 
 	<properties>
-		<netty.version>4.1.36.Final</netty.version>
+		<netty.version>4.1.87.Final</netty.version>
 		<msgpack.version>0.6.12</msgpack.version>
-		<jboss-marshalling.version>2.0.7.Final</jboss-marshalling.version>
-		<fastjson.version>1.2.58</fastjson.version>
+		<jboss-marshalling.version>2.1.1.Final</jboss-marshalling.version>
+		<fastjson.version>1.2.83</fastjson.version>
 		<slf4j.version>1.7.25</slf4j.version>
 		<logback.version>1.2.3</logback.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

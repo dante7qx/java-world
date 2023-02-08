@@ -68,5 +68,27 @@
 			<artifactId>easy-random-core</artifactId>
 			<version>4.3.0</version>
 		</dependency>
+		
+		<!-- 音频 -->
+		<dependency>
+		    <groupId>net.jthink</groupId>
+		    <artifactId>jaudiotagger</artifactId>
+		    <version>3.0.1</version>
+		</dependency>
+		
+		<!-- opencv -->
+		<dependency>
+      		<groupId>org.bytedeco</groupId>
+		    <artifactId>javacv-platform</artifactId>
+		    <version>1.5.7</version>
+	  	</dependency>
+	  	
+	  	<!-- Guava -->
+	  	<dependency>
+		    <groupId>com.google.guava</groupId>
+		    <artifactId>guava</artifactId>
+		    <version>31.1-jre</version>
+		</dependency>
+	  	
 	</dependencies>
 </project>
