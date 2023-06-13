@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" xmlns:flowable="http://flowable.org/bpmn" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.flowable.org/processdef">
+
+<process id="counterSignProcess" name="会签一票否决流程">
+  <startEvent id="startEvent" name="开始"></startEvent>
+
+  <!-- 会签任务 -->
+  <userTask id="counterSignTask" name="会签任务" flowable:assignee="${assignee}">
+    <multiInstanceLoopCharacteristics isSequential="false" flowable:collection="${users}"
+                                      flowable:elementVariable="user">
+      <!-- 所有参与者都必须同意 -->
+      <completionCondition>${nrOfCompletedInstances/nrOfInstances == 1.0}</completionCondition>
+    </multiInstanceLoopCharacteristics>
+  </userTask>
+
+  <!-- 一票否决事件 -->
+  <boundaryEvent id="vetoEvent" name="一票否决" attachedToRef="counterSignTask">
+    <condition><![CDATA[${rejected == true}]]></condition>
+  </boundaryEvent>
+
+  <!-- 审批通过 -->
+  <endEvent id="approveEndEvent" name="审批通过"></endEvent>
+
+  <!-- 审批被否决 -->
+  <endEvent id="rejectEndEvent" name="审批被否决"></endEvent>
+
+  <!-- 流程顺序 -->
+  <sequenceFlow id="startToCounterSignTask" sourceRef="startEvent" targetRef="counterSignTask" />
+  <sequenceFlow id="counterSignTaskToApproveEndEvent" sourceRef="counterSignTask" targetRef="approveEndEvent" />
+  <sequenceFlow id="vetoEventToRejectEndEvent" sourceRef="vetoEvent" targetRef="rejectEndEvent" />
+</process>
+</definitions>

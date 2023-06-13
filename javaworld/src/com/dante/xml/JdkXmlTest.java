@@ -16,7 +16,7 @@ public class JdkXmlTest {
 	@Test
 	public void getAllUserNames() {
 		try {
-			String fileName = "/Users/dante/Documents/Project/javaworld/src/com/dante/xml/Jdk.xml";
+			String fileName = "/Users/dante/Documents/Project/java-world/javaworld/javaworld/src/com/dante/xml/Jdk.xml";
 			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 			DocumentBuilder db = dbf.newDocumentBuilder();
 			File file = new File(fileName);

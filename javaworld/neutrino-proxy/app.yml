@@ -1,0 +1,15 @@
+neutrino:
+  proxy:
+    client:
+      # ssl证书密钥（使用jjar包内自带的证书，则此处无需修改）
+      key-store-password: 123456
+      # ssl证书管理密钥（使用jjar包内自带的证书，则此处无需修改。自定义证书，则此处配置对应的路径）
+      jks-path: classpath:/test.jks
+      # 代理服务端IP
+      server-ip: 103.163.47.16
+      # 代理服务端IP, 若是非ssl端口，则ssl-enable需要配置为false
+      server-port: 9000
+      # 是否启用ssl
+      ssl-enable: false
+      # licenseKey，客户端凭证。此处需要配置刚刚从管理后台复制的LicenseKey
+      license-key: 14980dd1e88d4cababcb80dcc74f1e51

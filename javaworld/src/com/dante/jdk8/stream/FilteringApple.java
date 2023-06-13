@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.IntSummaryStatistics;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -62,7 +63,8 @@ public class FilteringApple {
 		// 排序分组
 		Map<Integer, List<Apple>> orderApples = invertory.stream()
 			.filter(p -> "red".equals(p.getColor()))
-			.collect(Collectors.groupingBy(Apple::getWeight));
+//			.collect(Collectors.groupingBy(Apple::getWeight));	// 无序map
+			.collect(Collectors.groupingBy(Apple::getWeight, LinkedHashMap::new, Collectors.toList()));	// 有序map
 		System.out.println(orderApples);
 		
 		System.out.println(invertory);
